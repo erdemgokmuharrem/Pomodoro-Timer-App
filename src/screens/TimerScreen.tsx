@@ -6,7 +6,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { usePomodoroTimer } from '../hooks/usePomodoroTimer';
 import { usePomodoroStore } from '../store/usePomodoroStore';
+import { useSoundStore } from '../store/useSoundStore';
 import InterruptionModal from '../components/molecules/InterruptionModal';
+import SoundSelectionModal from '../components/molecules/SoundSelectionModal';
 
 type TimerScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Timer'>;
 
@@ -27,7 +29,17 @@ const TimerScreen = () => {
   } = usePomodoroTimer();
   
   const { currentTask, settings, currentSession } = usePomodoroStore();
+  const { settings: soundSettings, toggleBackgroundSound } = useSoundStore();
+  
+  // Null check for sound settings
+  const safeSoundSettings = soundSettings || {
+    backgroundSound: null,
+    backgroundVolume: 0.3,
+    soundEffectsEnabled: true,
+    backgroundSoundEnabled: false,
+  };
   const [interruptionModalVisible, setInterruptionModalVisible] = useState(false);
+  const [soundModalVisible, setSoundModalVisible] = useState(false);
 
   // Handle timer completion with alerts
   useEffect(() => {
@@ -138,15 +150,27 @@ const TimerScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Interruption Button */}
-        {isRunning && !isBreak && (
+        {/* Sound and Interruption Buttons */}
+        <View style={styles.bottomButtons}>
           <TouchableOpacity 
-            style={styles.interruptionButton}
-            onPress={handleInterruption}
+            style={styles.soundButton}
+            onPress={() => setSoundModalVisible(true)}
           >
-            <Text style={styles.interruptionButtonText}>⚠️ Kesinti Kaydet</Text>
+            <Text style={styles.soundButtonText}>
+              {safeSoundSettings.backgroundSound ? safeSoundSettings.backgroundSound.emoji : '🔇'} 
+              {safeSoundSettings.backgroundSound ? safeSoundSettings.backgroundSound.name : 'Ses Seç'}
+            </Text>
           </TouchableOpacity>
-        )}
+          
+          {isRunning && !isBreak && (
+            <TouchableOpacity 
+              style={styles.interruptionButton}
+              onPress={handleInterruption}
+            >
+              <Text style={styles.interruptionButtonText}>⚠️ Kesinti Kaydet</Text>
+            </TouchableOpacity>
+          )}
+        </View>
         
         {/* Progress Indicator */}
         <View style={styles.progressContainer}>
@@ -165,6 +189,11 @@ const TimerScreen = () => {
         visible={interruptionModalVisible}
         onClose={() => setInterruptionModalVisible(false)}
         sessionId={currentSession?.id || ''}
+      />
+      
+      <SoundSelectionModal
+        visible={soundModalVisible}
+        onClose={() => setSoundModalVisible(false)}
       />
     </SafeAreaView>
   );
@@ -249,18 +278,41 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 2,
   },
-  interruptionButton: {
+  bottomButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 20,
+    justifyContent: 'center',
+  },
+  soundButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
-    marginTop: 20,
+    flex: 1,
+    maxWidth: 200,
+  },
+  soundButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  interruptionButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    flex: 1,
+    maxWidth: 200,
   },
   interruptionButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
   },

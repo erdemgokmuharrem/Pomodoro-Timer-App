@@ -1,114 +1,106 @@
 import { useEffect, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
-import { notificationService } from '../services/notificationService';
-import { usePomodoroStore } from '../store/usePomodoroStore';
+
+// Configure notification behavior
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export const useNotifications = () => {
-  const { settings } = usePomodoroStore();
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
   useEffect(() => {
-    // Initialize notification service
-    notificationService.initialize();
+    // Request permissions
+    requestPermissions();
 
     // Set up notification listeners
-    notificationListener.current = notificationService.addNotificationReceivedListener(
-      (notification) => {
-        console.log('Notification received:', notification);
-      }
-    );
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      console.log('Notification received:', notification);
+    });
 
-    responseListener.current = notificationService.addNotificationResponseReceivedListener(
-      (response) => {
-        console.log('Notification response:', response);
-        // Handle notification tap actions here
-      }
-    );
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('Notification response:', response);
+    });
 
     return () => {
       if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(notificationListener.current);
+        notificationListener.current.remove();
       }
       if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
+        responseListener.current.remove();
       }
     };
   }, []);
 
-  const schedulePomodoroNotification = async (duration: number, taskName?: string) => {
-    if (!settings.notificationsEnabled) return null;
-    
+  const requestPermissions = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== 'granted') {
+      console.warn('Notification permissions not granted');
+    }
+  };
+
+  const schedulePomodoroNotification = async (duration: number, taskId?: string) => {
     try {
-      const notificationId = await notificationService.schedulePomodoroNotification(
-        duration, 
-        taskName
-      );
-      return notificationId;
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'Pomodoro Tamamlandı! 🎉',
+          body: taskId ? 'Göreviniz tamamlandı, mola zamanı!' : 'Pomodoro tamamlandı, mola zamanı!',
+          sound: true,
+        },
+        trigger: { seconds: duration * 60 },
+      });
     } catch (error) {
       console.error('Error scheduling pomodoro notification:', error);
-      return null;
     }
   };
 
-  const scheduleBreakNotification = async (duration: number, isLongBreak: boolean = false) => {
-    if (!settings.notificationsEnabled) return null;
-    
+  const scheduleBreakNotification = async (duration: number, isLongBreak: boolean) => {
     try {
-      const notificationId = await notificationService.scheduleBreakNotification(
-        duration, 
-        isLongBreak
-      );
-      return notificationId;
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: isLongBreak ? 'Uzun Mola Bitti! 🚀' : 'Mola Bitti! ⏰',
+          body: 'Yeni pomodoro\'ya başlamaya hazır mısınız?',
+          sound: true,
+        },
+        trigger: { seconds: duration * 60 },
+      });
     } catch (error) {
       console.error('Error scheduling break notification:', error);
-      return null;
     }
   };
 
-  const cancelNotification = async (notificationId: string) => {
+  const sendLocalNotification = async (title: string, body: string) => {
     try {
-      await notificationService.cancelNotification(notificationId);
-    } catch (error) {
-      console.error('Error canceling notification:', error);
-    }
-  };
-
-  const cancelAllNotifications = async () => {
-    try {
-      await notificationService.cancelAllNotifications();
-    } catch (error) {
-      console.error('Error canceling all notifications:', error);
-    }
-  };
-
-  const sendLocalNotification = async (title: string, body: string, data?: any) => {
-    try {
-      await notificationService.sendLocalNotification({
-        title,
-        body,
-        data,
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title,
+          body,
+          sound: true,
+        },
+        trigger: null, // Show immediately
       });
     } catch (error) {
       console.error('Error sending local notification:', error);
     }
   };
 
-  const checkPermissions = async () => {
-    return await notificationService.areNotificationsEnabled();
-  };
-
-  const requestPermissions = async () => {
-    return await notificationService.requestPermissions();
+  const cancelAllNotifications = async () => {
+    try {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+    } catch (error) {
+      console.error('Error canceling notifications:', error);
+    }
   };
 
   return {
     schedulePomodoroNotification,
     scheduleBreakNotification,
-    cancelNotification,
-    cancelAllNotifications,
     sendLocalNotification,
-    checkPermissions,
-    requestPermissions,
+    cancelAllNotifications,
   };
 };

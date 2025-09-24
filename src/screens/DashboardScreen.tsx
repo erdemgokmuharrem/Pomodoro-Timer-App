@@ -29,14 +29,14 @@ const DashboardScreen = () => {
 
   // Calculate daily progress
   const today = new Date().toDateString();
-  const todaySessions = sessions.filter(session => 
-    session.startTime.toDateString() === today && session.isCompleted
+  const todaySessions = (sessions || []).filter(session => 
+    session && session.startTime && session.startTime.toDateString() === today && session.isCompleted
   );
   const completedPomodoros = todaySessions.length;
-  const progressPercentage = (completedPomodoros / dailyGoal) * 100;
+  const progressPercentage = dailyGoal > 0 ? (completedPomodoros / dailyGoal) * 100 : 0;
 
   // Get today's tasks
-  const todayTasks = tasks.filter(task => !task.isCompleted).slice(0, 3);
+  const todayTasks = (tasks || []).filter(task => task && !task.isCompleted).slice(0, 3);
 
   return (
     <SafeAreaView style={styles.container}>

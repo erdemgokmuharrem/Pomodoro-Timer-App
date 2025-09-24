@@ -6,6 +6,8 @@ export interface Badge {
   name: string;
   description: string;
   icon: string;
+  emoji: string;
+  color: string;
   category: 'daily' | 'weekly' | 'monthly' | 'special';
   requirement: {
     type: 'pomodoros' | 'streak' | 'tasks' | 'focus_score' | 'interruptions';
@@ -13,6 +15,7 @@ export interface Badge {
     condition: 'greater_than' | 'less_than' | 'equal_to';
   };
   unlockedAt?: Date;
+  earnedAt?: Date;
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
 }
 
@@ -44,6 +47,14 @@ export interface UserStats {
 interface GamificationState {
   userStats: UserStats;
   
+  // Computed properties
+  level: number;
+  xp: number;
+  xpToNextLevel: number;
+  totalXp: number;
+  badges: Badge[];
+  recentBadges: Badge[];
+  
   // Actions
   addXp: (amount: number, reason: string) => void;
   updateStreak: (increment: boolean) => void;
@@ -62,6 +73,8 @@ const defaultBadges: Badge[] = [
     name: 'İlk Adım',
     description: 'İlk pomodoro\'nuzu tamamlayın',
     icon: '🎯',
+    emoji: '🎯',
+    color: '#3B82F6',
     category: 'daily',
     requirement: { type: 'pomodoros', value: 1, condition: 'greater_than' },
     rarity: 'common',
@@ -71,6 +84,8 @@ const defaultBadges: Badge[] = [
     name: 'Tutarlılık',
     description: '3 gün üst üste pomodoro yapın',
     icon: '🔥',
+    emoji: '🔥',
+    color: '#F59E0B',
     category: 'daily',
     requirement: { type: 'streak', value: 3, condition: 'greater_than' },
     rarity: 'common',
@@ -80,6 +95,8 @@ const defaultBadges: Badge[] = [
     name: 'Haftalık Kahraman',
     description: '7 gün üst üste pomodoro yapın',
     icon: '👑',
+    emoji: '👑',
+    color: '#8B5CF6',
     category: 'weekly',
     requirement: { type: 'streak', value: 7, condition: 'greater_than' },
     rarity: 'rare',
@@ -89,6 +106,8 @@ const defaultBadges: Badge[] = [
     name: 'Aylık Efsane',
     description: '30 gün üst üste pomodoro yapın',
     icon: '🏆',
+    emoji: '🏆',
+    color: '#F59E0B',
     category: 'monthly',
     requirement: { type: 'streak', value: 30, condition: 'greater_than' },
     rarity: 'legendary',
@@ -98,6 +117,8 @@ const defaultBadges: Badge[] = [
     name: 'Yüzlerce',
     description: '100 pomodoro tamamlayın',
     icon: '💯',
+    emoji: '💯',
+    color: '#10B981',
     category: 'special',
     requirement: { type: 'pomodoros', value: 100, condition: 'greater_than' },
     rarity: 'epic',
@@ -107,6 +128,8 @@ const defaultBadges: Badge[] = [
     name: 'Odak Ustası',
     description: 'Focus Score\'unuz 90\'ın üzerinde olsun',
     icon: '🧠',
+    emoji: '🧠',
+    color: '#EF4444',
     category: 'special',
     requirement: { type: 'focus_score', value: 90, condition: 'greater_than' },
     rarity: 'epic',
@@ -116,6 +139,8 @@ const defaultBadges: Badge[] = [
     name: 'Kesintisiz',
     description: 'Kesinti olmadan 5 pomodoro tamamlayın',
     icon: '⚡',
+    emoji: '⚡',
+    color: '#F59E0B',
     category: 'special',
     requirement: { type: 'interruptions', value: 0, condition: 'equal_to' },
     rarity: 'rare',
@@ -194,6 +219,31 @@ export const useGamificationStore = create<GamificationState>()(
         badges: [],
         achievements: defaultAchievements,
         lastActiveDate: new Date().toDateString(),
+      },
+
+      // Computed properties
+      get level() {
+        return get().userStats.level;
+      },
+      get xp() {
+        return get().userStats.xp;
+      },
+      get xpToNextLevel() {
+        const state = get();
+        const currentLevelXp = calculateXpForLevel(state.userStats.level);
+        const nextLevelXp = calculateXpForLevel(state.userStats.level + 1);
+        return nextLevelXp - currentLevelXp;
+      },
+      get totalXp() {
+        return get().userStats.totalXp;
+      },
+      get badges() {
+        return get().userStats.badges;
+      },
+      get recentBadges() {
+        return get().userStats.badges
+          .sort((a, b) => new Date(b.unlockedAt || 0).getTime() - new Date(a.unlockedAt || 0).getTime())
+          .slice(0, 3);
       },
 
       addXp: (amount: number, reason: string) => {
@@ -322,7 +372,8 @@ export const useGamificationStore = create<GamificationState>()(
         const badge = defaultBadges.find(b => b.id === badgeId);
         
         if (badge && !state.userStats.badges.find(b => b.id === badgeId)) {
-          const unlockedBadge = { ...badge, unlockedAt: new Date() };
+          const now = new Date();
+          const unlockedBadge = { ...badge, unlockedAt: now, earnedAt: now };
           
           set({
             userStats: {

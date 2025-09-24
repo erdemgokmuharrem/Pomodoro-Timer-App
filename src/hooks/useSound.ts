@@ -1,69 +1,65 @@
-import { useEffect } from 'react';
-import { soundService } from '../services/soundService';
-import { usePomodoroStore } from '../store/usePomodoroStore';
+import { useRef, useEffect } from 'react';
+import { AudioPlayer, useAudioPlayer } from 'expo-audio';
+import { useSoundStore } from '../store/useSoundStore';
 
 export const useSound = () => {
-  const { settings } = usePomodoroStore();
+  const soundRef = useRef<AudioPlayer | null>(null);
+  const { settings } = useSoundStore();
 
-  useEffect(() => {
-    // Initialize sound service
-    const initializeSound = async () => {
-      await soundService.initialize();
-      await soundService.loadSounds();
-    };
+  const playSound = async (soundFile: string) => {
+    try {
+      if (soundRef.current) {
+        soundRef.current.remove();
+      }
 
-    initializeSound();
-
-    // Set sound enabled state based on settings
-    soundService.setEnabled(settings.soundEnabled);
-
-    return () => {
-      // Cleanup on unmount
-      soundService.unloadSounds();
-    };
-  }, [settings.soundEnabled]);
+      const player = new AudioPlayer(soundFile);
+      soundRef.current = player;
+      
+      await player.play();
+      
+      player.addListener('playbackStatusUpdate', (status) => {
+        if (status.didJustFinish) {
+          player.remove();
+        }
+      });
+    } catch (error) {
+      console.error('Error playing sound:', error);
+    }
+  };
 
   const playPomodoroComplete = async () => {
-    if (settings.soundEnabled) {
-      await soundService.playPomodoroCompletePattern();
+    if (settings.soundEffectsEnabled) {
+      console.log('🔔 Pomodoro complete sound');
     }
   };
 
   const playBreakComplete = async () => {
-    if (settings.soundEnabled) {
-      await soundService.playBreakCompletePattern();
-    }
+    console.log('🔔 Break complete sound');
   };
 
   const playTick = async () => {
-    if (settings.soundEnabled) {
-      await soundService.playTick();
-    }
+    console.log('⏰ Tick sound');
   };
 
   const playStart = async () => {
-    if (settings.soundEnabled) {
-      await soundService.playStart();
-    }
+    console.log('▶️ Start sound');
   };
 
   const playPause = async () => {
-    if (settings.soundEnabled) {
-      await soundService.playPause();
-    }
+    console.log('⏸️ Pause sound');
   };
 
-  const setVolume = async (volume: number) => {
-    await soundService.setVolume(volume);
+  const playStop = async () => {
+    console.log('⏹️ Stop sound');
   };
 
   return {
+    playSound,
     playPomodoroComplete,
     playBreakComplete,
     playTick,
     playStart,
     playPause,
-    setVolume,
-    isEnabled: settings.soundEnabled,
+    playStop,
   };
 };

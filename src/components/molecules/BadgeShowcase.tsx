@@ -1,54 +1,37 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { useGamification } from '../../hooks/useGamification';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useGamificationStore } from '../../store/useGamificationStore';
 import Card from '../atoms/Card';
 
 const BadgeShowcase: React.FC = () => {
-  const { getRecentBadges, getTotalBadges, getRarityColor } = useGamification();
-  const recentBadges = getRecentBadges(3);
-  const badgeStats = getTotalBadges();
+  const { badges, recentBadges } = useGamificationStore();
+  
+  const displayBadges = recentBadges.length > 0 ? recentBadges : badges.slice(0, 3);
 
-  const BadgeItem = ({ badge, isUnlocked }: { badge: any; isUnlocked: boolean }) => (
-    <View style={[styles.badgeItem, !isUnlocked && styles.badgeItemLocked]}>
-      <Text style={[styles.badgeIcon, !isUnlocked && styles.badgeIconLocked]}>
-        {badge.icon}
-      </Text>
-      <Text style={[styles.badgeName, !isUnlocked && styles.badgeNameLocked]}>
-        {badge.name}
-      </Text>
-      <View 
-        style={[
-          styles.rarityIndicator, 
-          { backgroundColor: getRarityColor(badge.rarity) }
-        ]} 
-      />
-    </View>
-  );
+  if (displayBadges.length === 0) {
+    return null;
+  }
 
   return (
     <Card style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Rozetler</Text>
-        <Text style={styles.stats}>
-          {badgeStats.unlocked} / {badgeStats.total}
-        </Text>
-      </View>
+      <Text style={styles.title}>Son Rozetler</Text>
       
       <ScrollView 
         horizontal 
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.badgesContainer}
       >
-        {recentBadges.length > 0 ? (
-          recentBadges.map((badge) => (
-            <BadgeItem key={badge.id} badge={badge} isUnlocked={true} />
-          ))
-        ) : (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>Henüz rozet kazanılmamış</Text>
-            <Text style={styles.emptySubtext}>Pomodoro yapmaya başlayın!</Text>
+        {displayBadges.map((badge) => (
+          <View key={badge.id} style={styles.badge}>
+            <View style={[styles.badgeIcon, { backgroundColor: badge.color }]}>
+              <Text style={styles.badgeEmoji}>{badge.emoji}</Text>
+            </View>
+            <Text style={styles.badgeName}>{badge.name}</Text>
+            <Text style={styles.badgeDate}>
+              {new Date(badge.earnedAt).toLocaleDateString('tr-TR')}
+            </Text>
           </View>
-        )}
+        ))}
       </ScrollView>
     </Card>
   );
@@ -58,76 +41,39 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
   title: {
     fontSize: 18,
     fontWeight: '600',
     color: '#1E293B',
-  },
-  stats: {
-    fontSize: 14,
-    color: '#64748B',
-    backgroundColor: '#F1F5F9',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+    marginBottom: 12,
   },
   badgesContainer: {
-    gap: 12,
+    gap: 16,
   },
-  badgeItem: {
+  badge: {
     alignItems: 'center',
-    padding: 12,
-    backgroundColor: '#F8FAFC',
-    borderRadius: 12,
     minWidth: 80,
-    position: 'relative',
-  },
-  badgeItemLocked: {
-    opacity: 0.5,
   },
   badgeIcon: {
-    fontSize: 32,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 8,
   },
-  badgeIconLocked: {
-    opacity: 0.3,
+  badgeEmoji: {
+    fontSize: 24,
   },
   badgeName: {
     fontSize: 12,
     fontWeight: '500',
     color: '#1E293B',
     textAlign: 'center',
+    marginBottom: 2,
   },
-  badgeNameLocked: {
-    color: '#9CA3AF',
-  },
-  rarityIndicator: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 20,
-    paddingHorizontal: 40,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#64748B',
-    fontWeight: '500',
-    marginBottom: 4,
-  },
-  emptySubtext: {
-    fontSize: 14,
+  badgeDate: {
+    fontSize: 10,
     color: '#9CA3AF',
     textAlign: 'center',
   },

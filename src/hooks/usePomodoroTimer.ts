@@ -86,21 +86,24 @@ export const usePomodoroTimer = () => {
   };
 
   const getProgress = (): number => {
+    if (!settings) return 0;
     const totalTime = isBreak 
-      ? (settings.longBreakDuration || settings.shortBreakDuration) * 60
-      : settings.pomodoroDuration * 60;
-    return ((totalTime - timeLeft) / totalTime) * 100;
+      ? (settings.longBreakDuration || settings.shortBreakDuration || 5) * 60
+      : (settings.pomodoroDuration || 25) * 60;
+    return totalTime > 0 ? ((totalTime - timeLeft) / totalTime) * 100 : 0;
   };
 
   const handleStart = async (taskId?: string) => {
+    if (!settings) return;
+    
     if (isBreak) {
       startBreak();
       // Schedule break notification
-      await scheduleBreakNotification(settings.shortBreakDuration, false);
+      await scheduleBreakNotification(settings.shortBreakDuration || 5, false);
     } else {
       startPomodoro(taskId);
       // Schedule pomodoro notification
-      await schedulePomodoroNotification(settings.pomodoroDuration, currentSession?.taskId);
+      await schedulePomodoroNotification(settings.pomodoroDuration || 25, currentSession?.taskId);
     }
     // Play start sound
     await playStart();
@@ -119,9 +122,11 @@ export const usePomodoroTimer = () => {
   };
 
   const handleStartBreak = async (isLongBreak = false) => {
+    if (!settings) return;
+    
     startBreak(isLongBreak);
     // Schedule break notification
-    const duration = isLongBreak ? settings.longBreakDuration : settings.shortBreakDuration;
+    const duration = isLongBreak ? (settings.longBreakDuration || 15) : (settings.shortBreakDuration || 5);
     await scheduleBreakNotification(duration, isLongBreak);
   };
 

@@ -19,6 +19,15 @@ const TasksScreen = () => {
     }
   };
 
+  const getPriorityEmoji = (priority: string) => {
+    switch (priority) {
+      case 'high': return '🔴';
+      case 'medium': return '🟡';
+      case 'low': return '🟢';
+      default: return '⚪';
+    }
+  };
+
   const handleAddTask = () => {
     setSelectedTask(null);
     setModalMode('create');
@@ -50,57 +59,68 @@ const TasksScreen = () => {
     updateTask(task.id, { isCompleted: !task.isCompleted });
   };
 
-  const renderTask = ({ item }: { item: Task }) => (
-    <TouchableOpacity 
-      style={[styles.taskCard, item.isCompleted && styles.completedTask]}
-      onPress={() => handleEditTask(item)}
-      onLongPress={() => handleDeleteTask(item)}
-    >
-      <View style={styles.taskHeader}>
+  const renderTask = ({ item }: { item: Task }) => {
+    if (!item) return null;
+    
+    return (
+      <TouchableOpacity 
+        style={[styles.taskCard, item.isCompleted && styles.completedTask]}
+        onPress={() => handleEditTask(item)}
+        onLongPress={() => handleDeleteTask(item)}
+      >
+        <View style={styles.taskHeader}>
         <View style={styles.taskTitleContainer}>
           <Text style={[styles.taskTitle, item.isCompleted && styles.completedTaskText]}>
-            {item.title}
+            {item.title || 'Başlıksız Görev'}
           </Text>
-          <View style={[styles.priorityDot, { backgroundColor: getPriorityColor(item.priority) }]} />
-        </View>
-        <TouchableOpacity 
-          style={styles.pomodoroCount}
-          onPress={() => handleToggleComplete(item)}
-        >
-          <Text style={styles.pomodoroCountText}>
-            {item.completedPomodoros}/{item.estimatedPomodoros}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-      {item.description && (
-        <Text style={[styles.taskDescription, item.isCompleted && styles.completedTaskText]}>
-          {item.description}
-        </Text>
-      )}
-      
-      <View style={styles.taskFooter}>
-        <View style={styles.tagsContainer}>
-          {item.tags.map((tag, index) => (
-            <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>{tag}</Text>
-            </View>
-          ))}
-        </View>
-        
-        <View style={styles.progressContainer}>
-          <View style={styles.progressBar}>
-            <View 
-              style={[
-                styles.progressFill, 
-                { width: `${(item.completedPomodoros / item.estimatedPomodoros) * 100}%` }
-              ]} 
-            />
+          <View style={[styles.priorityContainer, { backgroundColor: getPriorityColor(item.priority) }]}>
+            <Text style={styles.priorityEmoji}>{getPriorityEmoji(item.priority)}</Text>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+          <TouchableOpacity 
+            style={styles.pomodoroCount}
+            onPress={() => handleToggleComplete(item)}
+          >
+            <Text style={styles.pomodoroCountText}>
+              {item.completedPomodoros || 0}/{item.estimatedPomodoros || 1}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        
+        {item.description && (
+          <Text style={[styles.taskDescription, item.isCompleted && styles.completedTaskText]}>
+            {item.description}
+          </Text>
+        )}
+        
+        <View style={styles.taskFooter}>
+          <View style={styles.tagsContainer}>
+            {(item.tags || []).map((tag, index) => {
+              // Find tag color from available tags (you might want to pass this from props)
+              const tagColors = ['#3B82F6', '#10B981', '#EF4444', '#8B5CF6', '#F59E0B'];
+              const tagColor = tagColors[index % tagColors.length];
+              return (
+                <View key={index} style={[styles.tag, { backgroundColor: tagColor }]}>
+                  <Text style={styles.tagText}>{tag}</Text>
+                </View>
+              );
+            })}
+          </View>
+          
+          <View style={styles.progressContainer}>
+            <View style={styles.progressBar}>
+              <View 
+                style={[
+                  styles.progressFill, 
+                  { width: `${((item.completedPomodoros || 0) / (item.estimatedPomodoros || 1)) * 100}%` }
+                ]} 
+              />
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -112,9 +132,9 @@ const TasksScreen = () => {
       </View>
 
       <FlatList
-        data={tasks}
+        data={tasks || []}
         renderItem={renderTask}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item?.id || Math.random().toString()}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
@@ -197,10 +217,15 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 8,
   },
-  priorityDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  priorityContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  priorityEmoji: {
+    fontSize: 12,
   },
   pomodoroCount: {
     backgroundColor: '#EFF6FF',
@@ -253,14 +278,14 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   tag: {
-    backgroundColor: '#F1F5F9',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 4,
+    borderRadius: 12,
   },
   tagText: {
     fontSize: 12,
-    color: '#475569',
+    color: 'white',
+    fontWeight: '500',
   },
   progressContainer: {
     marginTop: 4,
