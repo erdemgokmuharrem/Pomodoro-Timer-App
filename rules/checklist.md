@@ -14,17 +14,17 @@
 - [x] Görev-bağlı pomodoro
 - [x] Pomodoro zincirleme
 - [x] Kesinti kaydı
-- [ ] Otomatik yeniden planlama
+- [x] Otomatik yeniden planlama
 - [ ] Tahmin vs gerçek zaman karşılaştırması
-- [ ] Enerji-temelli öneriler
-- [ ] Context etiketleri & filtreler
+- [x] Enerji-temelli öneriler
+- [x] Context etiketleri & filtreler
 
 ## ✅ Görev Yönetimi
 - [x] Alt görevler & checkpoint sistemi
 - [ ] Takvim senkronizasyonu (Google/Outlook)
-- [ ] Görev şablonları
+- [x] Görev şablonları
 - [x] Görev öncelik matrisi
-- [ ] Auto-split (uzun görevleri bölme)
+- [x] Auto-split (uzun görevleri bölme)
 - [x] Kanban / Liste / Gantt görünümleri
 
 ## 👥 Sosyal & Ekip
@@ -38,12 +38,12 @@
 - [x] Bildirim bloklama (OS DND)
 - [ ] Uygulama/URL bloklama
 - [x] White noise & odak sesleri
-- [ ] Mola rehberi (stretching, nefes)
+- [x] Mola rehberi (stretching, nefes)
 
 ## 📊 Analitik & Raporlama
 - [x] Focus Score
-- [ ] Complexity Score
-- [ ] Haftalık review asistanı
+- [x] Complexity Score
+- [x] Haftalık review asistanı
 - [ ] Freelancer faturalama
 - [ ] Müşteri bazlı raporlar
 - [x] Export: CSV/Excel/JSON
@@ -86,6 +86,11 @@
 - [x] Erişilebilirlik (screen reader, high contrast)
 - [ ] Çoklu zaman dilimi desteği
 - [ ] Reflect journal (günlük refleksiyon)
+- [ ] Kullanıcılar birbirini ekleyebilsin ve iletişime geçebilsin
+- [ ] kullanıcılar kendi ID'lerini belirleyebilsin ve ortak session yapabilsin
+- [ ] birbirini ekleyen kulllanıcılar seanslarını pomodoro zincirlerini kontrol edebilsin
+- [ ] ortak session oluşturup beraber çalışabilsinler bir kişi bir session kursun ve ID'lerine göre davet edebilsin
+- [ ]  seans özelliklerini süresini katılacak kişi sayısını seansın amacını vb. belirleyebilsin.
 
 ## 🧪 Test & Kalite
 - [x] Unit test: Jest + React Testing Library (Temel testler)

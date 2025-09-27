@@ -12,6 +12,12 @@ import BadgeShowcase from '../components/molecules/BadgeShowcase';
 import OfflineStatus from '../components/molecules/OfflineStatus';
 import { EnergyRecommendationsModal } from '../components/molecules/EnergyRecommendationsModal';
 import { WeeklyReviewModal } from '../components/molecules/WeeklyReviewModal';
+import { GroupPomodoroModal } from '../components/molecules/GroupPomodoroModal';
+import { PairFocusModal } from '../components/molecules/PairFocusModal';
+import { FocusRoomsModal } from '../components/molecules/FocusRoomsModal';
+import { LeagueSystemModal } from '../components/molecules/LeagueSystemModal';
+import { SocialChallengesModal } from '../components/molecules/SocialChallengesModal';
+import { SmartDurationModal } from '../components/molecules/SmartDurationModal';
 
 type DashboardScreenNavigationProp = StackNavigationProp<RootStackParamList, 'MainTabs'>;
 
@@ -22,6 +28,12 @@ const DashboardScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [energyModalVisible, setEnergyModalVisible] = useState(false);
   const [weeklyReviewModalVisible, setWeeklyReviewModalVisible] = useState(false);
+  const [groupPomodoroModalVisible, setGroupPomodoroModalVisible] = useState(false);
+  const [pairFocusModalVisible, setPairFocusModalVisible] = useState(false);
+  const [focusRoomsModalVisible, setFocusRoomsModalVisible] = useState(false);
+  const [leagueSystemModalVisible, setLeagueSystemModalVisible] = useState(false);
+  const [socialChallengesModalVisible, setSocialChallengesModalVisible] = useState(false);
+  const [smartDurationModalVisible, setSmartDurationModalVisible] = useState(false);
 
   const handleStartPomodoro = () => {
     navigation.navigate('Timer');
@@ -121,6 +133,102 @@ const DashboardScreen = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Group Pomodoros */}
+        <View style={styles.groupPomodoroCard}>
+          <Text style={styles.cardTitle}>Grup Pomodoroları</Text>
+          <Text style={styles.groupPomodoroSubtitle}>
+            Arkadaşlarınızla birlikte odaklanın
+          </Text>
+          <TouchableOpacity 
+            style={styles.groupPomodoroButton}
+            onPress={() => setGroupPomodoroModalVisible(true)}
+          >
+            <Text style={styles.groupPomodoroButtonText}>
+              👥 Grup Seansları
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Pair Focus */}
+        <View style={styles.pairFocusCard}>
+          <Text style={styles.cardTitle}>Pair Focus</Text>
+          <Text style={styles.pairFocusSubtitle}>
+            İkili çalışma seansları ile odaklanın
+          </Text>
+          <TouchableOpacity 
+            style={styles.pairFocusButton}
+            onPress={() => setPairFocusModalVisible(true)}
+          >
+            <Text style={styles.pairFocusButtonText}>
+              🤝 Pair Focus
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Focus Rooms */}
+        <View style={styles.focusRoomsCard}>
+          <Text style={styles.cardTitle}>Focus Rooms</Text>
+          <Text style={styles.focusRoomsSubtitle}>
+            Sanal odalar ile birlikte odaklanın
+          </Text>
+          <TouchableOpacity 
+            style={styles.focusRoomsButton}
+            onPress={() => setFocusRoomsModalVisible(true)}
+          >
+            <Text style={styles.focusRoomsButtonText}>
+              🏠 Focus Rooms
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* League System */}
+        <View style={styles.leagueSystemCard}>
+          <Text style={styles.cardTitle}>Lig Sistemi</Text>
+          <Text style={styles.leagueSystemSubtitle}>
+            Rekabetçi gamification ile odaklanın
+          </Text>
+          <TouchableOpacity 
+            style={styles.leagueSystemButton}
+            onPress={() => setLeagueSystemModalVisible(true)}
+          >
+            <Text style={styles.leagueSystemButtonText}>
+              🏆 Lig Sistemi
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Social Challenges */}
+        <View style={styles.socialChallengesCard}>
+          <Text style={styles.cardTitle}>Social Challenges</Text>
+          <Text style={styles.socialChallengesSubtitle}>
+            Topluluk yarışmaları ile motive olun
+          </Text>
+          <TouchableOpacity 
+            style={styles.socialChallengesButton}
+            onPress={() => setSocialChallengesModalVisible(true)}
+          >
+            <Text style={styles.socialChallengesButtonText}>
+              🎯 Social Challenges
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Smart Duration */}
+        <View style={styles.smartDurationCard}>
+          <Text style={styles.cardTitle}>Akıllı Süre Önerileri</Text>
+          <Text style={styles.smartDurationSubtitle}>
+            AI destekli optimal süre önerileri
+          </Text>
+          <TouchableOpacity 
+            style={styles.smartDurationButton}
+            onPress={() => setSmartDurationModalVisible(true)}
+          >
+            <Text style={styles.smartDurationButtonText}>
+              🤖 Akıllı Süre
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Today's Tasks */}
         <View style={styles.tasksCard}>
           <View style={styles.tasksHeader}>
@@ -162,6 +270,36 @@ const DashboardScreen = () => {
       <WeeklyReviewModal
         visible={weeklyReviewModalVisible}
         onClose={() => setWeeklyReviewModalVisible(false)}
+      />
+
+      <GroupPomodoroModal
+        visible={groupPomodoroModalVisible}
+        onClose={() => setGroupPomodoroModalVisible(false)}
+      />
+
+      <PairFocusModal
+        visible={pairFocusModalVisible}
+        onClose={() => setPairFocusModalVisible(false)}
+      />
+
+      <FocusRoomsModal
+        visible={focusRoomsModalVisible}
+        onClose={() => setFocusRoomsModalVisible(false)}
+      />
+
+      <LeagueSystemModal
+        visible={leagueSystemModalVisible}
+        onClose={() => setLeagueSystemModalVisible(false)}
+      />
+
+      <SocialChallengesModal
+        visible={socialChallengesModalVisible}
+        onClose={() => setSocialChallengesModalVisible(false)}
+      />
+
+      <SmartDurationModal
+        visible={smartDurationModalVisible}
+        onClose={() => setSmartDurationModalVisible(false)}
       />
     </SafeAreaView>
   );
@@ -379,6 +517,186 @@ const styles = StyleSheet.create({
   weeklyReviewButtonText: {
     fontSize: 16,
     color: '#8B5CF6',
+    fontWeight: '600',
+  },
+  groupPomodoroCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  groupPomodoroSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  groupPomodoroButton: {
+    backgroundColor: '#F3E8FF',
+    borderWidth: 1,
+    borderColor: '#8E24AA',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  groupPomodoroButtonText: {
+    fontSize: 16,
+    color: '#8E24AA',
+    fontWeight: '600',
+  },
+  pairFocusCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  pairFocusSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  pairFocusButton: {
+    backgroundColor: '#FFF3E0',
+    borderWidth: 1,
+    borderColor: '#FF6B6B',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  pairFocusButtonText: {
+    fontSize: 16,
+    color: '#FF6B6B',
+    fontWeight: '600',
+  },
+  focusRoomsCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  focusRoomsSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  focusRoomsButton: {
+    backgroundColor: '#F3E5F5',
+    borderWidth: 1,
+    borderColor: '#9C27B0',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  focusRoomsButtonText: {
+    fontSize: 16,
+    color: '#9C27B0',
+    fontWeight: '600',
+  },
+  leagueSystemCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  leagueSystemSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  leagueSystemButton: {
+    backgroundColor: '#FFF3E0',
+    borderWidth: 1,
+    borderColor: '#FF6B35',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  leagueSystemButtonText: {
+    fontSize: 16,
+    color: '#FF6B35',
+    fontWeight: '600',
+  },
+  socialChallengesCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  socialChallengesSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  socialChallengesButton: {
+    backgroundColor: '#FCE4EC',
+    borderWidth: 1,
+    borderColor: '#E91E63',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  socialChallengesButtonText: {
+    fontSize: 16,
+    color: '#E91E63',
+    fontWeight: '600',
+  },
+  smartDurationCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  smartDurationSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  smartDurationButton: {
+    backgroundColor: '#E8F5E8',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  smartDurationButtonText: {
+    fontSize: 16,
+    color: '#4CAF50',
     fontWeight: '600',
   },
 });

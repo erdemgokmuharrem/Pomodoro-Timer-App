@@ -5,6 +5,8 @@ import { usePomodoroStore } from '../store/usePomodoroStore';
 import { useTheme } from '../components/ThemeProvider';
 import ExportModal from '../components/molecules/ExportModal';
 import AccessibilityModal from '../components/molecules/AccessibilityModal';
+import { CalendarSyncModal } from '../components/molecules/CalendarSyncModal';
+import { AppBlockingModal } from '../components/molecules/AppBlockingModal';
 
 const SettingsScreen = () => {
   const { settings, updateSettings, sessions, tasks } = usePomodoroStore();
@@ -19,6 +21,8 @@ const SettingsScreen = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(settings.notificationsEnabled);
   const [exportModalVisible, setExportModalVisible] = useState(false);
   const [accessibilityModalVisible, setAccessibilityModalVisible] = useState(false);
+  const [calendarSyncModalVisible, setCalendarSyncModalVisible] = useState(false);
+  const [appBlockingModalVisible, setAppBlockingModalVisible] = useState(false);
 
   const handleDurationChange = (type: 'pomodoro' | 'shortBreak' | 'longBreak', value: number) => {
     if (type === 'pomodoro') {
@@ -220,6 +224,33 @@ const SettingsScreen = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Integration Settings */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Entegrasyonlar</Text>
+          
+          <TouchableOpacity 
+            style={styles.settingItem}
+            onPress={() => setCalendarSyncModalVisible(true)}
+          >
+            <View style={styles.settingInfo}>
+              <Text style={styles.settingTitle}>Takvim Senkronizasyonu</Text>
+              <Text style={styles.settingSubtitle}>Google Calendar ve Outlook ile senkronize et</Text>
+            </View>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.settingItem}
+            onPress={() => setAppBlockingModalVisible(true)}
+          >
+            <View style={styles.settingInfo}>
+              <Text style={styles.settingTitle}>Dikkat Engelleme</Text>
+              <Text style={styles.settingSubtitle}>Dikkat dağıtıcı uygulamaları ve websiteleri engelle</Text>
+            </View>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Data Management */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Veri Yönetimi</Text>
@@ -260,6 +291,16 @@ const SettingsScreen = () => {
       <AccessibilityModal
         visible={accessibilityModalVisible}
         onClose={() => setAccessibilityModalVisible(false)}
+      />
+
+      <CalendarSyncModal
+        visible={calendarSyncModalVisible}
+        onClose={() => setCalendarSyncModalVisible(false)}
+      />
+
+      <AppBlockingModal
+        visible={appBlockingModalVisible}
+        onClose={() => setAppBlockingModalVisible(false)}
       />
     </SafeAreaView>
   );
