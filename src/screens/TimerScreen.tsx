@@ -7,8 +7,11 @@ import { RootStackParamList } from '../navigation/AppNavigator';
 import { usePomodoroTimer } from '../hooks/usePomodoroTimer';
 import { usePomodoroStore } from '../store/usePomodoroStore';
 import { useSoundStore } from '../store/useSoundStore';
+import { useAutoReschedule } from '../hooks/useAutoReschedule';
 import InterruptionModal from '../components/molecules/InterruptionModal';
 import SoundSelectionModal from '../components/molecules/SoundSelectionModal';
+import { AutoRescheduleModal } from '../components/molecules/AutoRescheduleModal';
+import { BreakGuideModal } from '../components/molecules/BreakGuideModal';
 
 type TimerScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Timer'>;
 
@@ -30,6 +33,15 @@ const TimerScreen = () => {
   
   const { currentTask, settings, currentSession } = usePomodoroStore();
   const { settings: soundSettings, toggleBackgroundSound } = useSoundStore();
+  const { 
+    settings: autoRescheduleSettings, 
+    energyLevel, 
+    consecutivePomodoros,
+    getEnergyRecommendations,
+    getSmartTaskSuggestions,
+    handlePomodoroComplete,
+    handleBreakComplete
+  } = useAutoReschedule();
   
   // Null check for sound settings
   const safeSoundSettings = soundSettings || {
@@ -40,6 +52,8 @@ const TimerScreen = () => {
   };
   const [interruptionModalVisible, setInterruptionModalVisible] = useState(false);
   const [soundModalVisible, setSoundModalVisible] = useState(false);
+  const [autoRescheduleModalVisible, setAutoRescheduleModalVisible] = useState(false);
+  const [breakGuideModalVisible, setBreakGuideModalVisible] = useState(false);
 
   // Handle timer completion with alerts
   useEffect(() => {
@@ -150,6 +164,18 @@ const TimerScreen = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Auto Reschedule Info */}
+        {autoRescheduleSettings.enabled && (
+          <View style={styles.autoRescheduleInfo}>
+            <Text style={styles.autoRescheduleText}>
+              🤖 Otomatik: {energyLevel.level === 'high' ? 'Yüksek enerji' : energyLevel.level === 'low' ? 'Düşük enerji' : 'Orta enerji'}
+            </Text>
+            <Text style={styles.autoRescheduleSubText}>
+              Ardışık: {consecutivePomodoros} pomodoro
+            </Text>
+          </View>
+        )}
+
         {/* Sound and Interruption Buttons */}
         <View style={styles.bottomButtons}>
           <TouchableOpacity 
@@ -161,6 +187,26 @@ const TimerScreen = () => {
               {safeSoundSettings.backgroundSound ? safeSoundSettings.backgroundSound.name : 'Ses Seç'}
             </Text>
           </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.autoRescheduleButton}
+            onPress={() => setAutoRescheduleModalVisible(true)}
+          >
+            <Text style={styles.autoRescheduleButtonText}>
+              🤖 Otomatik Planlama
+            </Text>
+          </TouchableOpacity>
+          
+          {isBreak && (
+            <TouchableOpacity 
+              style={styles.breakGuideButton}
+              onPress={() => setBreakGuideModalVisible(true)}
+            >
+              <Text style={styles.breakGuideButtonText}>
+                🧘 Mola Rehberi
+              </Text>
+            </TouchableOpacity>
+          )}
           
           {isRunning && !isBreak && (
             <TouchableOpacity 
@@ -194,6 +240,19 @@ const TimerScreen = () => {
       <SoundSelectionModal
         visible={soundModalVisible}
         onClose={() => setSoundModalVisible(false)}
+      />
+      
+      <AutoRescheduleModal
+        visible={autoRescheduleModalVisible}
+        onClose={() => setAutoRescheduleModalVisible(false)}
+      />
+      
+      <BreakGuideModal
+        visible={breakGuideModalVisible}
+        onClose={() => setBreakGuideModalVisible(false)}
+        availableTime={isBreak ? (settings.shortBreakDuration || 5) : 5}
+        energyLevel={energyLevel.level}
+        mood="neutral"
       />
     </SafeAreaView>
   );
@@ -311,6 +370,55 @@ const styles = StyleSheet.create({
     maxWidth: 200,
   },
   interruptionButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  autoRescheduleInfo: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  autoRescheduleText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  autoRescheduleSubText: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 12,
+  },
+  autoRescheduleButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    flex: 1,
+    maxWidth: 200,
+  },
+  autoRescheduleButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  breakGuideButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    flex: 1,
+    maxWidth: 200,
+  },
+  breakGuideButtonText: {
     color: 'white',
     fontSize: 14,
     fontWeight: '600',

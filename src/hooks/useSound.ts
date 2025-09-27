@@ -7,7 +7,7 @@ export const useSound = () => {
   const { settings } = useSoundStore();
 
   const playSound = async (soundFile: string) => {
-    try {
+    try { 
       if (soundRef.current) {
         soundRef.current.remove();
       }

@@ -105,7 +105,7 @@
 - [ ] OTA Update: Expo EAS Update
 - [ ] Beta test: TestFlight & Google Play Beta
 
-## 📊 Performans & Ölçeklenebilirlik
+## 📊 Performans & Ölçeklenebilirli k
 - [ ] Lazy loading & code splitting
 - [ ] Offline-first (queue sistemi)
 - [ ] Minimal bundle size

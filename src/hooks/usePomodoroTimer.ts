@@ -3,6 +3,7 @@ import { usePomodoroStore } from '../store/usePomodoroStore';
 import { useNotifications } from './useNotifications';
 import { useSound } from './useSound';
 import { useGamification } from './useGamification';
+import { useAutoReschedule } from './useAutoReschedule';
 
 export const usePomodoroTimer = () => {
   const {
@@ -36,6 +37,12 @@ export const usePomodoroTimer = () => {
   } = useSound();
 
   const { awardPomodoroXp, awardTaskXp } = useGamification();
+  
+  const { 
+    handlePomodoroComplete, 
+    handleBreakComplete,
+    settings: autoRescheduleSettings 
+  } = useAutoReschedule();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -63,6 +70,19 @@ export const usePomodoroTimer = () => {
       }
     };
   }, [isRunning, timeLeft, tick, playTick]);
+
+  // Handle timer completion with auto-reschedule
+  useEffect(() => {
+    if (timeLeft === 0 && !isRunning) {
+      if (isBreak) {
+        // Break completed - trigger auto-reschedule
+        handleBreakComplete();
+      } else {
+        // Pomodoro completed - trigger auto-reschedule
+        handlePomodoroComplete();
+      }
+    }
+  }, [timeLeft, isRunning, isBreak, handlePomodoroComplete, handleBreakComplete]);
 
   // Handle timer completion
   useEffect(() => {

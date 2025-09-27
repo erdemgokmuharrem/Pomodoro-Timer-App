@@ -2,13 +2,27 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePomodoroStore, Task } from '../store/usePomodoroStore';
+import { useContextFilters } from '../hooks/useContextFilters';
+import { useAutoSplit } from '../hooks/useAutoSplit';
+import { useComplexityScore } from '../hooks/useComplexityScore';
 import TaskModal from '../components/molecules/TaskModal';
+import { ContextFiltersModal } from '../components/molecules/ContextFiltersModal';
+import { TemplateSelectionModal } from '../components/molecules/TemplateSelectionModal';
+import { AutoSplitModal } from '../components/molecules/AutoSplitModal';
+import { ComplexityScoreModal } from '../components/molecules/ComplexityScoreModal';
 
 const TasksScreen = () => {
   const { tasks, deleteTask, updateTask } = usePomodoroStore();
+  const { filteredTasks, getFilterStats } = useContextFilters();
+  const { getSplittableTasks } = useAutoSplit();
+  const { getTaskComplexity } = useComplexityScore();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
+  const [filtersModalVisible, setFiltersModalVisible] = useState(false);
+  const [templateModalVisible, setTemplateModalVisible] = useState(false);
+  const [autoSplitModalVisible, setAutoSplitModalVisible] = useState(false);
+  const [complexityModalVisible, setComplexityModalVisible] = useState(false);
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -122,25 +136,72 @@ const TasksScreen = () => {
     );
   };
 
+  const stats = getFilterStats();
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Görevler</Text>
-        <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
-          <Text style={styles.addButtonText}>+ Yeni Görev</Text>
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity 
+            style={styles.filterButton} 
+            onPress={() => setFiltersModalVisible(true)}
+          >
+            <Text style={styles.filterButtonText}>🔍 Filtrele</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.templateButton} 
+            onPress={() => setTemplateModalVisible(true)}
+          >
+            <Text style={styles.templateButtonText}>📋 Şablon</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.splitButton} 
+            onPress={() => setAutoSplitModalVisible(true)}
+          >
+            <Text style={styles.splitButtonText}>🔄 Böl</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.complexityButton} 
+            onPress={() => setComplexityModalVisible(true)}
+          >
+            <Text style={styles.complexityButtonText}>📊 Analiz</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
+            <Text style={styles.addButtonText}>+ Yeni Görev</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
+      {/* Filter Stats */}
+      {stats.isFiltered && (
+        <View style={styles.filterStats}>
+          <Text style={styles.filterStatsText}>
+            {stats.filteredCount} / {stats.totalTasks} görev gösteriliyor
+          </Text>
+          <TouchableOpacity 
+            style={styles.clearFiltersButton}
+            onPress={() => setFiltersModalVisible(true)}
+          >
+            <Text style={styles.clearFiltersText}>Filtreleri Düzenle</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <FlatList
-        data={tasks || []}
+        data={filteredTasks || tasks || []}
         renderItem={renderTask}
         keyExtractor={(item) => item?.id || Math.random().toString()}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>Henüz görev eklenmemiş</Text>
-            <Text style={styles.emptySubtext}>+ butonuna tıklayarak ilk görevinizi ekleyin</Text>
+            <Text style={styles.emptyText}>
+              {stats.isFiltered ? 'Filtrelere uygun görev bulunamadı' : 'Henüz görev eklenmemiş'}
+            </Text>
+            <Text style={styles.emptySubtext}>
+              {stats.isFiltered ? 'Filtreleri değiştirin veya yeni görev ekleyin' : '+ butonuna tıklayarak ilk görevinizi ekleyin'}
+            </Text>
           </View>
         }
       />
@@ -150,6 +211,26 @@ const TasksScreen = () => {
         onClose={() => setModalVisible(false)}
         task={selectedTask}
         mode={modalMode}
+      />
+      
+      <ContextFiltersModal
+        visible={filtersModalVisible}
+        onClose={() => setFiltersModalVisible(false)}
+      />
+      
+      <TemplateSelectionModal
+        visible={templateModalVisible}
+        onClose={() => setTemplateModalVisible(false)}
+      />
+      
+      <AutoSplitModal
+        visible={autoSplitModalVisible}
+        onClose={() => setAutoSplitModalVisible(false)}
+      />
+      
+      <ComplexityScoreModal
+        visible={complexityModalVisible}
+        onClose={() => setComplexityModalVisible(false)}
       />
     </SafeAreaView>
   );
@@ -168,6 +249,88 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#E2E8F0',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filterButton: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  filterButtonText: {
+    fontSize: 14,
+    color: '#3B82F6',
+    fontWeight: '600',
+  },
+  templateButton: {
+    backgroundColor: '#F0F9FF',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#3B82F6',
+  },
+  templateButtonText: {
+    fontSize: 14,
+    color: '#3B82F6',
+    fontWeight: '600',
+  },
+  splitButton: {
+    backgroundColor: '#FEF3F2',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#F59E0B',
+  },
+  splitButtonText: {
+    fontSize: 14,
+    color: '#F59E0B',
+    fontWeight: '600',
+  },
+  complexityButton: {
+    backgroundColor: '#F0F9FF',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#8B5CF6',
+  },
+  complexityButtonText: {
+    fontSize: 14,
+    color: '#8B5CF6',
+    fontWeight: '600',
+  },
+  filterStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#F0F9FF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+  },
+  filterStatsText: {
+    fontSize: 14,
+    color: '#3B82F6',
+    fontWeight: '600',
+  },
+  clearFiltersButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#3B82F6',
+    borderRadius: 6,
+  },
+  clearFiltersText: {
+    fontSize: 12,
+    color: 'white',
+    fontWeight: '600',
   },
   title: {
     fontSize: 24,

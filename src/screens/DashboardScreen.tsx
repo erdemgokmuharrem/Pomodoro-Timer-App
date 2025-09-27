@@ -10,6 +10,8 @@ import TaskModal from '../components/molecules/TaskModal';
 import LevelProgress from '../components/molecules/LevelProgress';
 import BadgeShowcase from '../components/molecules/BadgeShowcase';
 import OfflineStatus from '../components/molecules/OfflineStatus';
+import { EnergyRecommendationsModal } from '../components/molecules/EnergyRecommendationsModal';
+import { WeeklyReviewModal } from '../components/molecules/WeeklyReviewModal';
 
 type DashboardScreenNavigationProp = StackNavigationProp<RootStackParamList, 'MainTabs'>;
 
@@ -18,6 +20,8 @@ const DashboardScreen = () => {
   const { tasks, dailyGoal, sessions, settings } = usePomodoroStore();
   const { formattedTime, isRunning, isBreak } = usePomodoroTimer();
   const [modalVisible, setModalVisible] = useState(false);
+  const [energyModalVisible, setEnergyModalVisible] = useState(false);
+  const [weeklyReviewModalVisible, setWeeklyReviewModalVisible] = useState(false);
 
   const handleStartPomodoro = () => {
     navigation.navigate('Timer');
@@ -85,6 +89,38 @@ const DashboardScreen = () => {
           </View>
         </View>
 
+        {/* Energy Recommendations */}
+        <View style={styles.energyCard}>
+          <Text style={styles.cardTitle}>Enerji Önerileri</Text>
+          <Text style={styles.energySubtitle}>
+            Enerji seviyenize göre özel öneriler
+          </Text>
+          <TouchableOpacity 
+            style={styles.energyButton}
+            onPress={() => setEnergyModalVisible(true)}
+          >
+            <Text style={styles.energyButtonText}>
+              🔋 Enerji Analizi & Öneriler
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Weekly Review */}
+        <View style={styles.weeklyReviewCard}>
+          <Text style={styles.cardTitle}>Haftalık Değerlendirme</Text>
+          <Text style={styles.weeklyReviewSubtitle}>
+            AI destekli haftalık analiz ve öneriler
+          </Text>
+          <TouchableOpacity 
+            style={styles.weeklyReviewButton}
+            onPress={() => setWeeklyReviewModalVisible(true)}
+          >
+            <Text style={styles.weeklyReviewButtonText}>
+              📊 Haftalık Analiz & Değerlendirme
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Today's Tasks */}
         <View style={styles.tasksCard}>
           <View style={styles.tasksHeader}>
@@ -116,6 +152,16 @@ const DashboardScreen = () => {
         onClose={() => setModalVisible(false)}
         task={null}
         mode="create"
+      />
+      
+      <EnergyRecommendationsModal
+        visible={energyModalVisible}
+        onClose={() => setEnergyModalVisible(false)}
+      />
+      
+      <WeeklyReviewModal
+        visible={weeklyReviewModalVisible}
+        onClose={() => setWeeklyReviewModalVisible(false)}
       />
     </SafeAreaView>
   );
@@ -274,6 +320,66 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
+  },
+  energyCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  energySubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  energyButton: {
+    backgroundColor: '#F0F9FF',
+    borderWidth: 1,
+    borderColor: '#3B82F6',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  energyButtonText: {
+    fontSize: 16,
+    color: '#3B82F6',
+    fontWeight: '600',
+  },
+  weeklyReviewCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  weeklyReviewSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  weeklyReviewButton: {
+    backgroundColor: '#F0F9FF',
+    borderWidth: 1,
+    borderColor: '#8B5CF6',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  weeklyReviewButtonText: {
+    fontSize: 16,
+    color: '#8B5CF6',
+    fontWeight: '600',
   },
 });
 
