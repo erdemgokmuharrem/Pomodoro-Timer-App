@@ -189,8 +189,8 @@ export interface GardenSettings {
 }
 
 export const useVirtualGarden = () => {
-  const { } = usePomodoroStore();
-  const { } = useGamificationStore();
+  // const { } = usePomodoroStore();
+  // const { } = useGamificationStore();
 
   const [plants, setPlants] = useState<Plant[]>([]);
   const [gardens, setGardens] = useState<Garden[]>([]);
@@ -515,12 +515,12 @@ export const useVirtualGarden = () => {
   };
 
   // Update plant growth
-  const updatePlantGrowth = (plantId: string): boolean => {
+  // const updatePlantGrowth = (plantId: string): boolean => {
     const plant = plants.find(p => p.id === plantId);
     if (!plant) return false;
 
     const now = new Date();
-    const timeSinceLastUpdate = plant.lastWatered
+    // const timeSinceLastUpdate = plant.lastWatered
       ? (now.getTime() - plant.lastWatered.getTime()) / (1000 * 60 * 60)
       : 24;
 
@@ -634,7 +634,9 @@ export const useVirtualGarden = () => {
       if (!decoration || decoration.cost > gardens[0]?.coins || 0) return false;
 
       setDecorations(prev =>
-        (prev || []).map(d => (d.id === decorationId ? { ...d, purchased: true } : d))
+        (prev || []).map(d =>
+          d.id === decorationId ? { ...d, purchased: true } : d
+        )
       );
 
       setGardens(prev =>
@@ -671,14 +673,22 @@ export const useVirtualGarden = () => {
   // Update garden weather
   const updateGardenWeather = (weather: Garden['weather']): void => {
     setGardens(prev =>
-      (prev || []).map(garden => ({ ...garden, weather, updatedAt: new Date() }))
+      (prev || []).map(garden => ({
+        ...garden,
+        weather,
+        updatedAt: new Date(),
+      }))
     );
   };
 
   // Update garden time
   const updateGardenTime = (timeOfDay: Garden['timeOfDay']): void => {
     setGardens(prev =>
-      (prev || []).map(garden => ({ ...garden, timeOfDay, updatedAt: new Date() }))
+      (prev || []).map(garden => ({
+        ...garden,
+        timeOfDay,
+        updatedAt: new Date(),
+      }))
     );
   };
 
@@ -691,7 +701,9 @@ export const useVirtualGarden = () => {
   const getGardenInsights = () => {
     const totalPlants = plants.length;
     const healthyPlants = (plants || []).filter(p => p.health > 80).length;
-    const bloomingPlants = (plants || []).filter(p => p.stage === 'blooming').length;
+    const bloomingPlants = (plants || []).filter(
+      p => p.stage === 'blooming'
+    ).length;
     const totalDecorations = (decorations || []).filter(d => d.placed).length;
     const totalEvents = events.length;
     const completedEvents = (events || []).filter(e => e.completed).length;

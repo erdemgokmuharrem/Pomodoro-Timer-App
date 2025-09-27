@@ -55,7 +55,7 @@ export interface SchedulingSettings {
 
 export const useTaskScheduling = () => {
   const { tasks, completedPomodoros } = usePomodoroStore();
-  const { } = useGamificationStore();
+  // const { } = useGamificationStore();
 
   const [recommendations, setRecommendations] = useState<
     SchedulingRecommendation[]
@@ -81,7 +81,6 @@ export const useTaskScheduling = () => {
 
     // Default energy patterns based on circadian rhythms
     for (let hour = 0; hour < 24; hour++) {
-      // hour variable is used in the loop
       if (hour >= 9 && hour <= 11)
         energyPatterns[hour] = 0.9; // Morning peak
       else if (hour >= 14 && hour <= 16)
@@ -229,7 +228,7 @@ export const useTaskScheduling = () => {
 
     // Score and sort slots
     const scoredSlots = suitableSlots.map(slot => {
-      const score = slot.energyLevel * 0.4 + slot.focusScore * 0.3;
+      let score = slot.energyLevel * 0.4 + slot.focusScore * 0.3;
 
       // Bonus for high energy slots with complex tasks
       if (complexity > 0.7 && slot.energyLevel > 0.8) score += 0.2;
@@ -384,7 +383,7 @@ export const useTaskScheduling = () => {
       setRecommendations(newRecommendations);
 
       return newRecommendations;
-    } catch (err) {
+    } catch {
       setError('Failed to get scheduling recommendations');
       // console.error('Get scheduling recommendations error:', err);
       return [];
@@ -403,7 +402,7 @@ export const useTaskScheduling = () => {
 
       const recommendation = generateSchedulingRecommendation(task);
       return recommendation;
-    } catch (err) {
+    } catch {
       // console.error('Get task scheduling recommendation error:', err);
       return null;
     }
@@ -476,9 +475,7 @@ export const useTaskScheduling = () => {
       if (!settings.learningEnabled) return;
 
       // In a real app, this would update the AI model with feedback
-      // console.log(
-        `Learning from scheduling: Task ${taskId}, Time ${scheduledTime}, Completed ${completed}, Duration ${actualDuration}`
-      );
+      // console.log(`Learning from scheduling: Task ${taskId}, Time ${scheduledTime}, Completed ${completed}, Duration ${actualDuration}`);
     } catch (err) {
       // console.error('Learn from scheduling error:', err);
     }
@@ -486,11 +483,11 @@ export const useTaskScheduling = () => {
 
   // Get scheduling insights
   const getSchedulingInsights = () => {
-    if (recommendations.length === 0) return null;
+    if ((recommendations || []).length === 0) return null;
 
     const avgConfidence =
-      recommendations.reduce((sum, r) => sum + r.confidence, 0) /
-      recommendations.length;
+      (recommendations || []).reduce((sum, r) => sum + r.confidence, 0) /
+      (recommendations || []).length;
     const highConfidenceCount = (recommendations || []).filter(
       r => r.confidence > 0.8
     ).length;
@@ -502,19 +499,19 @@ export const useTaskScheduling = () => {
 
     return {
       averageConfidence: avgConfidence,
-      totalRecommendations: recommendations.length,
+      totalRecommendations: (recommendations || []).length,
       highConfidenceCount,
       morningSlotsCount: morningSlots,
-      autoScheduleEnabled: settings.autoSchedule,
+      autoScheduleEnabled: (settings || {}).autoSchedule,
     };
   };
 
   // Auto-update recommendations
   useEffect(() => {
-    if (settings.enableAI && (tasks || []).length > 0) {
+    if ((settings || {}).enableAI && (tasks || []).length > 0) {
       getSchedulingRecommendations();
     }
-  }, [tasks, settings.enableAI]);
+  }, [tasks, settings]);
 
   return {
     recommendations,
