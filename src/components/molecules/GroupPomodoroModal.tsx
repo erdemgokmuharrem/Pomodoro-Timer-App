@@ -11,7 +11,11 @@ import {
   ActivityIndicator,
   FlatList,
 } from 'react-native';
-import { useGroupPomodoroStore, GroupPomodoroSession, GroupMember } from '../../store/useGroupPomodoroStore';
+import {
+  useGroupPomodoroStore,
+  GroupPomodoroSession,
+  GroupMember,
+} from '../../store/useGroupPomodoroStore';
 
 interface GroupPomodoroModalProps {
   visible: boolean;
@@ -38,12 +42,15 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
     loadSessions,
   } = useGroupPomodoroStore();
 
-  const [activeTab, setActiveTab] = useState<'join' | 'create' | 'active'>('join');
+  const [activeTab, setActiveTab] = useState<'join' | 'create' | 'active'>(
+    'join'
+  );
   const [newSessionName, setNewSessionName] = useState('');
   const [newSessionDescription, setNewSessionDescription] = useState('');
   const [newSessionDuration, setNewSessionDuration] = useState(25);
   const [newMessage, setNewMessage] = useState('');
-  const [selectedSession, setSelectedSession] = useState<GroupPomodoroSession | null>(null);
+  const [selectedSession, setSelectedSession] =
+    useState<GroupPomodoroSession | null>(null);
 
   useEffect(() => {
     if (visible) {
@@ -158,10 +165,13 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
         onPress={() => handleJoinSession(item)}
         disabled={item.members.length >= item.maxMembers}
       >
-        <Text style={[
-          styles.joinButtonText,
-          item.members.length >= item.maxMembers && styles.joinButtonTextDisabled
-        ]}>
+        <Text
+          style={[
+            styles.joinButtonText,
+            item.members.length >= item.maxMembers &&
+              styles.joinButtonTextDisabled,
+          ]}
+        >
           {item.members.length >= item.maxMembers ? 'Dolu' : 'Katıl'}
         </Text>
       </TouchableOpacity>
@@ -178,30 +188,37 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
       <View style={styles.memberInfo}>
         <Text style={styles.memberName}>{item.name}</Text>
         <Text style={styles.memberStatus}>
-          {item.isOnline ? 'Çevrimiçi' : 'Çevrimdışı'} • {item.pomodoroCount} pomodoro
+          {item.isOnline ? 'Çevrimiçi' : 'Çevrimdışı'} • {item.pomodoroCount}{' '}
+          pomodoro
         </Text>
       </View>
     </View>
   );
 
   const renderMessageItem = ({ item }: { item: any }) => (
-    <View style={[
-      styles.messageItem,
-      item.userId === 'current-user-id' && styles.messageItemOwn
-    ]}>
+    <View
+      style={[
+        styles.messageItem,
+        item.userId === 'current-user-id' && styles.messageItemOwn,
+      ]}
+    >
       <Text style={styles.messageUserName}>{item.userName}</Text>
       <Text style={styles.messageText}>{item.message}</Text>
       <Text style={styles.messageTime}>
-        {new Date(item.timestamp).toLocaleTimeString('tr-TR', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
+        {new Date(item.timestamp).toLocaleTimeString('tr-TR', {
+          hour: '2-digit',
+          minute: '2-digit',
         })}
       </Text>
     </View>
   );
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Grup Pomodoroları</Text>
@@ -216,7 +233,12 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
             style={[styles.tab, activeTab === 'join' && styles.activeTab]}
             onPress={() => setActiveTab('join')}
           >
-            <Text style={[styles.tabText, activeTab === 'join' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'join' && styles.activeTabText,
+              ]}
+            >
               Katıl
             </Text>
           </TouchableOpacity>
@@ -224,7 +246,12 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
             style={[styles.tab, activeTab === 'create' && styles.activeTab]}
             onPress={() => setActiveTab('create')}
           >
-            <Text style={[styles.tabText, activeTab === 'create' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'create' && styles.activeTabText,
+              ]}
+            >
               Oluştur
             </Text>
           </TouchableOpacity>
@@ -232,7 +259,12 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
             style={[styles.tab, activeTab === 'active' && styles.activeTab]}
             onPress={() => setActiveTab('active')}
           >
-            <Text style={[styles.tabText, activeTab === 'active' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'active' && styles.activeTabText,
+              ]}
+            >
               Aktif
             </Text>
           </TouchableOpacity>
@@ -251,7 +283,7 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
               <FlatList
                 data={availableSessions}
                 renderItem={renderSessionItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -260,7 +292,7 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
           {activeTab === 'create' && (
             <View>
               <Text style={styles.sectionTitle}>Yeni Oturum Oluştur</Text>
-              
+
               <View style={styles.form}>
                 <TextInput
                   style={styles.input}
@@ -276,23 +308,33 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
                   multiline
                 />
                 <View style={styles.durationContainer}>
-                  <Text style={styles.durationLabel}>Süre: {newSessionDuration} dakika</Text>
+                  <Text style={styles.durationLabel}>
+                    Süre: {newSessionDuration} dakika
+                  </Text>
                   <View style={styles.durationButtons}>
                     <TouchableOpacity
                       style={styles.durationButton}
-                      onPress={() => setNewSessionDuration(Math.max(15, newSessionDuration - 5))}
+                      onPress={() =>
+                        setNewSessionDuration(
+                          Math.max(15, newSessionDuration - 5)
+                        )
+                      }
                     >
                       <Text style={styles.durationButtonText}>-</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.durationButton}
-                      onPress={() => setNewSessionDuration(Math.min(60, newSessionDuration + 5))}
+                      onPress={() =>
+                        setNewSessionDuration(
+                          Math.min(60, newSessionDuration + 5)
+                        )
+                      }
                     >
                       <Text style={styles.durationButtonText}>+</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-                
+
                 <TouchableOpacity
                   style={styles.createButton}
                   onPress={handleCreateSession}
@@ -310,29 +352,41 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
 
           {activeTab === 'active' && selectedSession && (
             <View>
-              <Text style={styles.sectionTitle}>Aktif Oturum: {selectedSession.name}</Text>
-              
+              <Text style={styles.sectionTitle}>
+                Aktif Oturum: {selectedSession.name}
+              </Text>
+
               {/* Session Controls */}
               <View style={styles.sessionControls}>
                 <TouchableOpacity
                   style={[
                     styles.controlButton,
-                    selectedSession.isActive ? styles.endButton : styles.startButton
+                    selectedSession.isActive
+                      ? styles.endButton
+                      : styles.startButton,
                   ]}
-                  onPress={selectedSession.isActive ? handleEndSession : handleStartSession}
+                  onPress={
+                    selectedSession.isActive
+                      ? handleEndSession
+                      : handleStartSession
+                  }
                 >
                   <Text style={styles.controlButtonText}>
-                    {selectedSession.isActive ? 'Oturumu Sonlandır' : 'Oturumu Başlat'}
+                    {selectedSession.isActive
+                      ? 'Oturumu Sonlandır'
+                      : 'Oturumu Başlat'}
                   </Text>
                 </TouchableOpacity>
               </View>
 
               {/* Members */}
-              <Text style={styles.subsectionTitle}>Üyeler ({selectedSession.members.length})</Text>
+              <Text style={styles.subsectionTitle}>
+                Üyeler ({selectedSession.members.length})
+              </Text>
               <FlatList
                 data={selectedSession.members}
                 renderItem={renderMemberItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.membersList}
               />
 
@@ -344,7 +398,7 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
                     <FlatList
                       data={selectedSession.chat.messages}
                       renderItem={renderMessageItem}
-                      keyExtractor={(item) => item.id}
+                      keyExtractor={item => item.id}
                       style={styles.messagesList}
                     />
                     <View style={styles.messageInputContainer}>
@@ -370,15 +424,21 @@ export const GroupPomodoroModal: React.FC<GroupPomodoroModalProps> = ({
               <Text style={styles.subsectionTitle}>İstatistikler</Text>
               <View style={styles.statsContainer}>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{selectedSession.statistics.totalPomodoros}</Text>
+                  <Text style={styles.statNumber}>
+                    {selectedSession.statistics.totalPomodoros}
+                  </Text>
                   <Text style={styles.statLabel}>Toplam Pomodoro</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{selectedSession.statistics.totalFocusTime}</Text>
+                  <Text style={styles.statNumber}>
+                    {selectedSession.statistics.totalFocusTime}
+                  </Text>
                   <Text style={styles.statLabel}>Odaklanma Süresi (dk)</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{selectedSession.statistics.completionRate.toFixed(1)}%</Text>
+                  <Text style={styles.statNumber}>
+                    {selectedSession.statistics.completionRate.toFixed(1)}%
+                  </Text>
                   <Text style={styles.statLabel}>Tamamlanma Oranı</Text>
                 </View>
               </View>

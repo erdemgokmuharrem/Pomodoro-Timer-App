@@ -172,7 +172,10 @@ class AppBlockingService {
   // Settings management
   async updateSettings(newSettings: Partial<BlockingSettings>): Promise<void> {
     this.settings = { ...this.settings, ...newSettings };
-    await AsyncStorage.setItem('appBlockingSettings', JSON.stringify(this.settings));
+    await AsyncStorage.setItem(
+      'appBlockingSettings',
+      JSON.stringify(this.settings)
+    );
   }
 
   getSettings(): BlockingSettings {
@@ -194,7 +197,10 @@ class AppBlockingService {
     await this.saveBlockedApps();
   }
 
-  async updateBlockedApp(appId: string, updates: Partial<BlockedApp>): Promise<void> {
+  async updateBlockedApp(
+    appId: string,
+    updates: Partial<BlockedApp>
+  ): Promise<void> {
     const index = this.blockedApps.findIndex(app => app.id === appId);
     if (index !== -1) {
       this.blockedApps[index] = { ...this.blockedApps[index], ...updates };
@@ -221,14 +227,24 @@ class AppBlockingService {
   }
 
   async removeBlockedWebsite(websiteId: string): Promise<void> {
-    this.blockedWebsites = this.blockedWebsites.filter(website => website.id !== websiteId);
+    this.blockedWebsites = this.blockedWebsites.filter(
+      website => website.id !== websiteId
+    );
     await this.saveBlockedWebsites();
   }
 
-  async updateBlockedWebsite(websiteId: string, updates: Partial<BlockedWebsite>): Promise<void> {
-    const index = this.blockedWebsites.findIndex(website => website.id === websiteId);
+  async updateBlockedWebsite(
+    websiteId: string,
+    updates: Partial<BlockedWebsite>
+  ): Promise<void> {
+    const index = this.blockedWebsites.findIndex(
+      website => website.id === websiteId
+    );
     if (index !== -1) {
-      this.blockedWebsites[index] = { ...this.blockedWebsites[index], ...updates };
+      this.blockedWebsites[index] = {
+        ...this.blockedWebsites[index],
+        ...updates,
+      };
       await this.saveBlockedWebsites();
     }
   }
@@ -238,7 +254,10 @@ class AppBlockingService {
   }
 
   private async saveBlockedWebsites(): Promise<void> {
-    await AsyncStorage.setItem('blockedWebsites', JSON.stringify(this.blockedWebsites));
+    await AsyncStorage.setItem(
+      'blockedWebsites',
+      JSON.stringify(this.blockedWebsites)
+    );
   }
 
   // Blocking logic
@@ -255,8 +274,10 @@ class AppBlockingService {
         return false;
       }
 
-      if (currentTime < this.settings.schedule.startTime || 
-          currentTime > this.settings.schedule.endTime) {
+      if (
+        currentTime < this.settings.schedule.startTime ||
+        currentTime > this.settings.schedule.endTime
+      ) {
         return false;
       }
     }
@@ -264,15 +285,19 @@ class AppBlockingService {
     return true;
   }
 
-  shouldBlockApp(packageName: string, isPomodoroActive: boolean, isBreakActive: boolean): boolean {
+  shouldBlockApp(
+    packageName: string,
+    isPomodoroActive: boolean,
+    isBreakActive: boolean
+  ): boolean {
     if (!this.isBlockingActive()) return false;
 
     // Check if app is in allowlist
     if (this.settings.allowlist.includes(packageName)) return false;
 
     // Check if app is blocked
-    const blockedApp = this.blockedApps.find(app => 
-      app.packageName === packageName && app.isBlocked
+    const blockedApp = this.blockedApps.find(
+      app => app.packageName === packageName && app.isBlocked
     );
 
     if (!blockedApp) return false;
@@ -284,12 +309,16 @@ class AppBlockingService {
     return false;
   }
 
-  shouldBlockWebsite(url: string, isPomodoroActive: boolean, isBreakActive: boolean): boolean {
+  shouldBlockWebsite(
+    url: string,
+    isPomodoroActive: boolean,
+    isBreakActive: boolean
+  ): boolean {
     if (!this.isBlockingActive()) return false;
 
     // Check if website is blocked
-    const blockedWebsite = this.blockedWebsites.find(website => 
-      url.includes(website.url) && website.isBlocked
+    const blockedWebsite = this.blockedWebsites.find(
+      website => url.includes(website.url) && website.isBlocked
     );
 
     if (!blockedWebsite) return false;
@@ -389,7 +418,9 @@ class AppBlockingService {
       stats.blocksToday += 1;
 
       if (appName) {
-        const existingApp = stats.mostBlockedApps.find((app: any) => app.name === appName);
+        const existingApp = stats.mostBlockedApps.find(
+          (app: any) => app.name === appName
+        );
         if (existingApp) {
           existingApp.count += 1;
         } else {
@@ -398,7 +429,9 @@ class AppBlockingService {
       }
 
       if (websiteName) {
-        const existingWebsite = stats.mostBlockedWebsites.find((site: any) => site.name === websiteName);
+        const existingWebsite = stats.mostBlockedWebsites.find(
+          (site: any) => site.name === websiteName
+        );
         if (existingWebsite) {
           existingWebsite.count += 1;
         } else {

@@ -48,11 +48,15 @@ class ExportService {
         ...data.userStats,
         badges: data.userStats.badges.map(badge => ({
           ...badge,
-          unlockedAt: badge.unlockedAt ? this.formatDate(badge.unlockedAt) : null,
+          unlockedAt: badge.unlockedAt
+            ? this.formatDate(badge.unlockedAt)
+            : null,
         })),
         achievements: data.userStats.achievements.map(achievement => ({
           ...achievement,
-          unlockedAt: achievement.unlockedAt ? this.formatDate(achievement.unlockedAt) : null,
+          unlockedAt: achievement.unlockedAt
+            ? this.formatDate(achievement.unlockedAt)
+            : null,
         })),
       },
     };
@@ -62,7 +66,7 @@ class ExportService {
 
   exportToCSV(data: ExportData): string {
     const csvLines: string[] = [];
-    
+
     // CSV Header
     csvLines.push('Pomodoro+ Export Data');
     csvLines.push(`Export Date: ${this.formatDateForDisplay(new Date())}`);
@@ -70,8 +74,10 @@ class ExportService {
 
     // Sessions CSV
     csvLines.push('=== POMODORO SESSIONS ===');
-    csvLines.push('ID,Task ID,Start Time,End Time,Duration (min),Completed,Break,Interruptions');
-    
+    csvLines.push(
+      'ID,Task ID,Start Time,End Time,Duration (min),Completed,Break,Interruptions'
+    );
+
     data.sessions.forEach(session => {
       const line = [
         session.id,
@@ -90,8 +96,10 @@ class ExportService {
 
     // Tasks CSV
     csvLines.push('=== TASKS ===');
-    csvLines.push('ID,Title,Description,Estimated Pomodoros,Completed Pomodoros,Priority,Tags,Completed,Created At,Updated At');
-    
+    csvLines.push(
+      'ID,Title,Description,Estimated Pomodoros,Completed Pomodoros,Priority,Tags,Completed,Created At,Updated At'
+    );
+
     data.tasks.forEach(task => {
       const line = [
         task.id,
@@ -127,7 +135,7 @@ class ExportService {
     // Badges CSV
     csvLines.push('=== BADGES ===');
     csvLines.push('ID,Name,Description,Category,Rarity,Unlocked At');
-    
+
     data.userStats.badges.forEach(badge => {
       const line = [
         badge.id,
@@ -146,7 +154,7 @@ class ExportService {
   exportToExcel(data: ExportData): string {
     // For Excel format, we'll create a more structured CSV that Excel can open
     const excelLines: string[] = [];
-    
+
     // Excel Header with metadata
     excelLines.push('Pomodoro+ Export Report');
     excelLines.push(`Generated: ${this.formatDateForDisplay(new Date())}`);
@@ -158,13 +166,25 @@ class ExportService {
 
     // Summary Statistics
     excelLines.push('=== SUMMARY STATISTICS ===');
-    const completedSessions = data.sessions.filter(s => s.isCompleted);
-    const totalFocusTime = completedSessions.reduce((sum, s) => sum + s.duration, 0);
-    const averageSessionLength = completedSessions.length > 0 ? totalFocusTime / completedSessions.length : 0;
-    
-    excelLines.push(`Total Focus Time: ${totalFocusTime} minutes (${(totalFocusTime / 60).toFixed(1)} hours)`);
-    excelLines.push(`Average Session Length: ${averageSessionLength.toFixed(1)} minutes`);
-    excelLines.push(`Completion Rate: ${((completedSessions.length / data.sessions.length) * 100).toFixed(1)}%`);
+    const completedSessions = (data.sessions || []).filter(s => s.isCompleted);
+    const totalFocusTime = completedSessions.reduce(
+      (sum, s) => sum + s.duration,
+      0
+    );
+    const averageSessionLength =
+      completedSessions.length > 0
+        ? totalFocusTime / completedSessions.length
+        : 0;
+
+    excelLines.push(
+      `Total Focus Time: ${totalFocusTime} minutes (${(totalFocusTime / 60).toFixed(1)} hours)`
+    );
+    excelLines.push(
+      `Average Session Length: ${averageSessionLength.toFixed(1)} minutes`
+    );
+    excelLines.push(
+      `Completion Rate: ${((completedSessions.length / data.sessions.length) * 100).toFixed(1)}%`
+    );
     excelLines.push(`Current Streak: ${data.userStats.currentStreak} days`);
     excelLines.push(`Longest Streak: ${data.userStats.longestStreak} days`);
     excelLines.push('');
@@ -172,12 +192,20 @@ class ExportService {
     // Daily Statistics
     excelLines.push('=== DAILY STATISTICS ===');
     excelLines.push('Date,Sessions,Pomodoros,Focus Time (min),Tasks Completed');
-    
-    const dailyStats = new Map<string, { sessions: number; pomodoros: number; focusTime: number; tasks: number }>();
-    
+
+    const dailyStats = new Map<
+      string,
+      { sessions: number; pomodoros: number; focusTime: number; tasks: number }
+    >();
+
     data.sessions.forEach(session => {
       const date = session.startTime.toDateString();
-      const stats = dailyStats.get(date) || { sessions: 0, pomodoros: 0, focusTime: 0, tasks: 0 };
+      const stats = dailyStats.get(date) || {
+        sessions: 0,
+        pomodoros: 0,
+        focusTime: 0,
+        tasks: 0,
+      };
       stats.sessions++;
       if (session.isCompleted && !session.isBreak) {
         stats.pomodoros++;
@@ -189,7 +217,12 @@ class ExportService {
     data.tasks.forEach(task => {
       if (task.isCompleted) {
         const date = task.updatedAt.toDateString();
-        const stats = dailyStats.get(date) || { sessions: 0, pomodoros: 0, focusTime: 0, tasks: 0 };
+        const stats = dailyStats.get(date) || {
+          sessions: 0,
+          pomodoros: 0,
+          focusTime: 0,
+          tasks: 0,
+        };
         stats.tasks++;
         dailyStats.set(date, stats);
       }
@@ -222,17 +255,17 @@ class ExportService {
     // For now, we'll return the content and let the UI handle it
     console.log(`Saving file: ${fileName}`);
     console.log('Content preview:', content.substring(0, 200) + '...');
-    
+
     // Return a mock file path
     return `file:///storage/emulated/0/Download/${fileName}`;
   }
 
   async exportData(
-    data: ExportData, 
+    data: ExportData,
     format: ExportFormat
   ): Promise<{ content: string; fileName: string; filePath: string }> {
     let content: string;
-    
+
     switch (format) {
       case 'json':
         content = this.exportToJSON(data);

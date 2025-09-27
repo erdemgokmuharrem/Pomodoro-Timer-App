@@ -53,20 +53,20 @@ interface PomodoroState {
   isRunning: boolean;
   timeLeft: number; // in seconds
   isBreak: boolean;
-  
+
   // Tasks
   tasks: Task[];
   currentTask: Task | null;
-  
+
   // Settings
   settings: PomodoroSettings;
-  
+
   // Statistics
   sessions: PomodoroSession[];
   dailyGoal: number; // pomodoros per day
   currentStreak: number;
   longestStreak: number;
-  
+
   // Actions
   startPomodoro: (taskId?: string) => void;
   pausePomodoro: () => void;
@@ -74,20 +74,24 @@ interface PomodoroState {
   completePomodoro: () => void;
   startBreak: (isLongBreak?: boolean) => void;
   completeBreak: () => void;
-  
+
   // Interruption actions
-  addInterruption: (sessionId: string, reason: Interruption['reason'], description?: string) => void;
+  addInterruption: (
+    sessionId: string,
+    reason: Interruption['reason'],
+    description?: string
+  ) => void;
   removeInterruption: (interruptionId: string) => void;
-  
+
   // Task actions
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   deleteTask: (id: string) => void;
   setCurrentTask: (task: Task | null) => void;
-  
+
   // Settings actions
   updateSettings: (settings: Partial<PomodoroSettings>) => void;
-  
+
   // Timer actions
   tick: () => void;
   resetTimer: () => void;
@@ -124,7 +128,7 @@ export const usePomodoroStore = create<PomodoroState>()(
       startPomodoro: (taskId?: string) => {
         const state = get();
         const task = taskId ? state.tasks.find(t => t.id === taskId) : null;
-        
+
         const session: PomodoroSession = {
           id: Date.now().toString(),
           taskId,
@@ -174,9 +178,11 @@ export const usePomodoroStore = create<PomodoroState>()(
             completedPomodoros: state.currentTask.completedPomodoros + 1,
             updatedAt: new Date(),
           };
-          
+
           set({
-            tasks: state.tasks.map(t => t.id === updatedTask.id ? updatedTask : t),
+            tasks: state.tasks.map(t =>
+              t.id === updatedTask.id ? updatedTask : t
+            ),
             currentTask: updatedTask,
           });
         }
@@ -190,8 +196,8 @@ export const usePomodoroStore = create<PomodoroState>()(
 
       startBreak: (isLongBreak = false) => {
         const state = get();
-        const breakDuration = isLongBreak 
-          ? state.settings.longBreakDuration 
+        const breakDuration = isLongBreak
+          ? state.settings.longBreakDuration
           : state.settings.shortBreakDuration;
 
         set({
@@ -209,7 +215,7 @@ export const usePomodoroStore = create<PomodoroState>()(
       },
 
       // Task actions
-      addTask: (taskData) => {
+      addTask: taskData => {
         const newTask: Task = {
           ...taskData,
           id: Date.now().toString(),
@@ -233,9 +239,7 @@ export const usePomodoroStore = create<PomodoroState>()(
         const updatedTask = { ...updates, updatedAt: new Date() };
         set({
           tasks: get().tasks.map(task =>
-            task.id === id
-              ? { ...task, ...updatedTask }
-              : task
+            task.id === id ? { ...task, ...updatedTask } : task
           ),
         });
 
@@ -247,7 +251,7 @@ export const usePomodoroStore = create<PomodoroState>()(
         });
       },
 
-      deleteTask: (id) => {
+      deleteTask: id => {
         set({
           tasks: get().tasks.filter(task => task.id !== id),
         });
@@ -260,12 +264,12 @@ export const usePomodoroStore = create<PomodoroState>()(
         });
       },
 
-      setCurrentTask: (task) => {
+      setCurrentTask: task => {
         set({ currentTask: task });
       },
 
       // Settings actions
-      updateSettings: (newSettings) => {
+      updateSettings: newSettings => {
         set({
           settings: { ...get().settings, ...newSettings },
         });
@@ -277,7 +281,7 @@ export const usePomodoroStore = create<PomodoroState>()(
         if (!state.isRunning || state.timeLeft <= 0) return;
 
         const newTimeLeft = state.timeLeft - 1;
-        
+
         if (newTimeLeft <= 0) {
           // Timer finished
           if (state.isBreak) {
@@ -292,15 +296,20 @@ export const usePomodoroStore = create<PomodoroState>()(
 
       resetTimer: () => {
         const state = get();
-        const duration = state.isBreak 
-          ? (state.settings.longBreakDuration || state.settings.shortBreakDuration)
+        const duration = state.isBreak
+          ? state.settings.longBreakDuration ||
+            state.settings.shortBreakDuration
           : state.settings.pomodoroDuration;
-        
+
         set({ timeLeft: duration * 60 });
       },
 
       // Interruption actions
-      addInterruption: (sessionId: string, reason: Interruption['reason'], description?: string) => {
+      addInterruption: (
+        sessionId: string,
+        reason: Interruption['reason'],
+        description?: string
+      ) => {
         const state = get();
         const interruption: Interruption = {
           id: Date.now().toString(),
@@ -316,7 +325,10 @@ export const usePomodoroStore = create<PomodoroState>()(
           const updatedSession = {
             ...state.currentSession,
             interruptions: state.currentSession.interruptions + 1,
-            interruptionList: [...state.currentSession.interruptionList, interruption],
+            interruptionList: [
+              ...state.currentSession.interruptionList,
+              interruption,
+            ],
           };
           set({ currentSession: updatedSession });
         }
@@ -337,12 +349,13 @@ export const usePomodoroStore = create<PomodoroState>()(
 
       removeInterruption: (interruptionId: string) => {
         const state = get();
-        
+
         // Update current session if it has this interruption
         if (state.currentSession) {
-          const updatedInterruptionList = state.currentSession.interruptionList.filter(
-            i => i.id !== interruptionId
-          );
+          const updatedInterruptionList =
+            state.currentSession.interruptionList.filter(
+              i => i.id !== interruptionId
+            );
           const updatedSession = {
             ...state.currentSession,
             interruptions: updatedInterruptionList.length,
@@ -368,7 +381,7 @@ export const usePomodoroStore = create<PomodoroState>()(
     }),
     {
       name: 'pomodoro-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         tasks: state.tasks,
         settings: state.settings,
         sessions: state.sessions,

@@ -13,7 +13,10 @@ import SoundSelectionModal from '../components/molecules/SoundSelectionModal';
 import { AutoRescheduleModal } from '../components/molecules/AutoRescheduleModal';
 import { BreakGuideModal } from '../components/molecules/BreakGuideModal';
 
-type TimerScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Timer'>;
+type TimerScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Timer'
+>;
 
 const TimerScreen = () => {
   const navigation = useNavigation<TimerScreenNavigationProp>();
@@ -30,19 +33,19 @@ const TimerScreen = () => {
     stop,
     startBreak,
   } = usePomodoroTimer();
-  
+
   const { currentTask, settings, currentSession } = usePomodoroStore();
   const { settings: soundSettings, toggleBackgroundSound } = useSoundStore();
-  const { 
-    settings: autoRescheduleSettings, 
-    energyLevel, 
+  const {
+    settings: autoRescheduleSettings,
+    energyLevel,
     consecutivePomodoros,
     getEnergyRecommendations,
     getSmartTaskSuggestions,
     handlePomodoroComplete,
-    handleBreakComplete
+    handleBreakComplete,
   } = useAutoReschedule();
-  
+
   // Null check for sound settings
   const safeSoundSettings = soundSettings || {
     backgroundSound: null,
@@ -50,9 +53,11 @@ const TimerScreen = () => {
     soundEffectsEnabled: true,
     backgroundSoundEnabled: false,
   };
-  const [interruptionModalVisible, setInterruptionModalVisible] = useState(false);
+  const [interruptionModalVisible, setInterruptionModalVisible] =
+    useState(false);
   const [soundModalVisible, setSoundModalVisible] = useState(false);
-  const [autoRescheduleModalVisible, setAutoRescheduleModalVisible] = useState(false);
+  const [autoRescheduleModalVisible, setAutoRescheduleModalVisible] =
+    useState(false);
   const [breakGuideModalVisible, setBreakGuideModalVisible] = useState(false);
 
   // Handle timer completion with alerts
@@ -64,7 +69,7 @@ const TimerScreen = () => {
           'Mola süreniz tamamlandı. Yeni pomodoro başlatmaya hazır mısınız?',
           [
             { text: 'Yeni Pomodoro', onPress: () => start() },
-            { text: 'Ana Sayfa', onPress: () => navigation.goBack() }
+            { text: 'Ana Sayfa', onPress: () => navigation.goBack() },
           ]
         );
       } else {
@@ -73,7 +78,7 @@ const TimerScreen = () => {
           `${settings.pomodoroDuration} dakikalık odaklanma süreniz bitti. ${settings.shortBreakDuration} dakikalık mola zamanı!`,
           [
             { text: 'Mola Başlat', onPress: () => startBreak() },
-            { text: 'İptal', onPress: () => navigation.goBack() }
+            { text: 'İptal', onPress: () => navigation.goBack() },
           ]
         );
       }
@@ -91,13 +96,17 @@ const TimerScreen = () => {
   const handleStop = () => {
     Alert.alert(
       'Pomodoro Durdur',
-      'Bu pomodoro\'yu durdurmak istediğinizden emin misiniz?',
+      "Bu pomodoro'yu durdurmak istediğinizden emin misiniz?",
       [
         { text: 'İptal', style: 'cancel' },
-        { text: 'Durdur', style: 'destructive', onPress: () => {
-          stop();
-          navigation.goBack();
-        }}
+        {
+          text: 'Durdur',
+          style: 'destructive',
+          onPress: () => {
+            stop();
+            navigation.goBack();
+          },
+        },
       ]
     );
   };
@@ -105,14 +114,17 @@ const TimerScreen = () => {
   const handleFinishEarly = () => {
     Alert.alert(
       'Erken Bitir',
-      'Bu pomodoro\'yu erken bitirmek istediğinizden emin misiniz?',
+      "Bu pomodoro'yu erken bitirmek istediğinizden emin misiniz?",
       [
         { text: 'İptal', style: 'cancel' },
-        { text: 'Bitir', onPress: () => {
-          pause();
-          // Force complete by setting time to 0
-          // This will trigger the completion logic
-        }}
+        {
+          text: 'Bitir',
+          onPress: () => {
+            pause();
+            // Force complete by setting time to 0
+            // This will trigger the completion logic
+          },
+        },
       ]
     );
   };
@@ -127,27 +139,27 @@ const TimerScreen = () => {
       <View style={styles.content}>
         {/* Status */}
         <Text style={styles.statusText}>{statusText}</Text>
-        
+
         {/* Task Name */}
         <Text style={styles.taskName}>
           {currentTask?.title || 'Görev seçilmedi'}
         </Text>
-        
+
         {/* Timer */}
         <View style={styles.timerContainer}>
           <Text style={styles.timerText}>{formattedTime}</Text>
         </View>
-        
+
         {/* Controls */}
         <View style={styles.controlsContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.controlButton, styles.secondaryButton]}
             onPress={handleStop}
           >
             <Text style={styles.secondaryButtonText}>Durdur</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={[styles.controlButton, styles.primaryButton]}
             onPress={handleStartPause}
           >
@@ -155,8 +167,8 @@ const TimerScreen = () => {
               {isRunning ? 'Duraklat' : 'Başlat'}
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={[styles.controlButton, styles.secondaryButton]}
             onPress={handleFinishEarly}
           >
@@ -168,7 +180,12 @@ const TimerScreen = () => {
         {autoRescheduleSettings.enabled && (
           <View style={styles.autoRescheduleInfo}>
             <Text style={styles.autoRescheduleText}>
-              🤖 Otomatik: {energyLevel.level === 'high' ? 'Yüksek enerji' : energyLevel.level === 'low' ? 'Düşük enerji' : 'Orta enerji'}
+              🤖 Otomatik:{' '}
+              {energyLevel.level === 'high'
+                ? 'Yüksek enerji'
+                : energyLevel.level === 'low'
+                  ? 'Düşük enerji'
+                  : 'Orta enerji'}
             </Text>
             <Text style={styles.autoRescheduleSubText}>
               Ardışık: {consecutivePomodoros} pomodoro
@@ -178,17 +195,21 @@ const TimerScreen = () => {
 
         {/* Sound and Interruption Buttons */}
         <View style={styles.bottomButtons}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.soundButton}
             onPress={() => setSoundModalVisible(true)}
           >
             <Text style={styles.soundButtonText}>
-              {safeSoundSettings.backgroundSound ? safeSoundSettings.backgroundSound.emoji : '🔇'} 
-              {safeSoundSettings.backgroundSound ? safeSoundSettings.backgroundSound.name : 'Ses Seç'}
+              {safeSoundSettings.backgroundSound
+                ? safeSoundSettings.backgroundSound.emoji
+                : '🔇'}
+              {safeSoundSettings.backgroundSound
+                ? safeSoundSettings.backgroundSound.name
+                : 'Ses Seç'}
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.autoRescheduleButton}
             onPress={() => setAutoRescheduleModalVisible(true)}
           >
@@ -196,37 +217,32 @@ const TimerScreen = () => {
               🤖 Otomatik Planlama
             </Text>
           </TouchableOpacity>
-          
+
           {isBreak && (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.breakGuideButton}
               onPress={() => setBreakGuideModalVisible(true)}
             >
-              <Text style={styles.breakGuideButtonText}>
-                🧘 Mola Rehberi
-              </Text>
+              <Text style={styles.breakGuideButtonText}>🧘 Mola Rehberi</Text>
             </TouchableOpacity>
           )}
-          
+
           {isRunning && !isBreak && (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.interruptionButton}
               onPress={handleInterruption}
             >
-              <Text style={styles.interruptionButtonText}>⚠️ Kesinti Kaydet</Text>
+              <Text style={styles.interruptionButtonText}>
+                ⚠️ Kesinti Kaydet
+              </Text>
             </TouchableOpacity>
           )}
         </View>
-        
+
         {/* Progress Indicator */}
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
-            <View 
-              style={[
-                styles.progressFill, 
-                { width: `${progress}%` }
-              ]} 
-            />
+            <View style={[styles.progressFill, { width: `${progress}%` }]} />
           </View>
         </View>
       </View>
@@ -236,21 +252,21 @@ const TimerScreen = () => {
         onClose={() => setInterruptionModalVisible(false)}
         sessionId={currentSession?.id || ''}
       />
-      
+
       <SoundSelectionModal
         visible={soundModalVisible}
         onClose={() => setSoundModalVisible(false)}
       />
-      
+
       <AutoRescheduleModal
         visible={autoRescheduleModalVisible}
         onClose={() => setAutoRescheduleModalVisible(false)}
       />
-      
+
       <BreakGuideModal
         visible={breakGuideModalVisible}
         onClose={() => setBreakGuideModalVisible(false)}
-        availableTime={isBreak ? (settings.shortBreakDuration || 5) : 5}
+        availableTime={isBreak ? settings.shortBreakDuration || 5 : 5}
         energyLevel={energyLevel.level}
         mood="neutral"
       />

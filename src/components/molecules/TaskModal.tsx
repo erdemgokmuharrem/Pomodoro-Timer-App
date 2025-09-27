@@ -22,17 +22,24 @@ interface TaskModalProps {
   mode: 'create' | 'edit';
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) => {
+const TaskModal: React.FC<TaskModalProps> = ({
+  visible,
+  onClose,
+  task,
+  mode,
+}) => {
   const { addTask, updateTask } = usePomodoroStore();
   const { tags: availableTags, recentTags, incrementUsage } = useTagStore();
   const { theme, isDark } = useTheme();
-  
+
   const [title, setTitle] = useState(task?.title || '');
   const [description, setDescription] = useState(task?.description || '');
   const [estimatedPomodoros, setEstimatedPomodoros] = useState(
     task?.estimatedPomodoros?.toString() || '1'
   );
-  const [priority, setPriority] = useState<Task['priority']>(task?.priority || 'medium');
+  const [priority, setPriority] = useState<Task['priority']>(
+    task?.priority || 'medium'
+  );
   const [selectedTags, setSelectedTags] = useState<string[]>(task?.tags || []);
   const [showTagInput, setShowTagInput] = useState(false);
   const [newTagName, setNewTagName] = useState('');
@@ -93,17 +100,27 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) =
 
   const getPriorityColor = (priority: Task['priority']) => {
     switch (priority) {
-      case 'high': return '#EF4444';
-      case 'medium': return '#F59E0B';
-      case 'low': return '#10B981';
-      default: return '#6B7280';
+      case 'high':
+        return '#EF4444';
+      case 'medium':
+        return '#F59E0B';
+      case 'low':
+        return '#10B981';
+      default:
+        return '#6B7280';
     }
   };
 
-  const PriorityButton = ({ value, label }: { value: Task['priority']; label: string }) => {
+  const PriorityButton = ({
+    value,
+    label,
+  }: {
+    value: Task['priority'];
+    label: string;
+  }) => {
     const isSelected = priority === value;
     const color = getPriorityColor(value);
-    
+
     return (
       <TouchableOpacity
         style={[
@@ -113,10 +130,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) =
         onPress={() => setPriority(value)}
       >
         <Text
-          style={[
-            styles.priorityButtonText,
-            isSelected && { color: 'white' },
-          ]}
+          style={[styles.priorityButtonText, isSelected && { color: 'white' }]}
         >
           {label}
         </Text>
@@ -125,7 +139,11 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) =
   };
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleClose}>
@@ -142,7 +160,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) =
         <ScrollView style={styles.content}>
           <Card style={styles.section}>
             <Text style={styles.sectionTitle}>Görev Bilgileri</Text>
-            
+
             <TextInput
               style={styles.input}
               placeholder="Görev başlığı"
@@ -150,7 +168,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) =
               onChangeText={setTitle}
               maxLength={100}
             />
-            
+
             <TextInput
               style={[styles.input, styles.textArea]}
               placeholder="Açıklama (opsiyonel)"
@@ -160,7 +178,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) =
               numberOfLines={3}
               maxLength={500}
             />
-            
+
             <TextInput
               style={styles.input}
               placeholder="Tahmini pomodoro sayısı"
@@ -181,7 +199,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) =
 
           <Card style={styles.section}>
             <Text style={styles.sectionTitle}>Etiketler</Text>
-            
+
             {/* Selected Tags */}
             {selectedTags.length > 0 && (
               <View style={styles.selectedTagsContainer}>
@@ -190,10 +208,17 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) =
                   return (
                     <TouchableOpacity
                       key={index}
-                      style={[styles.selectedTag, { backgroundColor: tag?.color || '#6B7280' }]}
-                      onPress={() => setSelectedTags(selectedTags.filter(t => t !== tagName))}
+                      style={[
+                        styles.selectedTag,
+                        { backgroundColor: tag?.color || '#6B7280' },
+                      ]}
+                      onPress={() =>
+                        setSelectedTags(selectedTags.filter(t => t !== tagName))
+                      }
                     >
-                      <Text style={styles.selectedTagEmoji}>{tag?.emoji || '🏷️'}</Text>
+                      <Text style={styles.selectedTagEmoji}>
+                        {tag?.emoji || '🏷️'}
+                      </Text>
                       <Text style={styles.selectedTagText}>{tagName}</Text>
                       <Text style={styles.removeTagText}>×</Text>
                     </TouchableOpacity>
@@ -204,19 +229,24 @@ const TaskModal: React.FC<TaskModalProps> = ({ visible, onClose, task, mode }) =
 
             {/* Available Tags */}
             <View style={styles.availableTagsContainer}>
-              <Text style={styles.availableTagsTitle}>Son Kullanılan Etiketler</Text>
+              <Text style={styles.availableTagsTitle}>
+                Son Kullanılan Etiketler
+              </Text>
               <View style={styles.tagsGrid}>
-                {recentTags.slice(0, 8).map((tag) => (
+                {recentTags.slice(0, 8).map(tag => (
                   <TouchableOpacity
                     key={tag.id}
                     style={[
                       styles.availableTag,
                       { backgroundColor: tag.color },
-                      selectedTags.includes(tag.name) && styles.availableTagSelected,
+                      selectedTags.includes(tag.name) &&
+                        styles.availableTagSelected,
                     ]}
                     onPress={() => {
                       if (selectedTags.includes(tag.name)) {
-                        setSelectedTags(selectedTags.filter(t => t !== tag.name));
+                        setSelectedTags(
+                          selectedTags.filter(t => t !== tag.name)
+                        );
                       } else {
                         setSelectedTags([...selectedTags, tag.name]);
                       }

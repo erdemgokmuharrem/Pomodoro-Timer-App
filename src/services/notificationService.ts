@@ -26,7 +26,8 @@ class NotificationService {
       return null;
     }
 
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
     if (existingStatus !== 'granted') {
@@ -50,9 +51,12 @@ class NotificationService {
     }
   }
 
-  async schedulePomodoroNotification(duration: number, taskName?: string): Promise<string> {
+  async schedulePomodoroNotification(
+    duration: number,
+    taskName?: string
+  ): Promise<string> {
     const title = 'Pomodoro Tamamlandı! 🎉';
-    const body = taskName 
+    const body = taskName
       ? `${taskName} için ${duration} dakikalık odaklanma süreniz bitti!`
       : `${duration} dakikalık odaklanma süreniz bitti!`;
 
@@ -69,9 +73,12 @@ class NotificationService {
     return notificationId;
   }
 
-  async scheduleBreakNotification(duration: number, isLongBreak: boolean = false): Promise<string> {
+  async scheduleBreakNotification(
+    duration: number,
+    isLongBreak: boolean = false
+  ): Promise<string> {
     const title = isLongBreak ? 'Uzun Mola Bitti!' : 'Mola Bitti!';
-    const body = isLongBreak 
+    const body = isLongBreak
       ? `${duration} dakikalık uzun mola süreniz tamamlandı. Yeni pomodoro başlatmaya hazır mısınız?`
       : `${duration} dakikalık mola süreniz tamamlandı. Yeni pomodoro başlatmaya hazır mısınız?`;
 
@@ -88,7 +95,11 @@ class NotificationService {
     return notificationId;
   }
 
-  async scheduleReminderNotification(title: string, body: string, delayMinutes: number): Promise<string> {
+  async scheduleReminderNotification(
+    title: string,
+    body: string,
+    delayMinutes: number
+  ): Promise<string> {
     const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
         title,
@@ -110,16 +121,22 @@ class NotificationService {
     await Notifications.cancelAllScheduledNotificationsAsync();
   }
 
-  async getScheduledNotifications(): Promise<Notifications.NotificationRequest[]> {
+  async getScheduledNotifications(): Promise<
+    Notifications.NotificationRequest[]
+  > {
     return await Notifications.getAllScheduledNotificationsAsync();
   }
 
   // Add notification listeners
-  addNotificationReceivedListener(listener: (notification: Notifications.Notification) => void) {
+  addNotificationReceivedListener(
+    listener: (notification: Notifications.Notification) => void
+  ) {
     return Notifications.addNotificationReceivedListener(listener);
   }
 
-  addNotificationResponseReceivedListener(listener: (response: Notifications.NotificationResponse) => void) {
+  addNotificationResponseReceivedListener(
+    listener: (response: Notifications.NotificationResponse) => void
+  ) {
     return Notifications.addNotificationResponseReceivedListener(listener);
   }
 

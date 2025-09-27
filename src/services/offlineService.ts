@@ -92,7 +92,7 @@ export class OfflineService {
     try {
       const keys = await AsyncStorage.getAllKeys();
       const cacheKeys = keys.filter(key => key.startsWith('cache_'));
-      
+
       let totalSize = 0;
       for (const key of cacheKeys) {
         const item = await AsyncStorage.getItem(key);
@@ -116,12 +116,12 @@ export class OfflineService {
     try {
       const keys = await AsyncStorage.getAllKeys();
       const relevantKeys = keys.filter(k => k.startsWith(`cache_${key}`));
-      
+
       if (relevantKeys.length <= maxSize) return;
 
       // Get all items with timestamps
       const items = await Promise.all(
-        relevantKeys.map(async (k) => {
+        relevantKeys.map(async k => {
           const item = await AsyncStorage.getItem(k);
           return {
             key: k,
@@ -133,7 +133,7 @@ export class OfflineService {
       // Sort by timestamp (oldest first) and remove excess items
       items.sort((a, b) => a.timestamp - b.timestamp);
       const toRemove = items.slice(0, items.length - maxSize);
-      
+
       await AsyncStorage.multiRemove(toRemove.map(item => item.key));
     } catch (error) {
       console.error(`Failed to enforce max size for ${key}:`, error);
@@ -160,10 +160,13 @@ export class OfflineService {
   // Simulate server synchronization
   private async simulateServerSync(action: SyncAction): Promise<void> {
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
+    await new Promise(resolve =>
+      setTimeout(resolve, 500 + Math.random() * 1000)
+    );
 
     // Simulate occasional failures
-    if (Math.random() < 0.05) { // 5% failure rate
+    if (Math.random() < 0.05) {
+      // 5% failure rate
       throw new Error('Network error');
     }
 

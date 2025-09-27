@@ -97,7 +97,7 @@ describe('ExportService', () => {
   describe('exportToCSV', () => {
     it('should export data to CSV format', () => {
       const result = exportService.exportToCSV(mockExportData);
-      
+
       expect(result).toContain('Pomodoro+ Export Data');
       expect(result).toContain('=== POMODORO SESSIONS ===');
       expect(result).toContain('=== TASKS ===');
@@ -107,7 +107,7 @@ describe('ExportService', () => {
 
     it('should include session data in CSV', () => {
       const result = exportService.exportToCSV(mockExportData);
-      
+
       expect(result).toContain('1,task1');
       expect(result).toContain('25');
       expect(result).toContain('Yes');
@@ -116,7 +116,7 @@ describe('ExportService', () => {
 
     it('should include task data in CSV', () => {
       const result = exportService.exportToCSV(mockExportData);
-      
+
       expect(result).toContain('task1');
       expect(result).toContain('"Test Task"');
       expect(result).toContain('"Test Description"');
@@ -127,7 +127,7 @@ describe('ExportService', () => {
 
     it('should include user statistics in CSV', () => {
       const result = exportService.exportToCSV(mockExportData);
-      
+
       expect(result).toContain('Level,5');
       expect(result).toContain('Total XP,1250');
       expect(result).toContain('Current Streak,7');
@@ -138,7 +138,7 @@ describe('ExportService', () => {
   describe('exportToExcel', () => {
     it('should export data to Excel format', () => {
       const result = exportService.exportToExcel(mockExportData);
-      
+
       expect(result).toContain('Pomodoro+ Export Report');
       expect(result).toContain('=== SUMMARY STATISTICS ===');
       expect(result).toContain('=== DAILY STATISTICS ===');
@@ -146,7 +146,7 @@ describe('ExportService', () => {
 
     it('should calculate summary statistics correctly', () => {
       const result = exportService.exportToExcel(mockExportData);
-      
+
       expect(result).toContain('Total Focus Time: 30 minutes');
       expect(result).toContain('Average Session Length: 15.0 minutes');
       expect(result).toContain('Completion Rate: 100.0%');
@@ -154,8 +154,10 @@ describe('ExportService', () => {
 
     it('should include daily statistics', () => {
       const result = exportService.exportToExcel(mockExportData);
-      
-      expect(result).toContain('Date,Sessions,Pomodoros,Focus Time (min),Tasks Completed');
+
+      expect(result).toContain(
+        'Date,Sessions,Pomodoros,Focus Time (min),Tasks Completed'
+      );
     });
   });
 
@@ -197,7 +199,7 @@ describe('ExportService', () => {
   describe('exportData', () => {
     it('should export JSON data successfully', async () => {
       const result = await exportService.exportData(mockExportData, 'json');
-      
+
       expect(result.content).toBeDefined();
       expect(result.fileName).toMatch(/\.json$/);
       expect(result.filePath).toBeDefined();
@@ -205,7 +207,7 @@ describe('ExportService', () => {
 
     it('should export CSV data successfully', async () => {
       const result = await exportService.exportData(mockExportData, 'csv');
-      
+
       expect(result.content).toBeDefined();
       expect(result.fileName).toMatch(/\.csv$/);
       expect(result.filePath).toBeDefined();
@@ -213,7 +215,7 @@ describe('ExportService', () => {
 
     it('should export Excel data successfully', async () => {
       const result = await exportService.exportData(mockExportData, 'excel');
-      
+
       expect(result.content).toBeDefined();
       expect(result.fileName).toMatch(/\.excel$/);
       expect(result.filePath).toBeDefined();

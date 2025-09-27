@@ -20,7 +20,7 @@ export interface SoundSettings {
 interface SoundState {
   settings: SoundSettings;
   availableSounds: SoundOption[];
-  
+
   // Actions
   setBackgroundSound: (sound: SoundOption | null) => void;
   setBackgroundVolume: (volume: number) => void;
@@ -59,7 +59,7 @@ const defaultSounds: SoundOption[] = [
     emoji: '⛈️',
     category: 'nature',
   },
-  
+
   // Ambient Sounds
   {
     id: 'cafe',
@@ -82,7 +82,7 @@ const defaultSounds: SoundOption[] = [
     emoji: '🔥',
     category: 'ambient',
   },
-  
+
   // Focus Sounds
   {
     id: 'alpha_waves',
@@ -105,7 +105,7 @@ const defaultSounds: SoundOption[] = [
     emoji: '🌙',
     category: 'focus',
   },
-  
+
   // White Noise
   {
     id: 'white_noise',
@@ -143,7 +143,7 @@ export const useSoundStore = create<SoundState>()(
       settings: defaultSettings,
       availableSounds: defaultSounds,
 
-      setBackgroundSound: (sound) => {
+      setBackgroundSound: sound => {
         const currentSettings = get().settings || defaultSettings;
         set({
           settings: {
@@ -153,7 +153,7 @@ export const useSoundStore = create<SoundState>()(
         });
       },
 
-      setBackgroundVolume: (volume) => {
+      setBackgroundVolume: volume => {
         const currentSettings = get().settings || defaultSettings;
         set({
           settings: {
@@ -183,7 +183,7 @@ export const useSoundStore = create<SoundState>()(
         });
       },
 
-      updateSettings: (newSettings) => {
+      updateSettings: newSettings => {
         const currentSettings = get().settings || defaultSettings;
         set({
           settings: {
@@ -195,7 +195,7 @@ export const useSoundStore = create<SoundState>()(
     }),
     {
       name: 'sound-storage',
-      partialize: (state) => ({ settings: state.settings }),
+      partialize: state => ({ settings: state.settings }),
     }
   )
 );

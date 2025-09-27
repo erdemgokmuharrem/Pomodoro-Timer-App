@@ -70,22 +70,43 @@ interface GroupPomodoroStore {
   error: string | null;
 
   // Actions
-  createSession: (sessionData: Omit<GroupPomodoroSession, 'id' | 'hostId' | 'members' | 'chat' | 'statistics'>) => Promise<string>;
-  joinSession: (sessionId: string, memberData: Omit<GroupMember, 'id' | 'joinTime' | 'pomodoroCount'>) => Promise<boolean>;
+  createSession: (
+    sessionData: Omit<
+      GroupPomodoroSession,
+      'id' | 'hostId' | 'members' | 'chat' | 'statistics'
+    >
+  ) => Promise<string>;
+  joinSession: (
+    sessionId: string,
+    memberData: Omit<GroupMember, 'id' | 'joinTime' | 'pomodoroCount'>
+  ) => Promise<boolean>;
   leaveSession: (sessionId: string, memberId: string) => Promise<boolean>;
   startSession: (sessionId: string) => Promise<boolean>;
   endSession: (sessionId: string) => Promise<boolean>;
-  updateSessionSettings: (sessionId: string, settings: Partial<GroupPomodoroSession['settings']>) => Promise<boolean>;
-  
+  updateSessionSettings: (
+    sessionId: string,
+    settings: Partial<GroupPomodoroSession['settings']>
+  ) => Promise<boolean>;
+
   // Chat
-  sendMessage: (sessionId: string, message: string, type?: 'text' | 'emoji') => Promise<boolean>;
-  
+  sendMessage: (
+    sessionId: string,
+    message: string,
+    type?: 'text' | 'emoji'
+  ) => Promise<boolean>;
+
   // Statistics
-  updateStatistics: (sessionId: string, memberId: string, pomodoroCompleted: boolean) => Promise<void>;
-  
+  updateStatistics: (
+    sessionId: string,
+    memberId: string,
+    pomodoroCompleted: boolean
+  ) => Promise<void>;
+
   // Settings
-  updateSettings: (newSettings: Partial<GroupPomodoroSettings>) => Promise<void>;
-  
+  updateSettings: (
+    newSettings: Partial<GroupPomodoroSettings>
+  ) => Promise<void>;
+
   // Data management
   loadSessions: () => Promise<void>;
   saveSessions: () => Promise<void>;
@@ -111,10 +132,10 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   error: null,
 
   // Create session
-  createSession: async (sessionData) => {
+  createSession: async sessionData => {
     try {
       set({ loading: true, error: null });
-      
+
       const newSession: GroupPomodoroSession = {
         ...sessionData,
         id: `session-${Date.now()}`,
@@ -131,10 +152,10 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
 
       const { mySessions } = get();
       const updatedMySessions = [...mySessions, newSession];
-      
+
       set({ mySessions: updatedMySessions });
       await get().saveSessions();
-      
+
       return newSession.id;
     } catch (error) {
       set({ error: 'Failed to create session' });
@@ -149,11 +170,12 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   joinSession: async (sessionId, memberData) => {
     try {
       set({ loading: true, error: null });
-      
+
       const { availableSessions, mySessions } = get();
-      const session = availableSessions.find(s => s.id === sessionId) || 
-                     mySessions.find(s => s.id === sessionId);
-      
+      const session =
+        availableSessions.find(s => s.id === sessionId) ||
+        mySessions.find(s => s.id === sessionId);
+
       if (!session) {
         set({ error: 'Session not found' });
         return false;
@@ -178,12 +200,12 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
 
       // Update in appropriate list
       if (availableSessions.find(s => s.id === sessionId)) {
-        const updatedAvailableSessions = availableSessions.map(s => 
+        const updatedAvailableSessions = availableSessions.map(s =>
           s.id === sessionId ? updatedSession : s
         );
         set({ availableSessions: updatedAvailableSessions });
       } else {
-        const updatedMySessions = mySessions.map(s => 
+        const updatedMySessions = mySessions.map(s =>
           s.id === sessionId ? updatedSession : s
         );
         set({ mySessions: updatedMySessions });
@@ -204,11 +226,14 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   leaveSession: async (sessionId, memberId) => {
     try {
       const { availableSessions, mySessions } = get();
-      
-      const updateSessionMembers = (sessions: GroupPomodoroSession[]) => 
-        sessions.map(session => 
-          session.id === sessionId 
-            ? { ...session, members: session.members.filter(m => m.id !== memberId) }
+
+      const updateSessionMembers = (sessions: GroupPomodoroSession[]) =>
+        sessions.map(session =>
+          session.id === sessionId
+            ? {
+                ...session,
+                members: session.members.filter(m => m.id !== memberId),
+              }
             : session
         );
 
@@ -227,18 +252,18 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   },
 
   // Start session
-  startSession: async (sessionId) => {
+  startSession: async sessionId => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const updateSession = (sessions: GroupPomodoroSession[]) =>
         sessions.map(session =>
           session.id === sessionId
-            ? { 
-                ...session, 
-                isActive: true, 
+            ? {
+                ...session,
+                isActive: true,
                 startTime: new Date(),
-                currentPhase: 'pomodoro' as const
+                currentPhase: 'pomodoro' as const,
               }
             : session
         );
@@ -246,7 +271,10 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
       set({
         availableSessions: updateSession(availableSessions),
         mySessions: updateSession(mySessions),
-        currentSession: updateSession([...availableSessions, ...mySessions].find(s => s.id === sessionId) || null),
+        currentSession: updateSession(
+          [...availableSessions, ...mySessions].find(s => s.id === sessionId) ||
+            null
+        ),
       });
 
       await get().saveSessions();
@@ -259,18 +287,18 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   },
 
   // End session
-  endSession: async (sessionId) => {
+  endSession: async sessionId => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const updateSession = (sessions: GroupPomodoroSession[]) =>
         sessions.map(session =>
           session.id === sessionId
-            ? { 
-                ...session, 
-                isActive: false, 
+            ? {
+                ...session,
+                isActive: false,
                 endTime: new Date(),
-                currentPhase: 'completed' as const
+                currentPhase: 'completed' as const,
               }
             : session
         );
@@ -294,7 +322,7 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   updateSessionSettings: async (sessionId, newSettings) => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const updateSession = (sessions: GroupPomodoroSession[]) =>
         sessions.map(session =>
           session.id === sessionId
@@ -320,7 +348,7 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   sendMessage: async (sessionId, message, type = 'text') => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const newMessage = {
         id: `msg-${Date.now()}`,
         userId: 'current-user-id',
@@ -333,11 +361,11 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
       const updateSession = (sessions: GroupPomodoroSession[]) =>
         sessions.map(session =>
           session.id === sessionId
-            ? { 
-                ...session, 
-                chat: { 
-                  messages: [...session.chat.messages, newMessage] 
-                } 
+            ? {
+                ...session,
+                chat: {
+                  messages: [...session.chat.messages, newMessage],
+                },
               }
             : session
         );
@@ -360,20 +388,34 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   updateStatistics: async (sessionId, memberId, pomodoroCompleted) => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const updateSession = (sessions: GroupPomodoroSession[]) =>
         sessions.map(session => {
           if (session.id === sessionId) {
             const updatedMembers = session.members.map(member =>
               member.id === memberId
-                ? { ...member, pomodoroCount: member.pomodoroCount + (pomodoroCompleted ? 1 : 0) }
+                ? {
+                    ...member,
+                    pomodoroCount:
+                      member.pomodoroCount + (pomodoroCompleted ? 1 : 0),
+                  }
                 : member
             );
 
-            const totalPomodoros = updatedMembers.reduce((sum, member) => sum + member.pomodoroCount, 0);
-            const totalFocusTime = totalPomodoros * session.settings.pomodoroDuration;
-            const averageFocusTime = updatedMembers.length > 0 ? totalFocusTime / updatedMembers.length : 0;
-            const completionRate = updatedMembers.length > 0 ? (totalPomodoros / (updatedMembers.length * 4)) * 100 : 0; // Assuming 4 pomodoros per session
+            const totalPomodoros = updatedMembers.reduce(
+              (sum, member) => sum + member.pomodoroCount,
+              0
+            );
+            const totalFocusTime =
+              totalPomodoros * session.settings.pomodoroDuration;
+            const averageFocusTime =
+              updatedMembers.length > 0
+                ? totalFocusTime / updatedMembers.length
+                : 0;
+            const completionRate =
+              updatedMembers.length > 0
+                ? (totalPomodoros / (updatedMembers.length * 4)) * 100
+                : 0; // Assuming 4 pomodoros per session
 
             return {
               ...session,
@@ -401,12 +443,15 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   },
 
   // Update settings
-  updateSettings: async (newSettings) => {
+  updateSettings: async newSettings => {
     try {
       const { settings } = get();
       const updatedSettings = { ...settings, ...newSettings };
       set({ settings: updatedSettings });
-      await AsyncStorage.setItem('groupPomodoroSettings', JSON.stringify(updatedSettings));
+      await AsyncStorage.setItem(
+        'groupPomodoroSettings',
+        JSON.stringify(updatedSettings)
+      );
     } catch (error) {
       set({ error: 'Failed to update settings' });
       console.error('Update settings error:', error);
@@ -417,7 +462,7 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   loadSessions: async () => {
     try {
       set({ loading: true });
-      
+
       const [savedSessions, savedSettings] = await Promise.all([
         AsyncStorage.getItem('groupPomodoroSessions'),
         AsyncStorage.getItem('groupPomodoroSettings'),
@@ -425,9 +470,13 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
 
       if (savedSessions) {
         const sessions = JSON.parse(savedSessions);
-        set({ 
-          availableSessions: sessions.filter((s: GroupPomodoroSession) => !s.isActive),
-          mySessions: sessions.filter((s: GroupPomodoroSession) => s.hostId === 'current-user-id'),
+        set({
+          availableSessions: sessions.filter(
+            (s: GroupPomodoroSession) => !s.isActive
+          ),
+          mySessions: sessions.filter(
+            (s: GroupPomodoroSession) => s.hostId === 'current-user-id'
+          ),
         });
       }
 
@@ -447,7 +496,10 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
     try {
       const { availableSessions, mySessions } = get();
       const allSessions = [...availableSessions, ...mySessions];
-      await AsyncStorage.setItem('groupPomodoroSessions', JSON.stringify(allSessions));
+      await AsyncStorage.setItem(
+        'groupPomodoroSessions',
+        JSON.stringify(allSessions)
+      );
     } catch (error) {
       set({ error: 'Failed to save sessions' });
       console.error('Save sessions error:', error);
@@ -457,7 +509,10 @@ export const useGroupPomodoroStore = create<GroupPomodoroStore>((set, get) => ({
   // Clear data
   clearData: async () => {
     try {
-      await AsyncStorage.multiRemove(['groupPomodoroSessions', 'groupPomodoroSettings']);
+      await AsyncStorage.multiRemove([
+        'groupPomodoroSessions',
+        'groupPomodoroSettings',
+      ]);
       set({
         currentSession: null,
         availableSessions: [],

@@ -14,9 +14,14 @@ export interface Tag {
 interface TagState {
   tags: Tag[];
   recentTags: Tag[];
-  
+
   // Actions
-  addTag: (name: string, color: string, emoji: string, category: Tag['category']) => void;
+  addTag: (
+    name: string,
+    color: string,
+    emoji: string,
+    category: Tag['category']
+  ) => void;
   updateTag: (id: string, updates: Partial<Tag>) => void;
   deleteTag: (id: string) => void;
   incrementUsage: (tagName: string) => void;
@@ -118,14 +123,44 @@ const defaultTags: Tag[] = [
 ];
 
 const tagColors = [
-  '#3B82F6', '#10B981', '#EF4444', '#8B5CF6', '#F59E0B',
-  '#06B6D4', '#84CC16', '#F97316', '#EC4899', '#14B8A6',
-  '#6366F1', '#F43F5E', '#0EA5E9', '#22C55E', '#A855F7',
+  '#3B82F6',
+  '#10B981',
+  '#EF4444',
+  '#8B5CF6',
+  '#F59E0B',
+  '#06B6D4',
+  '#84CC16',
+  '#F97316',
+  '#EC4899',
+  '#14B8A6',
+  '#6366F1',
+  '#F43F5E',
+  '#0EA5E9',
+  '#22C55E',
+  '#A855F7',
 ];
 
 const tagEmojis = [
-  '💼', '👤', '🏥', '📚', '🚨', '🤝', '🚀', '💪', '📖', '👨‍👩‍👧‍👦',
-  '💡', '🎯', '⭐', '🔥', '💎', '🌟', '🎨', '🎵', '🍕', '☕',
+  '💼',
+  '👤',
+  '🏥',
+  '📚',
+  '🚨',
+  '🤝',
+  '🚀',
+  '💪',
+  '📖',
+  '👨‍👩‍👧‍👦',
+  '💡',
+  '🎯',
+  '⭐',
+  '🔥',
+  '💎',
+  '🌟',
+  '🎨',
+  '🎵',
+  '🍕',
+  '☕',
 ];
 
 export const useTagStore = create<TagState>()(
@@ -158,18 +193,20 @@ export const useTagStore = create<TagState>()(
         });
       },
 
-      deleteTag: (id) => {
+      deleteTag: id => {
         set({
           tags: get().tags.filter(tag => tag.id !== id),
         });
       },
 
-      incrementUsage: (tagName) => {
+      incrementUsage: tagName => {
         const state = get();
         const updatedTags = state.tags.map(tag =>
-          tag.name === tagName ? { ...tag, usageCount: tag.usageCount + 1 } : tag
+          tag.name === tagName
+            ? { ...tag, usageCount: tag.usageCount + 1 }
+            : tag
         );
-        
+
         // Update recent tags
         const tag = updatedTags.find(t => t.name === tagName);
         if (tag) {
@@ -184,19 +221,19 @@ export const useTagStore = create<TagState>()(
         }
       },
 
-      getTagsByCategory: (category) => {
+      getTagsByCategory: category => {
         return get().tags.filter(tag => tag.category === category);
       },
 
       getMostUsedTags: (limit = 10) => {
-        return get().tags
-          .sort((a, b) => b.usageCount - a.usageCount)
+        return get()
+          .tags.sort((a, b) => b.usageCount - a.usageCount)
           .slice(0, limit);
       },
     }),
     {
       name: 'tag-storage',
-      partialize: (state) => ({ tags: state.tags, recentTags: state.recentTags }),
+      partialize: state => ({ tags: state.tags, recentTags: state.recentTags }),
     }
   )
 );

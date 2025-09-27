@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Switch,
+  Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePomodoroStore } from '../store/usePomodoroStore';
 import { useTheme } from '../components/ThemeProvider';
@@ -11,20 +19,37 @@ import { AppBlockingModal } from '../components/molecules/AppBlockingModal';
 const SettingsScreen = () => {
   const { settings, updateSettings, sessions, tasks } = usePomodoroStore();
   const { isDark, toggleTheme, setThemeMode } = useTheme();
-  
-  const [pomodoroDuration, setPomodoroDuration] = useState(settings.pomodoroDuration);
-  const [shortBreakDuration, setShortBreakDuration] = useState(settings.shortBreakDuration);
-  const [longBreakDuration, setLongBreakDuration] = useState(settings.longBreakDuration);
-  const [autoStartBreaks, setAutoStartBreaks] = useState(settings.autoStartBreaks);
-  const [autoStartPomodoros, setAutoStartPomodoros] = useState(settings.autoStartPomodoros);
+
+  const [pomodoroDuration, setPomodoroDuration] = useState(
+    settings.pomodoroDuration
+  );
+  const [shortBreakDuration, setShortBreakDuration] = useState(
+    settings.shortBreakDuration
+  );
+  const [longBreakDuration, setLongBreakDuration] = useState(
+    settings.longBreakDuration
+  );
+  const [autoStartBreaks, setAutoStartBreaks] = useState(
+    settings.autoStartBreaks
+  );
+  const [autoStartPomodoros, setAutoStartPomodoros] = useState(
+    settings.autoStartPomodoros
+  );
   const [soundEnabled, setSoundEnabled] = useState(settings.soundEnabled);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(settings.notificationsEnabled);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(
+    settings.notificationsEnabled
+  );
   const [exportModalVisible, setExportModalVisible] = useState(false);
-  const [accessibilityModalVisible, setAccessibilityModalVisible] = useState(false);
-  const [calendarSyncModalVisible, setCalendarSyncModalVisible] = useState(false);
+  const [accessibilityModalVisible, setAccessibilityModalVisible] =
+    useState(false);
+  const [calendarSyncModalVisible, setCalendarSyncModalVisible] =
+    useState(false);
   const [appBlockingModalVisible, setAppBlockingModalVisible] = useState(false);
 
-  const handleDurationChange = (type: 'pomodoro' | 'shortBreak' | 'longBreak', value: number) => {
+  const handleDurationChange = (
+    type: 'pomodoro' | 'shortBreak' | 'longBreak',
+    value: number
+  ) => {
     if (type === 'pomodoro') {
       setPomodoroDuration(value);
       updateSettings({ pomodoroDuration: value });
@@ -55,23 +80,30 @@ const SettingsScreen = () => {
       'Tüm verilerinizi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
       [
         { text: 'İptal', style: 'cancel' },
-        { text: 'Sil', style: 'destructive', onPress: () => {
-          // In a real app, you would clear the store
-          Alert.alert('Başarılı', 'Tüm verileriniz silindi. (Uygulama yeniden başlatıldığında varsayılan ayarlar yüklenecek)');
-        }}
+        {
+          text: 'Sil',
+          style: 'destructive',
+          onPress: () => {
+            // In a real app, you would clear the store
+            Alert.alert(
+              'Başarılı',
+              'Tüm verileriniz silindi. (Uygulama yeniden başlatıldığında varsayılan ayarlar yüklenecek)'
+            );
+          },
+        },
       ]
     );
   };
 
-  const DurationSelector = ({ 
-    title, 
-    value, 
-    onChange, 
-    min = 1, 
-    max = 60 
-  }: { 
-    title: string; 
-    value: number; 
+  const DurationSelector = ({
+    title,
+    value,
+    onChange,
+    min = 1,
+    max = 60,
+  }: {
+    title: string;
+    value: number;
     onChange: (value: number) => void;
     min?: number;
     max?: number;
@@ -79,14 +111,14 @@ const SettingsScreen = () => {
     <View style={styles.durationSelector}>
       <Text style={styles.durationTitle}>{title}</Text>
       <View style={styles.durationControls}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.durationButton}
           onPress={() => onChange(Math.max(min, value - 1))}
         >
           <Text style={styles.durationButtonText}>-</Text>
         </TouchableOpacity>
         <Text style={styles.durationValue}>{value} dk</Text>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.durationButton}
           onPress={() => onChange(Math.min(max, value + 1))}
         >
@@ -96,12 +128,12 @@ const SettingsScreen = () => {
     </View>
   );
 
-  const SettingItem = ({ 
-    title, 
-    subtitle, 
-    value, 
-    onValueChange, 
-    type = 'switch' 
+  const SettingItem = ({
+    title,
+    subtitle,
+    value,
+    onValueChange,
+    type = 'switch',
   }: {
     title: string;
     subtitle?: string;
@@ -122,7 +154,7 @@ const SettingsScreen = () => {
           thumbColor={value ? '#FFFFFF' : '#FFFFFF'}
         />
       ) : (
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.settingButton}
           onPress={() => onValueChange(!value)}
         >
@@ -143,82 +175,90 @@ const SettingsScreen = () => {
         {/* Timer Settings */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Zamanlayıcı Ayarları</Text>
-          
+
           <DurationSelector
             title="Pomodoro Süresi"
             value={pomodoroDuration}
-            onChange={(value) => handleDurationChange('pomodoro', value)}
+            onChange={value => handleDurationChange('pomodoro', value)}
           />
-          
+
           <DurationSelector
             title="Kısa Mola"
             value={shortBreakDuration}
-            onChange={(value) => handleDurationChange('shortBreak', value)}
+            onChange={value => handleDurationChange('shortBreak', value)}
           />
-          
+
           <DurationSelector
             title="Uzun Mola"
             value={longBreakDuration}
-            onChange={(value) => handleDurationChange('longBreak', value)}
+            onChange={value => handleDurationChange('longBreak', value)}
           />
         </View>
 
         {/* Behavior Settings */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Davranış Ayarları</Text>
-          
+
           <SettingItem
             title="Molaları Otomatik Başlat"
             subtitle="Mola süresi bittiğinde otomatik olarak yeni pomodoro başlat"
             value={autoStartBreaks}
-            onValueChange={(value) => handleSettingChange('autoStartBreaks', value)}
+            onValueChange={value =>
+              handleSettingChange('autoStartBreaks', value)
+            }
           />
-          
+
           <SettingItem
             title="Pomodoroları Otomatik Başlat"
             subtitle="Pomodoro süresi bittiğinde otomatik olarak mola başlat"
             value={autoStartPomodoros}
-            onValueChange={(value) => handleSettingChange('autoStartPomodoros', value)}
+            onValueChange={value =>
+              handleSettingChange('autoStartPomodoros', value)
+            }
           />
         </View>
 
         {/* Notification Settings */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Bildirim & Ses</Text>
-          
+
           <SettingItem
             title="Ses Efektleri"
             subtitle="Timer bittiğinde ses çal"
             value={soundEnabled}
-            onValueChange={(value) => handleSettingChange('soundEnabled', value)}
+            onValueChange={value => handleSettingChange('soundEnabled', value)}
           />
-          
+
           <SettingItem
             title="Bildirimler"
             subtitle="Uygulama kapalıyken bildirim gönder"
             value={notificationsEnabled}
-            onValueChange={(value) => handleSettingChange('notificationsEnabled', value)}
+            onValueChange={value =>
+              handleSettingChange('notificationsEnabled', value)
+            }
           />
         </View>
 
         {/* Appearance Settings */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Görünüm</Text>
-          
+
           <SettingItem
             title="Karanlık Mod"
             subtitle="Koyu tema kullan"
             value={isDark}
             onValueChange={toggleTheme}
           />
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.settingItem}
             onPress={() => setAccessibilityModalVisible(true)}
           >
             <View style={styles.settingInfo}>
               <Text style={styles.settingTitle}>Erişilebilirlik</Text>
-              <Text style={styles.settingSubtitle}>Font boyutu ve erişilebilirlik ayarları</Text>
+              <Text style={styles.settingSubtitle}>
+                Font boyutu ve erişilebilirlik ayarları
+              </Text>
             </View>
             <Text style={styles.chevron}>›</Text>
           </TouchableOpacity>
@@ -227,25 +267,29 @@ const SettingsScreen = () => {
         {/* Integration Settings */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Entegrasyonlar</Text>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.settingItem}
             onPress={() => setCalendarSyncModalVisible(true)}
           >
             <View style={styles.settingInfo}>
               <Text style={styles.settingTitle}>Takvim Senkronizasyonu</Text>
-              <Text style={styles.settingSubtitle}>Google Calendar ve Outlook ile senkronize et</Text>
+              <Text style={styles.settingSubtitle}>
+                Google Calendar ve Outlook ile senkronize et
+              </Text>
             </View>
             <Text style={styles.chevron}>›</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.settingItem}
             onPress={() => setAppBlockingModalVisible(true)}
           >
             <View style={styles.settingInfo}>
               <Text style={styles.settingTitle}>Dikkat Engelleme</Text>
-              <Text style={styles.settingSubtitle}>Dikkat dağıtıcı uygulamaları ve websiteleri engelle</Text>
+              <Text style={styles.settingSubtitle}>
+                Dikkat dağıtıcı uygulamaları ve websiteleri engelle
+              </Text>
             </View>
             <Text style={styles.chevron}>›</Text>
           </TouchableOpacity>
@@ -254,13 +298,16 @@ const SettingsScreen = () => {
         {/* Data Management */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Veri Yönetimi</Text>
-          
-          <TouchableOpacity style={styles.actionButton} onPress={handleExportData}>
+
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleExportData}
+          >
             <Text style={styles.actionButtonText}>Verileri Dışa Aktar</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.actionButton, styles.dangerButton]} 
+
+          <TouchableOpacity
+            style={[styles.actionButton, styles.dangerButton]}
             onPress={handleDeleteData}
           >
             <Text style={[styles.actionButtonText, styles.dangerButtonText]}>

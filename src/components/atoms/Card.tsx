@@ -28,7 +28,7 @@ const Card: React.FC<CardProps> = ({
 
   const getShadowStyle = () => {
     if (!shadow) return {};
-    
+
     return {
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },

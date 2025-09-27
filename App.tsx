@@ -3,6 +3,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './src/components/ThemeProvider';
 import AppNavigator from './src/navigation/AppNavigator';
+import './src/i18n';
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePomodoroStore, Task } from '../store/usePomodoroStore';
 import { useContextFilters } from '../hooks/useContextFilters';
@@ -26,19 +33,27 @@ const TasksScreen = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return '#EF4444';
-      case 'medium': return '#F59E0B';
-      case 'low': return '#10B981';
-      default: return '#6B7280';
+      case 'high':
+        return '#EF4444';
+      case 'medium':
+        return '#F59E0B';
+      case 'low':
+        return '#10B981';
+      default:
+        return '#6B7280';
     }
   };
 
   const getPriorityEmoji = (priority: string) => {
     switch (priority) {
-      case 'high': return '🔴';
-      case 'medium': return '🟡';
-      case 'low': return '🟢';
-      default: return '⚪';
+      case 'high':
+        return '🔴';
+      case 'medium':
+        return '🟡';
+      case 'low':
+        return '🟢';
+      default:
+        return '⚪';
     }
   };
 
@@ -60,11 +75,11 @@ const TasksScreen = () => {
       `"${task.title}" görevini silmek istediğinizden emin misiniz?`,
       [
         { text: 'İptal', style: 'cancel' },
-        { 
-          text: 'Sil', 
+        {
+          text: 'Sil',
           style: 'destructive',
-          onPress: () => deleteTask(task.id)
-        }
+          onPress: () => deleteTask(task.id),
+        },
       ]
     );
   };
@@ -75,23 +90,35 @@ const TasksScreen = () => {
 
   const renderTask = ({ item }: { item: Task }) => {
     if (!item) return null;
-    
+
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.taskCard, item.isCompleted && styles.completedTask]}
         onPress={() => handleEditTask(item)}
         onLongPress={() => handleDeleteTask(item)}
       >
         <View style={styles.taskHeader}>
-        <View style={styles.taskTitleContainer}>
-          <Text style={[styles.taskTitle, item.isCompleted && styles.completedTaskText]}>
-            {item.title || 'Başlıksız Görev'}
-          </Text>
-          <View style={[styles.priorityContainer, { backgroundColor: getPriorityColor(item.priority) }]}>
-            <Text style={styles.priorityEmoji}>{getPriorityEmoji(item.priority)}</Text>
+          <View style={styles.taskTitleContainer}>
+            <Text
+              style={[
+                styles.taskTitle,
+                item.isCompleted && styles.completedTaskText,
+              ]}
+            >
+              {item.title || 'Başlıksız Görev'}
+            </Text>
+            <View
+              style={[
+                styles.priorityContainer,
+                { backgroundColor: getPriorityColor(item.priority) },
+              ]}
+            >
+              <Text style={styles.priorityEmoji}>
+                {getPriorityEmoji(item.priority)}
+              </Text>
+            </View>
           </View>
-        </View>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.pomodoroCount}
             onPress={() => handleToggleComplete(item)}
           >
@@ -100,34 +127,50 @@ const TasksScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        
+
         {item.description && (
-          <Text style={[styles.taskDescription, item.isCompleted && styles.completedTaskText]}>
+          <Text
+            style={[
+              styles.taskDescription,
+              item.isCompleted && styles.completedTaskText,
+            ]}
+          >
             {item.description}
           </Text>
         )}
-        
+
         <View style={styles.taskFooter}>
           <View style={styles.tagsContainer}>
             {(item.tags || []).map((tag, index) => {
               // Find tag color from available tags (you might want to pass this from props)
-              const tagColors = ['#3B82F6', '#10B981', '#EF4444', '#8B5CF6', '#F59E0B'];
+              const tagColors = [
+                '#3B82F6',
+                '#10B981',
+                '#EF4444',
+                '#8B5CF6',
+                '#F59E0B',
+              ];
               const tagColor = tagColors[index % tagColors.length];
               return (
-                <View key={index} style={[styles.tag, { backgroundColor: tagColor }]}>
+                <View
+                  key={index}
+                  style={[styles.tag, { backgroundColor: tagColor }]}
+                >
                   <Text style={styles.tagText}>{tag}</Text>
                 </View>
               );
             })}
           </View>
-          
+
           <View style={styles.progressContainer}>
             <View style={styles.progressBar}>
-              <View 
+              <View
                 style={[
-                  styles.progressFill, 
-                  { width: `${((item.completedPomodoros || 0) / (item.estimatedPomodoros || 1)) * 100}%` }
-                ]} 
+                  styles.progressFill,
+                  {
+                    width: `${((item.completedPomodoros || 0) / (item.estimatedPomodoros || 1)) * 100}%`,
+                  },
+                ]}
               />
             </View>
           </View>
@@ -143,26 +186,26 @@ const TasksScreen = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Görevler</Text>
         <View style={styles.headerButtons}>
-          <TouchableOpacity 
-            style={styles.filterButton} 
+          <TouchableOpacity
+            style={styles.filterButton}
             onPress={() => setFiltersModalVisible(true)}
           >
             <Text style={styles.filterButtonText}>🔍 Filtrele</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.templateButton} 
+          <TouchableOpacity
+            style={styles.templateButton}
             onPress={() => setTemplateModalVisible(true)}
           >
             <Text style={styles.templateButtonText}>📋 Şablon</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.splitButton} 
+          <TouchableOpacity
+            style={styles.splitButton}
             onPress={() => setAutoSplitModalVisible(true)}
           >
             <Text style={styles.splitButtonText}>🔄 Böl</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.complexityButton} 
+          <TouchableOpacity
+            style={styles.complexityButton}
             onPress={() => setComplexityModalVisible(true)}
           >
             <Text style={styles.complexityButtonText}>📊 Analiz</Text>
@@ -179,7 +222,7 @@ const TasksScreen = () => {
           <Text style={styles.filterStatsText}>
             {stats.filteredCount} / {stats.totalTasks} görev gösteriliyor
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.clearFiltersButton}
             onPress={() => setFiltersModalVisible(true)}
           >
@@ -191,16 +234,20 @@ const TasksScreen = () => {
       <FlatList
         data={filteredTasks || tasks || []}
         renderItem={renderTask}
-        keyExtractor={(item) => item?.id || Math.random().toString()}
+        keyExtractor={item => item?.id || Math.random().toString()}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              {stats.isFiltered ? 'Filtrelere uygun görev bulunamadı' : 'Henüz görev eklenmemiş'}
+              {stats.isFiltered
+                ? 'Filtrelere uygun görev bulunamadı'
+                : 'Henüz görev eklenmemiş'}
             </Text>
             <Text style={styles.emptySubtext}>
-              {stats.isFiltered ? 'Filtreleri değiştirin veya yeni görev ekleyin' : '+ butonuna tıklayarak ilk görevinizi ekleyin'}
+              {stats.isFiltered
+                ? 'Filtreleri değiştirin veya yeni görev ekleyin'
+                : '+ butonuna tıklayarak ilk görevinizi ekleyin'}
             </Text>
           </View>
         }
@@ -212,22 +259,22 @@ const TasksScreen = () => {
         task={selectedTask}
         mode={modalMode}
       />
-      
+
       <ContextFiltersModal
         visible={filtersModalVisible}
         onClose={() => setFiltersModalVisible(false)}
       />
-      
+
       <TemplateSelectionModal
         visible={templateModalVisible}
         onClose={() => setTemplateModalVisible(false)}
       />
-      
+
       <AutoSplitModal
         visible={autoSplitModalVisible}
         onClose={() => setAutoSplitModalVisible(false)}
       />
-      
+
       <ComplexityScoreModal
         visible={complexityModalVisible}
         onClose={() => setComplexityModalVisible(false)}

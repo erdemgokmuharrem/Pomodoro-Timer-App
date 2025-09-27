@@ -7,6 +7,8 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -14,18 +16,33 @@ export const useNotifications = () => {
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
+  const requestPermissions = async () => {
+    try {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') {
+        console.warn('Notification permissions not granted');
+      }
+      return status === 'granted';
+    } catch (error) {
+      console.error('Error requesting notification permissions:', error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     // Request permissions
     requestPermissions();
 
     // Set up notification listeners
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(notification => {
+        console.log('Notification received:', notification);
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log('Notification response:', response);
-    });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(response => {
+        console.log('Notification response:', response);
+      });
 
     return () => {
       if (notificationListener.current) {
@@ -37,37 +54,38 @@ export const useNotifications = () => {
     };
   }, []);
 
-  const requestPermissions = async () => {
-    const { status } = await Notifications.requestPermissionsAsync();
-    if (status !== 'granted') {
-      console.warn('Notification permissions not granted');
-    }
-  };
-
-  const schedulePomodoroNotification = async (duration: number, taskId?: string) => {
+  const schedulePomodoroNotification = async (
+    duration: number,
+    taskId?: string
+  ) => {
     try {
       await Notifications.scheduleNotificationAsync({
         content: {
           title: 'Pomodoro Tamamlandı! 🎉',
-          body: taskId ? 'Göreviniz tamamlandı, mola zamanı!' : 'Pomodoro tamamlandı, mola zamanı!',
+          body: taskId
+            ? 'Göreviniz tamamlandı, mola zamanı!'
+            : 'Pomodoro tamamlandı, mola zamanı!',
           sound: true,
         },
-        trigger: { seconds: duration * 60 },
+        trigger: { type: 'timeInterval', seconds: duration * 60 },
       });
     } catch (error) {
       console.error('Error scheduling pomodoro notification:', error);
     }
   };
 
-  const scheduleBreakNotification = async (duration: number, isLongBreak: boolean) => {
+  const scheduleBreakNotification = async (
+    duration: number,
+    isLongBreak: boolean
+  ) => {
     try {
       await Notifications.scheduleNotificationAsync({
         content: {
           title: isLongBreak ? 'Uzun Mola Bitti! 🚀' : 'Mola Bitti! ⏰',
-          body: 'Yeni pomodoro\'ya başlamaya hazır mısınız?',
+          body: "Yeni pomodoro'ya başlamaya hazır mısınız?",
           sound: true,
         },
-        trigger: { seconds: duration * 60 },
+        trigger: { type: 'timeInterval', seconds: duration * 60 },
       });
     } catch (error) {
       console.error('Error scheduling break notification:', error);

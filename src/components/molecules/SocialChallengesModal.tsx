@@ -11,7 +11,11 @@ import {
   ActivityIndicator,
   FlatList,
 } from 'react-native';
-import { useSocialChallengesStore, SocialChallenge, ChallengeParticipant } from '../../store/useSocialChallengesStore';
+import {
+  useSocialChallengesStore,
+  SocialChallenge,
+  ChallengeParticipant,
+} from '../../store/useSocialChallengesStore';
 
 interface SocialChallengesModalProps {
   visible: boolean;
@@ -43,19 +47,35 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
     loadChallenges,
   } = useSocialChallengesStore();
 
-  const [activeTab, setActiveTab] = useState<'discover' | 'create' | 'myChallenges' | 'teams'>('discover');
+  const [activeTab, setActiveTab] = useState<
+    'discover' | 'create' | 'myChallenges' | 'teams'
+  >('discover');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('');
   const [newChallengeTitle, setNewChallengeTitle] = useState('');
   const [newChallengeDescription, setNewChallengeDescription] = useState('');
-  const [newChallengeType, setNewChallengeType] = useState<'pomodoro_count' | 'focus_time' | 'streak' | 'completion_rate' | 'social' | 'creative'>('pomodoro_count');
-  const [newChallengeCategory, setNewChallengeCategory] = useState<'daily' | 'weekly' | 'monthly' | 'special' | 'community'>('daily');
-  const [newChallengeDifficulty, setNewChallengeDifficulty] = useState<'easy' | 'medium' | 'hard' | 'expert'>('medium');
+  const [newChallengeType, setNewChallengeType] = useState<
+    | 'pomodoro_count'
+    | 'focus_time'
+    | 'streak'
+    | 'completion_rate'
+    | 'social'
+    | 'creative'
+  >('pomodoro_count');
+  const [newChallengeCategory, setNewChallengeCategory] = useState<
+    'daily' | 'weekly' | 'monthly' | 'special' | 'community'
+  >('daily');
+  const [newChallengeDifficulty, setNewChallengeDifficulty] = useState<
+    'easy' | 'medium' | 'hard' | 'expert'
+  >('medium');
   const [newChallengeTarget, setNewChallengeTarget] = useState(10);
   const [newChallengeDuration, setNewChallengeDuration] = useState(7); // days
-  const [filteredChallenges, setFilteredChallenges] = useState<SocialChallenge[]>([]);
-  const [selectedChallenge, setSelectedChallenge] = useState<SocialChallenge | null>(null);
+  const [filteredChallenges, setFilteredChallenges] = useState<
+    SocialChallenge[]
+  >([]);
+  const [selectedChallenge, setSelectedChallenge] =
+    useState<SocialChallenge | null>(null);
 
   const categories = [
     { id: 'daily', name: 'Günlük', icon: '📅' },
@@ -90,14 +110,24 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
   useEffect(() => {
     const performSearch = async () => {
       if (searchQuery || selectedCategory || selectedDifficulty) {
-        const results = await searchChallenges(searchQuery, selectedCategory, selectedDifficulty);
+        const results = await searchChallenges(
+          searchQuery,
+          selectedCategory,
+          selectedDifficulty
+        );
         setFilteredChallenges(results);
       } else {
         setFilteredChallenges(activeChallenges);
       }
     };
     performSearch();
-  }, [searchQuery, selectedCategory, selectedDifficulty, activeChallenges, searchChallenges]);
+  }, [
+    searchQuery,
+    selectedCategory,
+    selectedDifficulty,
+    activeChallenges,
+    searchChallenges,
+  ]);
 
   const handleCreateChallenge = async () => {
     if (!newChallengeTitle.trim()) {
@@ -113,15 +143,22 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
         category: newChallengeCategory,
         difficulty: newChallengeDifficulty,
         startDate: new Date(),
-        endDate: new Date(Date.now() + newChallengeDuration * 24 * 60 * 60 * 1000),
+        endDate: new Date(
+          Date.now() + newChallengeDuration * 24 * 60 * 60 * 1000
+        ),
         isActive: true,
         isPublic: true,
         creatorId: 'current-user-id', // In real app, get from auth
         maxParticipants: 100,
         targetValue: newChallengeTarget,
-        unit: newChallengeType === 'pomodoro_count' ? 'pomodoro' : 
-              newChallengeType === 'focus_time' ? 'dakika' : 
-              newChallengeType === 'streak' ? 'gün' : 'oran',
+        unit:
+          newChallengeType === 'pomodoro_count'
+            ? 'pomodoro'
+            : newChallengeType === 'focus_time'
+              ? 'dakika'
+              : newChallengeType === 'streak'
+                ? 'gün'
+                : 'oran',
         rewards: {
           first: ['Champion Badge', '1000 Coins'],
           top10: ['Elite Badge', '500 Coins'],
@@ -159,16 +196,23 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
 
       if (success) {
         setSelectedChallenge(challenge);
-        Alert.alert('Başarılı', 'Challenge\'a katıldınız');
+        Alert.alert('Başarılı', "Challenge'a katıldınız");
       }
     } catch (err) {
-      Alert.alert('Hata', 'Challenge\'a katılamadınız');
+      Alert.alert('Hata', "Challenge'a katılamadınız");
     }
   };
 
-  const handleUpdateProgress = async (challengeId: string, progress: number) => {
+  const handleUpdateProgress = async (
+    challengeId: string,
+    progress: number
+  ) => {
     try {
-      const success = await updateProgress(challengeId, 'current-user-id', progress);
+      const success = await updateProgress(
+        challengeId,
+        'current-user-id',
+        progress
+      );
       if (success) {
         Alert.alert('Başarılı', 'İlerleme güncellendi');
       }
@@ -178,8 +222,8 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
   };
 
   const renderChallengeItem = ({ item }: { item: SocialChallenge }) => (
-    <TouchableOpacity 
-      style={styles.challengeItem} 
+    <TouchableOpacity
+      style={styles.challengeItem}
       onPress={() => setSelectedChallenge(item)}
     >
       <View style={styles.challengeHeader}>
@@ -188,12 +232,18 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
           <Text style={styles.challengeDescription}>{item.description}</Text>
           <View style={styles.challengeMeta}>
             <Text style={styles.challengeCategory}>
-              {categories.find(c => c.id === item.category)?.icon} {categories.find(c => c.id === item.category)?.name}
+              {categories.find(c => c.id === item.category)?.icon}{' '}
+              {categories.find(c => c.id === item.category)?.name}
             </Text>
-            <Text style={[
-              styles.challengeDifficulty,
-              { color: difficulties.find(d => d.id === item.difficulty)?.color }
-            ]}>
+            <Text
+              style={[
+                styles.challengeDifficulty,
+                {
+                  color: difficulties.find(d => d.id === item.difficulty)
+                    ?.color,
+                },
+              ]}
+            >
               {difficulties.find(d => d.id === item.difficulty)?.name}
             </Text>
           </View>
@@ -212,7 +262,11 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
           Hedef: {item.targetValue} {item.unit}
         </Text>
         <Text style={styles.challengeDuration}>
-          {Math.ceil((item.endDate.getTime() - item.startDate.getTime()) / (1000 * 60 * 60 * 24))} gün
+          {Math.ceil(
+            (item.endDate.getTime() - item.startDate.getTime()) /
+              (1000 * 60 * 60 * 24)
+          )}{' '}
+          gün
         </Text>
       </View>
       <TouchableOpacity
@@ -234,7 +288,8 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
       <View style={styles.participantInfo}>
         <Text style={styles.participantName}>{item.name}</Text>
         <Text style={styles.participantProgress}>
-          {item.currentProgress}/{item.targetProgress} ({Math.round((item.currentProgress / item.targetProgress) * 100)}%)
+          {item.currentProgress}/{item.targetProgress} (
+          {Math.round((item.currentProgress / item.targetProgress) * 100)}%)
         </Text>
       </View>
       <View style={styles.participantRank}>
@@ -249,7 +304,8 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
         <Text style={styles.teamName}>{item.name}</Text>
         <Text style={styles.teamDescription}>{item.description}</Text>
         <Text style={styles.teamStats}>
-          {item.members.length}/{item.maxMembers} üye • {item.totalProgress} puan
+          {item.members.length}/{item.maxMembers} üye • {item.totalProgress}{' '}
+          puan
         </Text>
       </View>
       <View style={styles.teamRank}>
@@ -259,7 +315,11 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
   );
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Social Challenges</Text>
@@ -274,7 +334,12 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
             style={[styles.tab, activeTab === 'discover' && styles.activeTab]}
             onPress={() => setActiveTab('discover')}
           >
-            <Text style={[styles.tabText, activeTab === 'discover' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'discover' && styles.activeTabText,
+              ]}
+            >
               Keşfet
             </Text>
           </TouchableOpacity>
@@ -282,15 +347,28 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
             style={[styles.tab, activeTab === 'create' && styles.activeTab]}
             onPress={() => setActiveTab('create')}
           >
-            <Text style={[styles.tabText, activeTab === 'create' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'create' && styles.activeTabText,
+              ]}
+            >
               Oluştur
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'myChallenges' && styles.activeTab]}
+            style={[
+              styles.tab,
+              activeTab === 'myChallenges' && styles.activeTab,
+            ]}
             onPress={() => setActiveTab('myChallenges')}
           >
-            <Text style={[styles.tabText, activeTab === 'myChallenges' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'myChallenges' && styles.activeTabText,
+              ]}
+            >
               Challenge'larım
             </Text>
           </TouchableOpacity>
@@ -298,7 +376,12 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
             style={[styles.tab, activeTab === 'teams' && styles.activeTab]}
             onPress={() => setActiveTab('teams')}
           >
-            <Text style={[styles.tabText, activeTab === 'teams' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'teams' && styles.activeTabText,
+              ]}
+            >
               Takımlar
             </Text>
           </TouchableOpacity>
@@ -324,21 +407,33 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
               </View>
 
               {/* Category Filter */}
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
-                {categories.map((category) => (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.categoryContainer}
+              >
+                {categories.map(category => (
                   <TouchableOpacity
                     key={category.id}
                     style={[
                       styles.categoryButton,
-                      selectedCategory === category.id && styles.categoryButtonActive
+                      selectedCategory === category.id &&
+                        styles.categoryButtonActive,
                     ]}
-                    onPress={() => setSelectedCategory(selectedCategory === category.id ? '' : category.id)}
+                    onPress={() =>
+                      setSelectedCategory(
+                        selectedCategory === category.id ? '' : category.id
+                      )
+                    }
                   >
                     <Text style={styles.categoryIcon}>{category.icon}</Text>
-                    <Text style={[
-                      styles.categoryText,
-                      selectedCategory === category.id && styles.categoryTextActive
-                    ]}>
+                    <Text
+                      style={[
+                        styles.categoryText,
+                        selectedCategory === category.id &&
+                          styles.categoryTextActive,
+                      ]}
+                    >
                       {category.name}
                     </Text>
                   </TouchableOpacity>
@@ -346,20 +441,38 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
               </ScrollView>
 
               {/* Difficulty Filter */}
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.difficultyContainer}>
-                {difficulties.map((difficulty) => (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.difficultyContainer}
+              >
+                {difficulties.map(difficulty => (
                   <TouchableOpacity
                     key={difficulty.id}
                     style={[
                       styles.difficultyButton,
-                      selectedDifficulty === difficulty.id && styles.difficultyButtonActive
+                      selectedDifficulty === difficulty.id &&
+                        styles.difficultyButtonActive,
                     ]}
-                    onPress={() => setSelectedDifficulty(selectedDifficulty === difficulty.id ? '' : difficulty.id)}
+                    onPress={() =>
+                      setSelectedDifficulty(
+                        selectedDifficulty === difficulty.id
+                          ? ''
+                          : difficulty.id
+                      )
+                    }
                   >
-                    <Text style={[
-                      styles.difficultyText,
-                      { color: selectedDifficulty === difficulty.id ? 'white' : difficulty.color }
-                    ]}>
+                    <Text
+                      style={[
+                        styles.difficultyText,
+                        {
+                          color:
+                            selectedDifficulty === difficulty.id
+                              ? 'white'
+                              : difficulty.color,
+                        },
+                      ]}
+                    >
                       {difficulty.name}
                     </Text>
                   </TouchableOpacity>
@@ -370,7 +483,7 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
               <FlatList
                 data={filteredChallenges}
                 renderItem={renderChallengeItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -379,7 +492,7 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
           {activeTab === 'create' && (
             <View>
               <Text style={styles.sectionTitle}>Yeni Challenge Oluştur</Text>
-              
+
               <View style={styles.form}>
                 <TextInput
                   style={styles.input}
@@ -394,24 +507,27 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
                   onChangeText={setNewChallengeDescription}
                   multiline
                 />
-                
+
                 {/* Type Selection */}
                 <Text style={styles.formLabel}>Challenge Türü</Text>
                 <View style={styles.typeGrid}>
-                  {challengeTypes.map((type) => (
+                  {challengeTypes.map(type => (
                     <TouchableOpacity
                       key={type.id}
                       style={[
                         styles.typeOption,
-                        newChallengeType === type.id && styles.typeOptionActive
+                        newChallengeType === type.id && styles.typeOptionActive,
                       ]}
                       onPress={() => setNewChallengeType(type.id as any)}
                     >
                       <Text style={styles.typeOptionIcon}>{type.icon}</Text>
-                      <Text style={[
-                        styles.typeOptionText,
-                        newChallengeType === type.id && styles.typeOptionTextActive
-                      ]}>
+                      <Text
+                        style={[
+                          styles.typeOptionText,
+                          newChallengeType === type.id &&
+                            styles.typeOptionTextActive,
+                        ]}
+                      >
                         {type.name}
                       </Text>
                     </TouchableOpacity>
@@ -421,20 +537,28 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
                 {/* Category Selection */}
                 <Text style={styles.formLabel}>Kategori</Text>
                 <View style={styles.categoryGrid}>
-                  {categories.map((category) => (
+                  {categories.map(category => (
                     <TouchableOpacity
                       key={category.id}
                       style={[
                         styles.categoryOption,
-                        newChallengeCategory === category.id && styles.categoryOptionActive
+                        newChallengeCategory === category.id &&
+                          styles.categoryOptionActive,
                       ]}
-                      onPress={() => setNewChallengeCategory(category.id as any)}
+                      onPress={() =>
+                        setNewChallengeCategory(category.id as any)
+                      }
                     >
-                      <Text style={styles.categoryOptionIcon}>{category.icon}</Text>
-                      <Text style={[
-                        styles.categoryOptionText,
-                        newChallengeCategory === category.id && styles.categoryOptionTextActive
-                      ]}>
+                      <Text style={styles.categoryOptionIcon}>
+                        {category.icon}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.categoryOptionText,
+                          newChallengeCategory === category.id &&
+                            styles.categoryOptionTextActive,
+                        ]}
+                      >
                         {category.name}
                       </Text>
                     </TouchableOpacity>
@@ -444,19 +568,29 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
                 {/* Difficulty Selection */}
                 <Text style={styles.formLabel}>Zorluk</Text>
                 <View style={styles.difficultyGrid}>
-                  {difficulties.map((difficulty) => (
+                  {difficulties.map(difficulty => (
                     <TouchableOpacity
                       key={difficulty.id}
                       style={[
                         styles.difficultyOption,
-                        newChallengeDifficulty === difficulty.id && styles.difficultyOptionActive
+                        newChallengeDifficulty === difficulty.id &&
+                          styles.difficultyOptionActive,
                       ]}
-                      onPress={() => setNewChallengeDifficulty(difficulty.id as any)}
+                      onPress={() =>
+                        setNewChallengeDifficulty(difficulty.id as any)
+                      }
                     >
-                      <Text style={[
-                        styles.difficultyOptionText,
-                        { color: newChallengeDifficulty === difficulty.id ? 'white' : difficulty.color }
-                      ]}>
+                      <Text
+                        style={[
+                          styles.difficultyOptionText,
+                          {
+                            color:
+                              newChallengeDifficulty === difficulty.id
+                                ? 'white'
+                                : difficulty.color,
+                          },
+                        ]}
+                      >
                         {difficulty.name}
                       </Text>
                     </TouchableOpacity>
@@ -464,17 +598,25 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
                 </View>
 
                 <View style={styles.targetContainer}>
-                  <Text style={styles.targetLabel}>Hedef: {newChallengeTarget}</Text>
+                  <Text style={styles.targetLabel}>
+                    Hedef: {newChallengeTarget}
+                  </Text>
                   <View style={styles.targetButtons}>
                     <TouchableOpacity
                       style={styles.targetButton}
-                      onPress={() => setNewChallengeTarget(Math.max(1, newChallengeTarget - 1))}
+                      onPress={() =>
+                        setNewChallengeTarget(
+                          Math.max(1, newChallengeTarget - 1)
+                        )
+                      }
                     >
                       <Text style={styles.targetButtonText}>-</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.targetButton}
-                      onPress={() => setNewChallengeTarget(newChallengeTarget + 1)}
+                      onPress={() =>
+                        setNewChallengeTarget(newChallengeTarget + 1)
+                      }
                     >
                       <Text style={styles.targetButtonText}>+</Text>
                     </TouchableOpacity>
@@ -482,23 +624,31 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
                 </View>
 
                 <View style={styles.durationContainer}>
-                  <Text style={styles.durationLabel}>Süre: {newChallengeDuration} gün</Text>
+                  <Text style={styles.durationLabel}>
+                    Süre: {newChallengeDuration} gün
+                  </Text>
                   <View style={styles.durationButtons}>
                     <TouchableOpacity
                       style={styles.durationButton}
-                      onPress={() => setNewChallengeDuration(Math.max(1, newChallengeDuration - 1))}
+                      onPress={() =>
+                        setNewChallengeDuration(
+                          Math.max(1, newChallengeDuration - 1)
+                        )
+                      }
                     >
                       <Text style={styles.durationButtonText}>-</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.durationButton}
-                      onPress={() => setNewChallengeDuration(newChallengeDuration + 1)}
+                      onPress={() =>
+                        setNewChallengeDuration(newChallengeDuration + 1)
+                      }
                     >
                       <Text style={styles.durationButtonText}>+</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-                
+
                 <TouchableOpacity
                   style={styles.createButton}
                   onPress={handleCreateChallenge}
@@ -507,7 +657,9 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
                   {loading ? (
                     <ActivityIndicator color="white" />
                   ) : (
-                    <Text style={styles.createButtonText}>Challenge Oluştur</Text>
+                    <Text style={styles.createButtonText}>
+                      Challenge Oluştur
+                    </Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -520,7 +672,7 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
               <FlatList
                 data={myChallenges}
                 renderItem={renderChallengeItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -532,7 +684,7 @@ export const SocialChallengesModal: React.FC<SocialChallengesModalProps> = ({
               <FlatList
                 data={myTeams}
                 renderItem={renderTeamItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>

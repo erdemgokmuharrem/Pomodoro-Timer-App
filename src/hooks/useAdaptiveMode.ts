@@ -4,7 +4,13 @@ import { useGamificationStore } from '../store/useGamificationStore';
 
 export interface UserBehaviorPattern {
   id: string;
-  type: 'time_preference' | 'task_complexity' | 'focus_duration' | 'break_frequency' | 'energy_level' | 'productivity_peak';
+  type:
+    | 'time_preference'
+    | 'task_complexity'
+    | 'focus_duration'
+    | 'break_frequency'
+    | 'energy_level'
+    | 'productivity_peak';
   pattern: any;
   confidence: number; // 0-1
   lastUpdated: Date;
@@ -13,7 +19,12 @@ export interface UserBehaviorPattern {
 
 export interface AdaptiveRecommendation {
   id: string;
-  type: 'ui_layout' | 'feature_priority' | 'notification_timing' | 'theme_preference' | 'workflow_suggestion';
+  type:
+    | 'ui_layout'
+    | 'feature_priority'
+    | 'notification_timing'
+    | 'theme_preference'
+    | 'workflow_suggestion';
   title: string;
   description: string;
   confidence: number;
@@ -40,9 +51,13 @@ export interface AdaptiveSettings {
 export const useAdaptiveMode = () => {
   const { tasks, completedPomodoros } = usePomodoroStore();
   const { userLevel, totalXP } = useGamificationStore();
-  
-  const [behaviorPatterns, setBehaviorPatterns] = useState<UserBehaviorPattern[]>([]);
-  const [recommendations, setRecommendations] = useState<AdaptiveRecommendation[]>([]);
+
+  const [behaviorPatterns, setBehaviorPatterns] = useState<
+    UserBehaviorPattern[]
+  >([]);
+  const [recommendations, setRecommendations] = useState<
+    AdaptiveRecommendation[]
+  >([]);
   const [settings, setSettings] = useState<AdaptiveSettings>({
     enableAdaptiveMode: true,
     learningEnabled: true,
@@ -58,7 +73,7 @@ export const useAdaptiveMode = () => {
 
   // Analyze time preferences
   const analyzeTimePreferences = (): UserBehaviorPattern => {
-    const timeData = completedPomodoros.map(p => ({
+    const timeData = (completedPomodoros || []).map(p => ({
       hour: new Date(p.completedAt).getHours(),
       day: new Date(p.completedAt).getDay(),
       completed: p.completed,
@@ -71,7 +86,7 @@ export const useAdaptiveMode = () => {
       hourlyProductivity[data.hour] += data.completed ? 1 : 0;
     });
 
-    const bestHour = Object.keys(hourlyProductivity).reduce((a, b) => 
+    const bestHour = Object.keys(hourlyProductivity).reduce((a, b) =>
       hourlyProductivity[parseInt(a)] > hourlyProductivity[parseInt(b)] ? a : b
     );
 
@@ -95,23 +110,29 @@ export const useAdaptiveMode = () => {
   const analyzeTaskComplexityPreferences = (): UserBehaviorPattern => {
     const complexityData = tasks.map(task => {
       let complexity = 0.5;
-      
+
       // Calculate complexity based on task properties
       if (task.title.length > 50) complexity += 0.1;
       if (task.description && task.description.length > 100) complexity += 0.1;
       if (task.priority === 'high') complexity += 0.2;
       if (task.priority === 'medium') complexity += 0.1;
       if (task.estimatedTime && task.estimatedTime > 60) complexity += 0.1;
-      
+
       return {
         complexity,
-        completed: completedPomodoros.some(p => p.taskId === task.id && p.completed),
+        completed: (completedPomodoros || []).some(
+          p => p.taskId === task.id && p.completed
+        ),
         duration: task.estimatedTime || 25,
       };
     });
 
-    const avgComplexity = complexityData.reduce((sum, data) => sum + data.complexity, 0) / complexityData.length;
-    const completionRate = complexityData.filter(data => data.completed).length / complexityData.length;
+    const avgComplexity =
+      complexityData.reduce((sum, data) => sum + data.complexity, 0) /
+      complexityData.length;
+    const completionRate =
+      complexityData.filter(data => data.completed).length /
+      complexityData.length;
 
     return {
       id: 'task-complexity',
@@ -130,17 +151,23 @@ export const useAdaptiveMode = () => {
 
   // Analyze focus duration patterns
   const analyzeFocusDurationPatterns = (): UserBehaviorPattern => {
-    const durationData = completedPomodoros.map(p => ({
+    const durationData = (completedPomodoros || []).map(p => ({
       duration: p.duration,
       completed: p.completed,
       timeOfDay: new Date(p.completedAt).getHours(),
     }));
 
-    const avgDuration = durationData.reduce((sum, data) => sum + data.duration, 0) / durationData.length;
-    const successfulDurations = durationData.filter(data => data.completed).map(data => data.duration);
-    const optimalDuration = successfulDurations.length > 0 
-      ? successfulDurations.reduce((sum, d) => sum + d, 0) / successfulDurations.length 
-      : avgDuration;
+    const avgDuration =
+      durationData.reduce((sum, data) => sum + data.duration, 0) /
+      durationData.length;
+    const successfulDurations = durationData
+      .filter(data => data.completed)
+      .map(data => data.duration);
+    const optimalDuration =
+      successfulDurations.length > 0
+        ? successfulDurations.reduce((sum, d) => sum + d, 0) /
+          successfulDurations.length
+        : avgDuration;
 
     return {
       id: 'focus-duration',
@@ -149,11 +176,14 @@ export const useAdaptiveMode = () => {
         averageDuration: avgDuration,
         optimalDuration,
         durationVariation: Math.abs(avgDuration - optimalDuration),
-        timeBasedDuration: durationData.reduce((acc, data) => {
-          if (!acc[data.timeOfDay]) acc[data.timeOfDay] = [];
-          acc[data.timeOfDay].push(data.duration);
-          return acc;
-        }, {} as { [hour: number]: number[] }),
+        timeBasedDuration: durationData.reduce(
+          (acc, data) => {
+            if (!acc[data.timeOfDay]) acc[data.timeOfDay] = [];
+            acc[data.timeOfDay].push(data.duration);
+            return acc;
+          },
+          {} as { [hour: number]: number[] }
+        ),
       },
       confidence: 0.8,
       lastUpdated: new Date(),
@@ -163,12 +193,17 @@ export const useAdaptiveMode = () => {
 
   // Analyze break frequency patterns
   const analyzeBreakFrequencyPatterns = (): UserBehaviorPattern => {
-    const breakData = completedPomodoros
-      .sort((a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime())
+    const breakData = (completedPomodoros || [])
+      .sort(
+        (a, b) =>
+          new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime()
+      )
       .map((p, index, array) => {
         if (index === 0) return null;
         const prevPomodoro = array[index - 1];
-        const timeDiff = new Date(p.completedAt).getTime() - new Date(prevPomodoro.completedAt).getTime();
+        const timeDiff =
+          new Date(p.completedAt).getTime() -
+          new Date(prevPomodoro.completedAt).getTime();
         return {
           breakDuration: timeDiff / (1000 * 60), // minutes
           wasBreak: timeDiff > 5 * 60 * 1000, // more than 5 minutes
@@ -177,8 +212,11 @@ export const useAdaptiveMode = () => {
       })
       .filter(Boolean);
 
-    const avgBreakDuration = breakData.reduce((sum, data) => sum + data.breakDuration, 0) / breakData.length;
-    const breakFrequency = breakData.filter(data => data.wasBreak).length / breakData.length;
+    const avgBreakDuration =
+      breakData.reduce((sum, data) => sum + data.breakDuration, 0) /
+      breakData.length;
+    const breakFrequency =
+      breakData.filter(data => data.wasBreak).length / breakData.length;
 
     return {
       id: 'break-frequency',
@@ -200,7 +238,7 @@ export const useAdaptiveMode = () => {
 
   // Analyze energy level patterns
   const analyzeEnergyLevelPatterns = (): UserBehaviorPattern => {
-    const energyData = completedPomodoros.map(p => ({
+    const energyData = (completedPomodoros || []).map(p => ({
       hour: new Date(p.completedAt).getHours(),
       day: new Date(p.completedAt).getDay(),
       completed: p.completed,
@@ -225,7 +263,9 @@ export const useAdaptiveMode = () => {
       pattern: {
         hourlyEnergy,
         peakEnergyHours,
-        averageEnergy: Object.values(hourlyEnergy).reduce((sum, energy) => sum + energy, 0) / Object.values(hourlyEnergy).length,
+        averageEnergy:
+          Object.values(hourlyEnergy).reduce((sum, energy) => sum + energy, 0) /
+          Object.values(hourlyEnergy).length,
         energyPattern: hourlyEnergy,
       },
       confidence: 0.8,
@@ -236,7 +276,7 @@ export const useAdaptiveMode = () => {
 
   // Analyze productivity peaks
   const analyzeProductivityPeaks = (): UserBehaviorPattern => {
-    const productivityData = completedPomodoros.map(p => ({
+    const productivityData = (completedPomodoros || []).map(p => ({
       date: new Date(p.completedAt).toDateString(),
       hour: new Date(p.completedAt).getHours(),
       day: new Date(p.completedAt).getDay(),
@@ -251,9 +291,12 @@ export const useAdaptiveMode = () => {
       dailyProductivity[data.date] += data.completed ? 1 : 0;
     });
 
-    const avgDailyProductivity = Object.values(dailyProductivity).reduce((sum, prod) => sum + prod, 0) / Object.values(dailyProductivity).length;
-    const bestDays = Object.keys(dailyProductivity)
-      .filter(date => dailyProductivity[date] > avgDailyProductivity * 1.2);
+    const avgDailyProductivity =
+      Object.values(dailyProductivity).reduce((sum, prod) => sum + prod, 0) /
+      Object.values(dailyProductivity).length;
+    const bestDays = Object.keys(dailyProductivity).filter(
+      date => dailyProductivity[date] > avgDailyProductivity * 1.2
+    );
 
     return {
       id: 'productivity-peak',
@@ -275,13 +318,16 @@ export const useAdaptiveMode = () => {
     const recommendations: AdaptiveRecommendation[] = [];
 
     // UI Layout recommendations
-    const timePattern = behaviorPatterns.find(p => p.type === 'time_preference');
+    const timePattern = behaviorPatterns.find(
+      p => p.type === 'time_preference'
+    );
     if (timePattern && timePattern.pattern.peakHours.length > 0) {
       recommendations.push({
         id: 'ui-layout-1',
         type: 'ui_layout',
         title: 'Zaman Bazlı UI Düzeni',
-        description: 'En verimli saatlerinize göre arayüz düzenini optimize edin',
+        description:
+          'En verimli saatlerinize göre arayüz düzenini optimize edin',
         confidence: timePattern.confidence,
         reasoning: `Analiz sonucunda ${timePattern.pattern.peakHours.join(', ')} saatlerinde daha verimli olduğunuz tespit edildi`,
         implementation: {
@@ -298,15 +344,22 @@ export const useAdaptiveMode = () => {
     }
 
     // Feature priority recommendations
-    const complexityPattern = behaviorPatterns.find(p => p.type === 'task_complexity');
-    if (complexityPattern && complexityPattern.pattern.averageComplexity > 0.7) {
+    const complexityPattern = behaviorPatterns.find(
+      p => p.type === 'task_complexity'
+    );
+    if (
+      complexityPattern &&
+      complexityPattern.pattern.averageComplexity > 0.7
+    ) {
       recommendations.push({
         id: 'feature-priority-1',
         type: 'feature_priority',
         title: 'Karmaşık Görev Odaklı Özellikler',
-        description: 'Karmaşık görevlerle çalıştığınız için gelişmiş özellikleri önceliklendirin',
+        description:
+          'Karmaşık görevlerle çalıştığınız için gelişmiş özellikleri önceliklendirin',
         confidence: complexityPattern.confidence,
-        reasoning: 'Görevlerinizin ortalama karmaşıklığı yüksek, bu nedenle gelişmiş planlama özellikleri önerilir',
+        reasoning:
+          'Görevlerinizin ortalama karmaşıklığı yüksek, bu nedenle gelişmiş planlama özellikleri önerilir',
         implementation: {
           component: 'FeaturePriority',
           changes: {
@@ -328,7 +381,8 @@ export const useAdaptiveMode = () => {
         id: 'notification-timing-1',
         type: 'notification_timing',
         title: 'Akıllı Bildirim Zamanlaması',
-        description: 'Enerji seviyenize göre bildirim zamanlarını optimize edin',
+        description:
+          'Enerji seviyenize göre bildirim zamanlarını optimize edin',
         confidence: energyPattern.confidence,
         reasoning: `Enerji seviyenizin yüksek olduğu saatler: ${energyPattern.pattern.peakEnergyHours.join(', ')}`,
         implementation: {
@@ -345,15 +399,19 @@ export const useAdaptiveMode = () => {
     }
 
     // Theme preference recommendations
-    const focusPattern = behaviorPatterns.find(p => p.type === 'focus_duration');
+    const focusPattern = behaviorPatterns.find(
+      p => p.type === 'focus_duration'
+    );
     if (focusPattern && focusPattern.pattern.optimalDuration > 30) {
       recommendations.push({
         id: 'theme-preference-1',
         type: 'theme_preference',
         title: 'Uzun Odaklanma Teması',
-        description: 'Uzun odaklanma seansları için göz yorgunluğunu azaltan tema',
+        description:
+          'Uzun odaklanma seansları için göz yorgunluğunu azaltan tema',
         confidence: focusPattern.confidence,
-        reasoning: 'Ortalama odaklanma süreniz 30 dakikadan fazla, göz yorgunluğunu azaltmak için koyu tema önerilir',
+        reasoning:
+          'Ortalama odaklanma süreniz 30 dakikadan fazla, göz yorgunluğunu azaltmak için koyu tema önerilir',
         implementation: {
           component: 'ThemeProvider',
           changes: {
@@ -369,7 +427,9 @@ export const useAdaptiveMode = () => {
     }
 
     // Workflow suggestions
-    const breakPattern = behaviorPatterns.find(p => p.type === 'break_frequency');
+    const breakPattern = behaviorPatterns.find(
+      p => p.type === 'break_frequency'
+    );
     if (breakPattern && breakPattern.pattern.breakFrequency < 0.3) {
       recommendations.push({
         id: 'workflow-suggestion-1',
@@ -377,7 +437,8 @@ export const useAdaptiveMode = () => {
         title: 'Daha Sık Mola Önerisi',
         description: 'Mola sıklığınız düşük, daha sık mola almanız önerilir',
         confidence: breakPattern.confidence,
-        reasoning: 'Mola sıklığınız %30\'un altında, bu durum yorgunluğa ve verimlilik kaybına neden olabilir',
+        reasoning:
+          "Mola sıklığınız %30'un altında, bu durum yorgunluğa ve verimlilik kaybına neden olabilir",
         implementation: {
           component: 'BreakReminder',
           changes: {
@@ -422,7 +483,9 @@ export const useAdaptiveMode = () => {
   };
 
   // Generate recommendations
-  const generateRecommendations = async (): Promise<AdaptiveRecommendation[]> => {
+  const generateRecommendations = async (): Promise<
+    AdaptiveRecommendation[]
+  > => {
     try {
       const patterns = await analyzeBehaviorPatterns();
       const newRecommendations = generateAdaptiveRecommendations();
@@ -436,9 +499,13 @@ export const useAdaptiveMode = () => {
   };
 
   // Apply recommendation
-  const applyRecommendation = async (recommendationId: string): Promise<boolean> => {
+  const applyRecommendation = async (
+    recommendationId: string
+  ): Promise<boolean> => {
     try {
-      const recommendation = recommendations.find(r => r.id === recommendationId);
+      const recommendation = recommendations.find(
+        r => r.id === recommendationId
+      );
       if (!recommendation) return false;
 
       // In a real app, this would apply the recommendation
@@ -462,7 +529,9 @@ export const useAdaptiveMode = () => {
       if (!settings.learningEnabled) return;
 
       // In a real app, this would update the learning model
-      console.log(`Learning from interaction: ${interaction.type} - ${interaction.result}`);
+      console.log(
+        `Learning from interaction: ${interaction.type} - ${interaction.result}`
+      );
     } catch (err) {
       console.error('Learn from interaction error:', err);
     }
@@ -478,10 +547,16 @@ export const useAdaptiveMode = () => {
     if (behaviorPatterns.length === 0) return null;
 
     const totalPatterns = behaviorPatterns.length;
-    const highConfidencePatterns = behaviorPatterns.filter(p => p.confidence > 0.8).length;
-    const avgConfidence = behaviorPatterns.reduce((sum, p) => sum + p.confidence, 0) / totalPatterns;
+    const highConfidencePatterns = behaviorPatterns.filter(
+      p => p.confidence > 0.8
+    ).length;
+    const avgConfidence =
+      behaviorPatterns.reduce((sum, p) => sum + p.confidence, 0) /
+      totalPatterns;
     const totalRecommendations = recommendations.length;
-    const highPriorityRecommendations = recommendations.filter(r => r.implementation.priority === 'high').length;
+    const highPriorityRecommendations = recommendations.filter(
+      r => r.implementation.priority === 'high'
+    ).length;
 
     return {
       totalPatterns,
@@ -496,7 +571,7 @@ export const useAdaptiveMode = () => {
 
   // Auto-update patterns and recommendations
   useEffect(() => {
-    if (settings.enableAdaptiveMode && completedPomodoros.length > 0) {
+    if (settings.enableAdaptiveMode && (completedPomodoros || []).length > 0) {
       generateRecommendations();
     }
   }, [completedPomodoros, settings.enableAdaptiveMode]);

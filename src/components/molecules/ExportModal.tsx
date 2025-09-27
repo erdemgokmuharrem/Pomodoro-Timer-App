@@ -25,14 +25,29 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
   const [isExporting, setIsExporting] = useState(false);
 
   const exportFormats = [
-    { value: 'json' as const, label: 'JSON', description: 'Tüm veriler (önerilen)', icon: '📄' },
-    { value: 'csv' as const, label: 'CSV', description: 'Excel ile açılabilir', icon: '📊' },
-    { value: 'excel' as const, label: 'Excel', description: 'Detaylı rapor', icon: '📈' },
+    {
+      value: 'json' as const,
+      label: 'JSON',
+      description: 'Tüm veriler (önerilen)',
+      icon: '📄',
+    },
+    {
+      value: 'csv' as const,
+      label: 'CSV',
+      description: 'Excel ile açılabilir',
+      icon: '📊',
+    },
+    {
+      value: 'excel' as const,
+      label: 'Excel',
+      description: 'Detaylı rapor',
+      icon: '📈',
+    },
   ];
 
   const handleExport = async () => {
     setIsExporting(true);
-    
+
     try {
       const exportData = exportService.prepareExportData(
         sessions,
@@ -42,13 +57,11 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
       );
 
       const result = await exportService.exportData(exportData, selectedFormat);
-      
+
       Alert.alert(
         'Export Başarılı! 🎉',
         `Verileriniz ${result.fileName} dosyasına kaydedildi.\n\nDosya yolu: ${result.filePath}`,
-        [
-          { text: 'Tamam', onPress: onClose }
-        ]
+        [{ text: 'Tamam', onPress: onClose }]
       );
     } catch (error) {
       console.error('Export error:', error);
@@ -62,7 +75,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
     }
   };
 
-  const FormatButton = ({ format }: { format: typeof exportFormats[0] }) => (
+  const FormatButton = ({ format }: { format: (typeof exportFormats)[0] }) => (
     <TouchableOpacity
       style={[
         styles.formatButton,
@@ -72,16 +85,20 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
     >
       <Text style={styles.formatIcon}>{format.icon}</Text>
       <View style={styles.formatInfo}>
-        <Text style={[
-          styles.formatLabel,
-          selectedFormat === format.value && styles.formatLabelActive,
-        ]}>
+        <Text
+          style={[
+            styles.formatLabel,
+            selectedFormat === format.value && styles.formatLabelActive,
+          ]}
+        >
           {format.label}
         </Text>
-        <Text style={[
-          styles.formatDescription,
-          selectedFormat === format.value && styles.formatDescriptionActive,
-        ]}>
+        <Text
+          style={[
+            styles.formatDescription,
+            selectedFormat === format.value && styles.formatDescriptionActive,
+          ]}
+        >
           {format.description}
         </Text>
       </View>
@@ -89,14 +106,17 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
   );
 
   const getExportStats = () => {
-    const completedSessions = sessions.filter(s => s.isCompleted);
-    const completedTasks = tasks.filter(t => t.isCompleted);
-    const totalFocusTime = completedSessions.reduce((sum, s) => sum + s.duration, 0);
+    const completedSessions = (sessions || []).filter(s => s.isCompleted);
+    const completedTasks = (tasks || []).filter(t => t.isCompleted);
+    const totalFocusTime = completedSessions.reduce(
+      (sum, s) => sum + s.duration,
+      0
+    );
 
     return {
-      sessions: sessions.length,
+      sessions: (sessions || []).length,
       completedSessions: completedSessions.length,
-      tasks: tasks.length,
+      tasks: (tasks || []).length,
       completedTasks: completedTasks.length,
       totalFocusTime,
       badges: userStats.badges.length,
@@ -107,7 +127,11 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
   const stats = getExportStats();
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={onClose}>
@@ -115,7 +139,12 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
           </TouchableOpacity>
           <Text style={styles.title}>Veri Dışa Aktar</Text>
           <TouchableOpacity onPress={handleExport} disabled={isExporting}>
-            <Text style={[styles.exportButton, isExporting && styles.exportButtonDisabled]}>
+            <Text
+              style={[
+                styles.exportButton,
+                isExporting && styles.exportButtonDisabled,
+              ]}
+            >
               {isExporting ? 'Aktarılıyor...' : 'Dışa Aktar'}
             </Text>
           </TouchableOpacity>
@@ -125,7 +154,9 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
           {isExporting && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#3B82F6" />
-              <Text style={styles.loadingText}>Verileriniz hazırlanıyor...</Text>
+              <Text style={styles.loadingText}>
+                Verileriniz hazırlanıyor...
+              </Text>
             </View>
           )}
 
@@ -149,7 +180,9 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
                 <Text style={styles.statLabel}>Tamamlanan</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statValue}>{Math.round(stats.totalFocusTime / 60)}h</Text>
+                <Text style={styles.statValue}>
+                  {Math.round(stats.totalFocusTime / 60)}h
+                </Text>
                 <Text style={styles.statLabel}>Odaklanma</Text>
               </View>
               <View style={styles.statItem}>
@@ -162,7 +195,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
           <Card style={styles.section}>
             <Text style={styles.sectionTitle}>Export Formatı</Text>
             <View style={styles.formatsContainer}>
-              {exportFormats.map((format) => (
+              {exportFormats.map(format => (
                 <FormatButton key={format.value} format={format} />
               ))}
             </View>

@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -22,8 +28,17 @@ import { TaskSchedulingModal } from '../components/molecules/TaskSchedulingModal
 import { AdaptiveModeModal } from '../components/molecules/AdaptiveModeModal';
 import { AICoachModal } from '../components/molecules/AICoachModal';
 import { SmartSchedulingModal } from '../components/molecules/SmartSchedulingModal';
+import { QuestsModal } from '../components/molecules/QuestsModal';
+import { ArtisticCollectionsModal } from '../components/molecules/ArtisticCollectionsModal';
+import { VirtualGardenModal } from '../components/molecules/VirtualGardenModal';
+import { AvatarCustomizationModal } from '../components/molecules/AvatarCustomizationModal';
+import { ReflectJournalModal } from '../components/molecules/ReflectJournalModal';
+import { SocialFeaturesModal } from '../components/molecules/SocialFeaturesModal';
 
-type DashboardScreenNavigationProp = StackNavigationProp<RootStackParamList, 'MainTabs'>;
+type DashboardScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'MainTabs'
+>;
 
 const DashboardScreen = () => {
   const navigation = useNavigation<DashboardScreenNavigationProp>();
@@ -31,17 +46,36 @@ const DashboardScreen = () => {
   const { formattedTime, isRunning, isBreak } = usePomodoroTimer();
   const [modalVisible, setModalVisible] = useState(false);
   const [energyModalVisible, setEnergyModalVisible] = useState(false);
-  const [weeklyReviewModalVisible, setWeeklyReviewModalVisible] = useState(false);
-  const [groupPomodoroModalVisible, setGroupPomodoroModalVisible] = useState(false);
+  const [weeklyReviewModalVisible, setWeeklyReviewModalVisible] =
+    useState(false);
+  const [groupPomodoroModalVisible, setGroupPomodoroModalVisible] =
+    useState(false);
   const [pairFocusModalVisible, setPairFocusModalVisible] = useState(false);
   const [focusRoomsModalVisible, setFocusRoomsModalVisible] = useState(false);
-  const [leagueSystemModalVisible, setLeagueSystemModalVisible] = useState(false);
-  const [socialChallengesModalVisible, setSocialChallengesModalVisible] = useState(false);
-  const [smartDurationModalVisible, setSmartDurationModalVisible] = useState(false);
-  const [taskSchedulingModalVisible, setTaskSchedulingModalVisible] = useState(false);
-  const [adaptiveModeModalVisible, setAdaptiveModeModalVisible] = useState(false);
+  const [leagueSystemModalVisible, setLeagueSystemModalVisible] =
+    useState(false);
+  const [socialChallengesModalVisible, setSocialChallengesModalVisible] =
+    useState(false);
+  const [smartDurationModalVisible, setSmartDurationModalVisible] =
+    useState(false);
+  const [taskSchedulingModalVisible, setTaskSchedulingModalVisible] =
+    useState(false);
+  const [adaptiveModeModalVisible, setAdaptiveModeModalVisible] =
+    useState(false);
   const [aiCoachModalVisible, setAICoachModalVisible] = useState(false);
-  const [smartSchedulingModalVisible, setSmartSchedulingModalVisible] = useState(false);
+  const [smartSchedulingModalVisible, setSmartSchedulingModalVisible] =
+    useState(false);
+  const [questsModalVisible, setQuestsModalVisible] = useState(false);
+  const [artisticCollectionsModalVisible, setArtisticCollectionsModalVisible] =
+    useState(false);
+  const [virtualGardenModalVisible, setVirtualGardenModalVisible] =
+    useState(false);
+  const [avatarCustomizationModalVisible, setAvatarCustomizationModalVisible] =
+    useState(false);
+  const [reflectJournalModalVisible, setReflectJournalModalVisible] =
+    useState(false);
+  const [socialFeaturesModalVisible, setSocialFeaturesModalVisible] =
+    useState(false);
 
   const handleStartPomodoro = () => {
     navigation.navigate('Timer');
@@ -53,14 +87,21 @@ const DashboardScreen = () => {
 
   // Calculate daily progress
   const today = new Date().toDateString();
-  const todaySessions = (sessions || []).filter(session => 
-    session && session.startTime && session.startTime.toDateString() === today && session.isCompleted
+  const todaySessions = (sessions || []).filter(
+    session =>
+      session &&
+      session.startTime &&
+      session.startTime.toDateString() === today &&
+      session.isCompleted
   );
-  const completedPomodoros = todaySessions.length;
-  const progressPercentage = dailyGoal > 0 ? (completedPomodoros / dailyGoal) * 100 : 0;
+  const completedPomodoros = (todaySessions || []).length;
+  const progressPercentage =
+    dailyGoal > 0 ? (completedPomodoros / dailyGoal) * 100 : 0;
 
   // Get today's tasks
-  const todayTasks = (tasks || []).filter(task => task && !task.isCompleted).slice(0, 3);
+  const todayTasks = (tasks || [])
+    .filter(task => task && !task.isCompleted)
+    .slice(0, 3);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -86,7 +127,12 @@ const DashboardScreen = () => {
               {completedPomodoros} / {dailyGoal} Pomodoro
             </Text>
             <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${progressPercentage}%` }]} />
+              <View
+                style={[
+                  styles.progressFill,
+                  { width: `${progressPercentage}%` },
+                ]}
+              />
             </View>
           </View>
         </View>
@@ -98,12 +144,16 @@ const DashboardScreen = () => {
             <Text style={styles.timerText}>
               {isRunning ? formattedTime : `${settings.pomodoroDuration}:00`}
             </Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.startButton, isRunning && styles.pauseButton]}
               onPress={handleStartPomodoro}
             >
               <Text style={styles.startButtonText}>
-                {isRunning ? (isBreak ? 'Mola Devam' : 'Pomodoro Devam') : 'Başlat'}
+                {isRunning
+                  ? isBreak
+                    ? 'Mola Devam'
+                    : 'Pomodoro Devam'
+                  : 'Başlat'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -115,7 +165,7 @@ const DashboardScreen = () => {
           <Text style={styles.energySubtitle}>
             Enerji seviyenize göre özel öneriler
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.energyButton}
             onPress={() => setEnergyModalVisible(true)}
           >
@@ -131,7 +181,7 @@ const DashboardScreen = () => {
           <Text style={styles.weeklyReviewSubtitle}>
             AI destekli haftalık analiz ve öneriler
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.weeklyReviewButton}
             onPress={() => setWeeklyReviewModalVisible(true)}
           >
@@ -147,7 +197,7 @@ const DashboardScreen = () => {
           <Text style={styles.groupPomodoroSubtitle}>
             Arkadaşlarınızla birlikte odaklanın
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.groupPomodoroButton}
             onPress={() => setGroupPomodoroModalVisible(true)}
           >
@@ -163,13 +213,11 @@ const DashboardScreen = () => {
           <Text style={styles.pairFocusSubtitle}>
             İkili çalışma seansları ile odaklanın
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.pairFocusButton}
             onPress={() => setPairFocusModalVisible(true)}
           >
-            <Text style={styles.pairFocusButtonText}>
-              🤝 Pair Focus
-            </Text>
+            <Text style={styles.pairFocusButtonText}>🤝 Pair Focus</Text>
           </TouchableOpacity>
         </View>
 
@@ -179,13 +227,11 @@ const DashboardScreen = () => {
           <Text style={styles.focusRoomsSubtitle}>
             Sanal odalar ile birlikte odaklanın
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.focusRoomsButton}
             onPress={() => setFocusRoomsModalVisible(true)}
           >
-            <Text style={styles.focusRoomsButtonText}>
-              🏠 Focus Rooms
-            </Text>
+            <Text style={styles.focusRoomsButtonText}>🏠 Focus Rooms</Text>
           </TouchableOpacity>
         </View>
 
@@ -195,13 +241,11 @@ const DashboardScreen = () => {
           <Text style={styles.leagueSystemSubtitle}>
             Rekabetçi gamification ile odaklanın
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.leagueSystemButton}
             onPress={() => setLeagueSystemModalVisible(true)}
           >
-            <Text style={styles.leagueSystemButtonText}>
-              🏆 Lig Sistemi
-            </Text>
+            <Text style={styles.leagueSystemButtonText}>🏆 Lig Sistemi</Text>
           </TouchableOpacity>
         </View>
 
@@ -211,7 +255,7 @@ const DashboardScreen = () => {
           <Text style={styles.socialChallengesSubtitle}>
             Topluluk yarışmaları ile motive olun
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.socialChallengesButton}
             onPress={() => setSocialChallengesModalVisible(true)}
           >
@@ -227,13 +271,11 @@ const DashboardScreen = () => {
           <Text style={styles.smartDurationSubtitle}>
             AI destekli optimal süre önerileri
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.smartDurationButton}
             onPress={() => setSmartDurationModalVisible(true)}
           >
-            <Text style={styles.smartDurationButtonText}>
-              🤖 Akıllı Süre
-            </Text>
+            <Text style={styles.smartDurationButtonText}>🤖 Akıllı Süre</Text>
           </TouchableOpacity>
         </View>
 
@@ -243,7 +285,7 @@ const DashboardScreen = () => {
           <Text style={styles.taskSchedulingSubtitle}>
             AI destekli optimal zamanlama önerileri
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.taskSchedulingButton}
             onPress={() => setTaskSchedulingModalVisible(true)}
           >
@@ -259,13 +301,11 @@ const DashboardScreen = () => {
           <Text style={styles.adaptiveModeSubtitle}>
             Alışkanlıklarınıza göre uyarlanan deneyim
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.adaptiveModeButton}
             onPress={() => setAdaptiveModeModalVisible(true)}
           >
-            <Text style={styles.adaptiveModeButtonText}>
-              🧠 Adaptif Mod
-            </Text>
+            <Text style={styles.adaptiveModeButtonText}>🧠 Adaptif Mod</Text>
           </TouchableOpacity>
         </View>
 
@@ -275,13 +315,11 @@ const DashboardScreen = () => {
           <Text style={styles.aiCoachSubtitle}>
             Kişiselleştirilmiş koçluk ve motivasyon
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.aiCoachButton}
             onPress={() => setAICoachModalVisible(true)}
           >
-            <Text style={styles.aiCoachButtonText}>
-              🤖 AI Koç
-            </Text>
+            <Text style={styles.aiCoachButtonText}>🤖 AI Koç</Text>
           </TouchableOpacity>
         </View>
 
@@ -291,13 +329,101 @@ const DashboardScreen = () => {
           <Text style={styles.smartSchedulingSubtitle}>
             AI destekli otomatik zamanlama ve optimizasyon
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.smartSchedulingButton}
             onPress={() => setSmartSchedulingModalVisible(true)}
           >
             <Text style={styles.smartSchedulingButtonText}>
               📅 Akıllı Zamanlama
             </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Quests */}
+        <View style={styles.questsCard}>
+          <Text style={styles.cardTitle}>Görevler & Maceralar</Text>
+          <Text style={styles.questsSubtitle}>
+            Oyunlaştırılmış görevler ve ödüller
+          </Text>
+          <TouchableOpacity
+            style={styles.questsButton}
+            onPress={() => setQuestsModalVisible(true)}
+          >
+            <Text style={styles.questsButtonText}>🎯 Görevler</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Artistic Collections */}
+        <View style={styles.artisticCollectionsCard}>
+          <Text style={styles.cardTitle}>Sanatsal Koleksiyonlar</Text>
+          <Text style={styles.artisticCollectionsSubtitle}>
+            Yaratıcılığınızı serbest bırakın ve sanat eserleri oluşturun
+          </Text>
+          <TouchableOpacity
+            style={styles.artisticCollectionsButton}
+            onPress={() => setArtisticCollectionsModalVisible(true)}
+          >
+            <Text style={styles.artisticCollectionsButtonText}>
+              🎨 Sanat Galerisi
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Virtual Garden */}
+        <View style={styles.virtualGardenCard}>
+          <Text style={styles.cardTitle}>Sanal Bahçe</Text>
+          <Text style={styles.virtualGardenSubtitle}>
+            Sanal dünyada bahçe oluşturun ve bitkilerinizi büyütün
+          </Text>
+          <TouchableOpacity
+            style={styles.virtualGardenButton}
+            onPress={() => setVirtualGardenModalVisible(true)}
+          >
+            <Text style={styles.virtualGardenButtonText}>🌱 Sanal Bahçe</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Avatar Customization */}
+        <View style={styles.avatarCustomizationCard}>
+          <Text style={styles.cardTitle}>Avatar Kişiselleştirme</Text>
+          <Text style={styles.avatarCustomizationSubtitle}>
+            Avatar'ınızı kişiselleştirin ve benzersiz görünüm oluşturun
+          </Text>
+          <TouchableOpacity
+            style={styles.avatarCustomizationButton}
+            onPress={() => setAvatarCustomizationModalVisible(true)}
+          >
+            <Text style={styles.avatarCustomizationButtonText}>
+              👤 Avatar Düzenle
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Reflect Journal */}
+        <View style={styles.reflectJournalCard}>
+          <Text style={styles.cardTitle}>Reflect Journal</Text>
+          <Text style={styles.reflectJournalSubtitle}>
+            Günlük refleksiyon yapın ve kişisel gelişiminizi takip edin
+          </Text>
+          <TouchableOpacity
+            style={styles.reflectJournalButton}
+            onPress={() => setReflectJournalModalVisible(true)}
+          >
+            <Text style={styles.reflectJournalButtonText}>📝 Günlük Yaz</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Social Features */}
+        <View style={styles.socialFeaturesCard}>
+          <Text style={styles.cardTitle}>Sosyal Özellikler</Text>
+          <Text style={styles.socialFeaturesSubtitle}>
+            Arkadaşlarınızla bağlantı kurun ve birlikte çalışın
+          </Text>
+          <TouchableOpacity
+            style={styles.socialFeaturesButton}
+            onPress={() => setSocialFeaturesModalVisible(true)}
+          >
+            <Text style={styles.socialFeaturesButtonText}>👥 Sosyal Ağ</Text>
           </TouchableOpacity>
         </View>
 
@@ -309,10 +435,10 @@ const DashboardScreen = () => {
               <Text style={styles.addButtonText}>+</Text>
             </TouchableOpacity>
           </View>
-          
+
           <View style={styles.taskList}>
-            {todayTasks.length > 0 ? (
-              todayTasks.map((task) => (
+            {(todayTasks || []).length > 0 ? (
+              todayTasks.map(task => (
                 <View key={task.id} style={styles.taskItem}>
                   <Text style={styles.taskText}>{task.title}</Text>
                   <Text style={styles.taskPomodoros}>
@@ -333,12 +459,12 @@ const DashboardScreen = () => {
         task={null}
         mode="create"
       />
-      
+
       <EnergyRecommendationsModal
         visible={energyModalVisible}
         onClose={() => setEnergyModalVisible(false)}
       />
-      
+
       <WeeklyReviewModal
         visible={weeklyReviewModalVisible}
         onClose={() => setWeeklyReviewModalVisible(false)}
@@ -392,6 +518,36 @@ const DashboardScreen = () => {
       <SmartSchedulingModal
         visible={smartSchedulingModalVisible}
         onClose={() => setSmartSchedulingModalVisible(false)}
+      />
+
+      <QuestsModal
+        visible={questsModalVisible}
+        onClose={() => setQuestsModalVisible(false)}
+      />
+
+      <ArtisticCollectionsModal
+        visible={artisticCollectionsModalVisible}
+        onClose={() => setArtisticCollectionsModalVisible(false)}
+      />
+
+      <VirtualGardenModal
+        visible={virtualGardenModalVisible}
+        onClose={() => setVirtualGardenModalVisible(false)}
+      />
+
+      <AvatarCustomizationModal
+        visible={avatarCustomizationModalVisible}
+        onClose={() => setAvatarCustomizationModalVisible(false)}
+      />
+
+      <ReflectJournalModal
+        visible={reflectJournalModalVisible}
+        onClose={() => setReflectJournalModalVisible(false)}
+      />
+
+      <SocialFeaturesModal
+        visible={socialFeaturesModalVisible}
+        onClose={() => setSocialFeaturesModalVisible(false)}
       />
     </SafeAreaView>
   );
@@ -907,6 +1063,186 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   smartSchedulingButtonText: {
+    fontSize: 16,
+    color: '#4CAF50',
+    fontWeight: '600',
+  },
+  questsCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  questsSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  questsButton: {
+    backgroundColor: '#F3E5F5',
+    borderWidth: 1,
+    borderColor: '#9C27B0',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  questsButtonText: {
+    fontSize: 16,
+    color: '#9C27B0',
+    fontWeight: '600',
+  },
+  artisticCollectionsCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  artisticCollectionsSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  artisticCollectionsButton: {
+    backgroundColor: '#FCE4EC',
+    borderWidth: 1,
+    borderColor: '#E91E63',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  artisticCollectionsButtonText: {
+    fontSize: 16,
+    color: '#E91E63',
+    fontWeight: '600',
+  },
+  virtualGardenCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  virtualGardenSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  virtualGardenButton: {
+    backgroundColor: '#E8F5E8',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  virtualGardenButtonText: {
+    fontSize: 16,
+    color: '#4CAF50',
+    fontWeight: '600',
+  },
+  avatarCustomizationCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  avatarCustomizationSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  avatarCustomizationButton: {
+    backgroundColor: '#E3F2FD',
+    borderWidth: 1,
+    borderColor: '#2196F3',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  avatarCustomizationButtonText: {
+    fontSize: 16,
+    color: '#2196F3',
+    fontWeight: '600',
+  },
+  reflectJournalCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  reflectJournalSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  reflectJournalButton: {
+    backgroundColor: '#FFF3E0',
+    borderWidth: 1,
+    borderColor: '#FF9800',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  reflectJournalButtonText: {
+    fontSize: 16,
+    color: '#FF9800',
+    fontWeight: '600',
+  },
+  socialFeaturesCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  socialFeaturesSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  socialFeaturesButton: {
+    backgroundColor: '#E8F5E8',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  socialFeaturesButtonText: {
     fontSize: 16,
     color: '#4CAF50',
     fontWeight: '600',

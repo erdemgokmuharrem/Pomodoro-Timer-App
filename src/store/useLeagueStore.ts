@@ -85,38 +85,71 @@ interface LeagueStore {
   error: string | null;
 
   // Player management
-  createPlayer: (playerData: Omit<LeaguePlayer, 'id' | 'currentLeague' | 'currentTier' | 'currentRank' | 'totalPoints' | 'weeklyPoints' | 'streak' | 'totalPomodoros' | 'totalFocusTime' | 'joinDate' | 'lastActive' | 'achievements' | 'badges'>) => Promise<string>;
+  createPlayer: (
+    playerData: Omit<
+      LeaguePlayer,
+      | 'id'
+      | 'currentLeague'
+      | 'currentTier'
+      | 'currentRank'
+      | 'totalPoints'
+      | 'weeklyPoints'
+      | 'streak'
+      | 'totalPomodoros'
+      | 'totalFocusTime'
+      | 'joinDate'
+      | 'lastActive'
+      | 'achievements'
+      | 'badges'
+    >
+  ) => Promise<string>;
   updatePlayer: (updates: Partial<LeaguePlayer>) => Promise<void>;
   getPlayerStats: (playerId: string) => Promise<LeaguePlayer | null>;
-  
+
   // League operations
   joinLeague: (leagueId: string) => Promise<boolean>;
   leaveLeague: (leagueId: string) => Promise<boolean>;
-  startMatch: (matchData: Omit<LeagueMatch, 'id' | 'startTime' | 'endTime' | 'isActive' | 'points'>) => Promise<string>;
-  endMatch: (matchId: string, results: { [playerId: string]: number }) => Promise<boolean>;
-  
+  startMatch: (
+    matchData: Omit<
+      LeagueMatch,
+      'id' | 'startTime' | 'endTime' | 'isActive' | 'points'
+    >
+  ) => Promise<string>;
+  endMatch: (
+    matchId: string,
+    results: { [playerId: string]: number }
+  ) => Promise<boolean>;
+
   // Leaderboard & Rankings
   getLeaderboard: (tier?: string, limit?: number) => Promise<LeaguePlayer[]>;
   getPlayerRank: (playerId: string) => Promise<number>;
   getTierInfo: (tierId: string) => Promise<LeagueTier | null>;
-  
+
   // Season management
-  startNewSeason: (seasonData: Omit<LeagueSeason, 'id' | 'isActive' | 'totalPlayers' | 'leaderboard' | 'matches'>) => Promise<string>;
+  startNewSeason: (
+    seasonData: Omit<
+      LeagueSeason,
+      'id' | 'isActive' | 'totalPlayers' | 'leaderboard' | 'matches'
+    >
+  ) => Promise<string>;
   endSeason: (seasonId: string) => Promise<boolean>;
   getSeasonRewards: (seasonId: string) => Promise<string[]>;
-  
+
   // Matchmaking
-  findMatch: (playerId: string, matchType: LeagueMatch['type']) => Promise<LeagueMatch | null>;
+  findMatch: (
+    playerId: string,
+    matchType: LeagueMatch['type']
+  ) => Promise<LeagueMatch | null>;
   getMatchHistory: (playerId: string) => Promise<LeagueMatch[]>;
-  
+
   // Achievements & Rewards
   unlockAchievement: (playerId: string, achievement: string) => Promise<void>;
   awardBadge: (playerId: string, badge: string) => Promise<void>;
   claimReward: (playerId: string, reward: string) => Promise<boolean>;
-  
+
   // Settings
   updateSettings: (newSettings: Partial<LeagueSettings>) => Promise<void>;
-  
+
   // Data management
   loadLeagueData: () => Promise<void>;
   saveLeagueData: () => Promise<void>;
@@ -159,7 +192,12 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
       maxPoints: 4999,
       color: '#FFD700',
       icon: '🥇',
-      benefits: ['Premium rozetler', 'Günlük bonus', 'Özel avatar', 'Liderlik tablosu'],
+      benefits: [
+        'Premium rozetler',
+        'Günlük bonus',
+        'Özel avatar',
+        'Liderlik tablosu',
+      ],
       promotionReward: 500,
       demotionThreshold: 2000,
     },
@@ -170,7 +208,12 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
       maxPoints: 9999,
       color: '#E5E4E2',
       icon: '💎',
-      benefits: ['Elit rozetler', 'Haftalık bonus', 'Özel avatar', 'Öncelikli destek'],
+      benefits: [
+        'Elit rozetler',
+        'Haftalık bonus',
+        'Özel avatar',
+        'Öncelikli destek',
+      ],
       promotionReward: 1000,
       demotionThreshold: 4000,
     },
@@ -181,7 +224,12 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
       maxPoints: 19999,
       color: '#B9F2FF',
       icon: '💠',
-      benefits: ['Efsanevi rozetler', 'Günlük mega bonus', 'Özel avatar', 'VIP destek'],
+      benefits: [
+        'Efsanevi rozetler',
+        'Günlük mega bonus',
+        'Özel avatar',
+        'VIP destek',
+      ],
       promotionReward: 2000,
       demotionThreshold: 8000,
     },
@@ -192,7 +240,13 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
       maxPoints: 49999,
       color: '#8A2BE2',
       icon: '👑',
-      benefits: ['Efsanevi rozetler', 'Günlük mega bonus', 'Özel avatar', 'VIP destek', 'Özel etkinlikler'],
+      benefits: [
+        'Efsanevi rozetler',
+        'Günlük mega bonus',
+        'Özel avatar',
+        'VIP destek',
+        'Özel etkinlikler',
+      ],
       promotionReward: 5000,
       demotionThreshold: 15000,
     },
@@ -203,7 +257,14 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
       maxPoints: 99999,
       color: '#FF4500',
       icon: '🏆',
-      benefits: ['Efsanevi rozetler', 'Günlük mega bonus', 'Özel avatar', 'VIP destek', 'Özel etkinlikler', 'Mentorluk'],
+      benefits: [
+        'Efsanevi rozetler',
+        'Günlük mega bonus',
+        'Özel avatar',
+        'VIP destek',
+        'Özel etkinlikler',
+        'Mentorluk',
+      ],
       promotionReward: 10000,
       demotionThreshold: 40000,
     },
@@ -223,10 +284,10 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   error: null,
 
   // Create player
-  createPlayer: async (playerData) => {
+  createPlayer: async playerData => {
     try {
       set({ loading: true, error: null });
-      
+
       const newPlayer: LeaguePlayer = {
         ...playerData,
         id: `player-${Date.now()}`,
@@ -246,7 +307,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
 
       set({ myPlayer: newPlayer });
       await get().saveLeagueData();
-      
+
       return newPlayer.id;
     } catch (error) {
       set({ error: 'Failed to create league player' });
@@ -258,7 +319,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Update player
-  updatePlayer: async (updates) => {
+  updatePlayer: async updates => {
     try {
       const { myPlayer } = get();
       if (!myPlayer) return;
@@ -273,7 +334,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Get player stats
-  getPlayerStats: async (playerId) => {
+  getPlayerStats: async playerId => {
     try {
       const { myPlayer, leaderboard } = get();
       if (myPlayer && myPlayer.id === playerId) {
@@ -287,7 +348,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Join league
-  joinLeague: async (leagueId) => {
+  joinLeague: async leagueId => {
     try {
       const { myPlayer } = get();
       if (!myPlayer) return false;
@@ -302,7 +363,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Leave league
-  leaveLeague: async (leagueId) => {
+  leaveLeague: async leagueId => {
     try {
       const { myPlayer } = get();
       if (!myPlayer || myPlayer.currentLeague !== leagueId) return false;
@@ -317,7 +378,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Start match
-  startMatch: async (matchData) => {
+  startMatch: async matchData => {
     try {
       const newMatch: LeagueMatch = {
         ...matchData,
@@ -331,7 +392,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
       const { recentMatches } = get();
       set({ recentMatches: [newMatch, ...recentMatches.slice(0, 9)] });
       await get().saveLeagueData();
-      
+
       return newMatch.id;
     } catch (error) {
       set({ error: 'Failed to start match' });
@@ -345,7 +406,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
     try {
       const { recentMatches, myPlayer } = get();
       const matchIndex = recentMatches.findIndex(m => m.id === matchId);
-      
+
       if (matchIndex === -1) return false;
 
       const updatedMatches = [...recentMatches];
@@ -354,7 +415,9 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
         isActive: false,
         endTime: new Date(),
         points: results,
-        winner: Object.keys(results).reduce((a, b) => results[a] > results[b] ? a : b),
+        winner: Object.keys(results).reduce((a, b) =>
+          results[a] > results[b] ? a : b
+        ),
       };
 
       set({ recentMatches: updatedMatches });
@@ -384,7 +447,9 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
       let filteredLeaderboard = leaderboard;
 
       if (tier) {
-        filteredLeaderboard = leaderboard.filter(player => player.currentTier === tier);
+        filteredLeaderboard = leaderboard.filter(
+          player => player.currentTier === tier
+        );
       }
 
       return filteredLeaderboard
@@ -397,11 +462,15 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Get player rank
-  getPlayerRank: async (playerId) => {
+  getPlayerRank: async playerId => {
     try {
       const { leaderboard } = get();
-      const sortedLeaderboard = leaderboard.sort((a, b) => b.totalPoints - a.totalPoints);
-      const playerIndex = sortedLeaderboard.findIndex(player => player.id === playerId);
+      const sortedLeaderboard = leaderboard.sort(
+        (a, b) => b.totalPoints - a.totalPoints
+      );
+      const playerIndex = sortedLeaderboard.findIndex(
+        player => player.id === playerId
+      );
       return playerIndex >= 0 ? playerIndex + 1 : 0;
     } catch (error) {
       console.error('Get player rank error:', error);
@@ -410,7 +479,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Get tier info
-  getTierInfo: async (tierId) => {
+  getTierInfo: async tierId => {
     try {
       const { availableTiers } = get();
       return availableTiers.find(tier => tier.id === tierId) || null;
@@ -421,7 +490,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Start new season
-  startNewSeason: async (seasonData) => {
+  startNewSeason: async seasonData => {
     try {
       const newSeason: LeagueSeason = {
         ...seasonData,
@@ -440,7 +509,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
 
       set({ currentSeason: newSeason });
       await get().saveLeagueData();
-      
+
       return newSeason.id;
     } catch (error) {
       set({ error: 'Failed to start new season' });
@@ -450,7 +519,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // End season
-  endSeason: async (seasonId) => {
+  endSeason: async seasonId => {
     try {
       const { currentSeason } = get();
       if (!currentSeason || currentSeason.id !== seasonId) return false;
@@ -458,7 +527,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
       const updatedSeason = { ...currentSeason, isActive: false };
       set({ currentSeason: updatedSeason });
       await get().saveLeagueData();
-      
+
       return true;
     } catch (error) {
       set({ error: 'Failed to end season' });
@@ -468,7 +537,7 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Get season rewards
-  getSeasonRewards: async (seasonId) => {
+  getSeasonRewards: async seasonId => {
     try {
       const { currentSeason } = get();
       if (!currentSeason || currentSeason.id !== seasonId) return [];
@@ -485,10 +554,11 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
     try {
       // Simple matchmaking logic - in real app, this would be more sophisticated
       const { recentMatches } = get();
-      const availableMatch = recentMatches.find(match => 
-        match.type === matchType && 
-        match.isActive && 
-        match.players.length < get().settings.maxPlayersPerMatch
+      const availableMatch = recentMatches.find(
+        match =>
+          match.type === matchType &&
+          match.isActive &&
+          match.players.length < get().settings.maxPlayersPerMatch
       );
 
       return availableMatch || null;
@@ -499,10 +569,10 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Get match history
-  getMatchHistory: async (playerId) => {
+  getMatchHistory: async playerId => {
     try {
       const { recentMatches } = get();
-      return recentMatches.filter(match => 
+      return recentMatches.filter(match =>
         match.players.some(player => player.id === playerId)
       );
     } catch (error) {
@@ -556,12 +626,15 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   },
 
   // Update settings
-  updateSettings: async (newSettings) => {
+  updateSettings: async newSettings => {
     try {
       const { settings } = get();
       const updatedSettings = { ...settings, ...newSettings };
       set({ settings: updatedSettings });
-      await AsyncStorage.setItem('leagueSettings', JSON.stringify(updatedSettings));
+      await AsyncStorage.setItem(
+        'leagueSettings',
+        JSON.stringify(updatedSettings)
+      );
     } catch (error) {
       set({ error: 'Failed to update league settings' });
       console.error('Update league settings error:', error);
@@ -572,8 +645,14 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   loadLeagueData: async () => {
     try {
       set({ loading: true });
-      
-      const [savedPlayer, savedSeason, savedLeaderboard, savedMatches, savedSettings] = await Promise.all([
+
+      const [
+        savedPlayer,
+        savedSeason,
+        savedLeaderboard,
+        savedMatches,
+        savedSettings,
+      ] = await Promise.all([
         AsyncStorage.getItem('leaguePlayer'),
         AsyncStorage.getItem('currentSeason'),
         AsyncStorage.getItem('leagueLeaderboard'),
@@ -611,11 +690,16 @@ export const useLeagueStore = create<LeagueStore>((set, get) => ({
   // Save league data
   saveLeagueData: async () => {
     try {
-      const { myPlayer, currentSeason, leaderboard, recentMatches, settings } = get();
-      
+      const { myPlayer, currentSeason, leaderboard, recentMatches, settings } =
+        get();
+
       await Promise.all([
-        myPlayer ? AsyncStorage.setItem('leaguePlayer', JSON.stringify(myPlayer)) : Promise.resolve(),
-        currentSeason ? AsyncStorage.setItem('currentSeason', JSON.stringify(currentSeason)) : Promise.resolve(),
+        myPlayer
+          ? AsyncStorage.setItem('leaguePlayer', JSON.stringify(myPlayer))
+          : Promise.resolve(),
+        currentSeason
+          ? AsyncStorage.setItem('currentSeason', JSON.stringify(currentSeason))
+          : Promise.resolve(),
         AsyncStorage.setItem('leagueLeaderboard', JSON.stringify(leaderboard)),
         AsyncStorage.setItem('recentMatches', JSON.stringify(recentMatches)),
         AsyncStorage.setItem('leagueSettings', JSON.stringify(settings)),

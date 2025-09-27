@@ -7,10 +7,14 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { useContextFilters, ContextFilter, FilterGroup } from '../../hooks/useContextFilters';
+import {
+  useContextFilters,
+  ContextFilter,
+  FilterGroup,
+} from '../../hooks/useContextFilters';
 import { useTheme } from '../../hooks/useTheme';
-import { Button } from '../atoms/Button';
-import { Card } from '../atoms/Card';
+import Button from '../atoms/Button';
+import Card from '../atoms/Card';
 
 interface ContextFiltersModalProps {
   visible: boolean;
@@ -60,12 +64,18 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
 
   const getFilterIcon = (type: string) => {
     switch (type) {
-      case 'tag': return '🏷️';
-      case 'priority': return '⚡';
-      case 'duration': return '⏱️';
-      case 'status': return '📊';
-      case 'date': return '📅';
-      default: return '🔍';
+      case 'tag':
+        return '🏷️';
+      case 'priority':
+        return '⚡';
+      case 'duration':
+        return '⏱️';
+      case 'status':
+        return '📊';
+      case 'date':
+        return '📅';
+      default:
+        return '🔍';
     }
   };
 
@@ -81,55 +91,69 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
     >
       <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
         {/* Header */}
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: 20,
-          borderBottomWidth: 1,
-          borderBottomColor: theme.colors.border,
-        }}>
-          <Text style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: theme.colors.text,
-          }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: theme.colors.border,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 'bold',
+              color: theme.colors.text,
+            }}
+          >
             Görev Filtreleri
           </Text>
           <TouchableOpacity onPress={onClose}>
-            <Text style={{
-              fontSize: 16,
-              color: theme.colors.primary,
-            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                color: theme.colors.primary,
+              }}
+            >
               Kapat
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Filter Stats */}
-        <View style={{
-          padding: 20,
-          backgroundColor: theme.colors.surface,
-          borderBottomWidth: 1,
-          borderBottomColor: theme.colors.border,
-        }}>
-          <View style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: theme.colors.surface,
+            borderBottomWidth: 1,
+            borderBottomColor: theme.colors.border,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <View>
-              <Text style={{
-                fontSize: 16,
-                fontWeight: 'bold',
-                color: theme.colors.text,
-              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: theme.colors.text,
+                }}
+              >
                 {stats.filteredCount} / {stats.totalTasks} görev
               </Text>
-              <Text style={{
-                fontSize: 14,
-                color: theme.colors.textSecondary,
-              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: theme.colors.textSecondary,
+                }}
+              >
                 {stats.activeFilterCount} aktif filtre
               </Text>
             </View>
@@ -143,11 +167,13 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
                   borderRadius: 6,
                 }}
               >
-                <Text style={{
-                  fontSize: 12,
-                  color: theme.colors.background,
-                  fontWeight: 'bold',
-                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: theme.colors.background,
+                    fontWeight: 'bold',
+                  }}
+                >
                   Temizle
                 </Text>
               </TouchableOpacity>
@@ -158,16 +184,18 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
         {/* Quick Suggestions */}
         {quickSuggestions.length > 0 && (
           <View style={{ padding: 20 }}>
-            <Text style={{
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: theme.colors.text,
-              marginBottom: 12,
-            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: theme.colors.text,
+                marginBottom: 12,
+              }}
+            >
               Hızlı Öneriler
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {quickSuggestions.map((suggestion) => (
+              {quickSuggestions.map(suggestion => (
                 <TouchableOpacity
                   key={suggestion.id}
                   onPress={() => handleQuickFilter(suggestion)}
@@ -175,23 +203,31 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
                     paddingHorizontal: 16,
                     paddingVertical: 8,
                     borderRadius: 20,
-                    backgroundColor: activeFilters.some(f => f.id === suggestion.id) 
-                      ? getFilterColor(suggestion) 
+                    backgroundColor: activeFilters.some(
+                      f => f.id === suggestion.id
+                    )
+                      ? getFilterColor(suggestion)
                       : theme.colors.surface,
                     marginRight: 10,
                     borderWidth: 1,
-                    borderColor: activeFilters.some(f => f.id === suggestion.id) 
-                      ? getFilterColor(suggestion) 
+                    borderColor: activeFilters.some(f => f.id === suggestion.id)
+                      ? getFilterColor(suggestion)
                       : theme.colors.border,
                   }}
                 >
-                  <Text style={{
-                    fontSize: 14,
-                    color: activeFilters.some(f => f.id === suggestion.id) 
-                      ? theme.colors.background 
-                      : theme.colors.text,
-                    fontWeight: activeFilters.some(f => f.id === suggestion.id) ? 'bold' : 'normal',
-                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: activeFilters.some(f => f.id === suggestion.id)
+                        ? theme.colors.background
+                        : theme.colors.text,
+                      fontWeight: activeFilters.some(
+                        f => f.id === suggestion.id
+                      )
+                        ? 'bold'
+                        : 'normal',
+                    }}
+                  >
                     {suggestion.icon} {suggestion.name}
                   </Text>
                 </TouchableOpacity>
@@ -202,10 +238,12 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
 
         {/* Filter Groups */}
         <ScrollView style={{ flex: 1, padding: 20 }}>
-          {filterGroups.map((group) => (
+          {filterGroups.map(group => (
             <Card key={group.id} style={{ marginBottom: 20 }}>
               <TouchableOpacity
-                onPress={() => setSelectedGroup(selectedGroup === group.id ? null : group.id)}
+                onPress={() =>
+                  setSelectedGroup(selectedGroup === group.id ? null : group.id)
+                }
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
@@ -213,24 +251,28 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
                   paddingVertical: 8,
                 }}
               >
-                <Text style={{
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                  color: theme.colors.text,
-                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    color: theme.colors.text,
+                  }}
+                >
                   {getFilterIcon(group.filters[0]?.type || '')} {group.name}
                 </Text>
-                <Text style={{
-                  fontSize: 14,
-                  color: theme.colors.textSecondary,
-                }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: theme.colors.textSecondary,
+                  }}
+                >
                   {selectedGroup === group.id ? '▼' : '▶'}
                 </Text>
               </TouchableOpacity>
 
               {selectedGroup === group.id && (
                 <View style={{ marginTop: 12 }}>
-                  {group.filters.map((filter) => (
+                  {group.filters.map(filter => (
                     <TouchableOpacity
                       key={filter.id}
                       onPress={() => toggleFilter(filter)}
@@ -240,39 +282,49 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
                         paddingVertical: 12,
                         paddingHorizontal: 8,
                         borderRadius: 8,
-                        backgroundColor: activeFilters.some(f => f.id === filter.id) 
-                          ? getFilterColor(filter) + '20' 
+                        backgroundColor: activeFilters.some(
+                          f => f.id === filter.id
+                        )
+                          ? getFilterColor(filter) + '20'
                           : 'transparent',
                         marginBottom: 8,
                       }}
                     >
-                      <View style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: 10,
-                        backgroundColor: activeFilters.some(f => f.id === filter.id) 
-                          ? getFilterColor(filter) 
-                          : theme.colors.border,
-                        marginRight: 12,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: 10,
+                          backgroundColor: activeFilters.some(
+                            f => f.id === filter.id
+                          )
+                            ? getFilterColor(filter)
+                            : theme.colors.border,
+                          marginRight: 12,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
                         {activeFilters.some(f => f.id === filter.id) && (
-                          <Text style={{
-                            fontSize: 12,
-                            color: theme.colors.background,
-                            fontWeight: 'bold',
-                          }}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: theme.colors.background,
+                              fontWeight: 'bold',
+                            }}
+                          >
                             ✓
                           </Text>
                         )}
                       </View>
-                      
-                      <Text style={{
-                        fontSize: 14,
-                        color: theme.colors.text,
-                        flex: 1,
-                      }}>
+
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: theme.colors.text,
+                          flex: 1,
+                        }}
+                      >
                         {filter.icon} {filter.name}
                       </Text>
                     </TouchableOpacity>
@@ -285,22 +337,26 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
 
         {/* Active Filters */}
         {activeFilters.length > 0 && (
-          <View style={{
-            padding: 20,
-            borderTopWidth: 1,
-            borderTopColor: theme.colors.border,
-            backgroundColor: theme.colors.surface,
-          }}>
-            <Text style={{
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: theme.colors.text,
-              marginBottom: 12,
-            }}>
+          <View
+            style={{
+              padding: 20,
+              borderTopWidth: 1,
+              borderTopColor: theme.colors.border,
+              backgroundColor: theme.colors.surface,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: theme.colors.text,
+                marginBottom: 12,
+              }}
+            >
               Aktif Filtreler
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {activeFilters.map((filter) => (
+              {activeFilters.map(filter => (
                 <View
                   key={filter.id}
                   style={{
@@ -313,11 +369,13 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
                     marginRight: 8,
                   }}
                 >
-                  <Text style={{
-                    fontSize: 12,
-                    color: theme.colors.background,
-                    marginRight: 6,
-                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: theme.colors.background,
+                      marginRight: 6,
+                    }}
+                  >
                     {filter.icon} {filter.name}
                   </Text>
                   <TouchableOpacity
@@ -331,11 +389,13 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
                       alignItems: 'center',
                     }}
                   >
-                    <Text style={{
-                      fontSize: 10,
-                      color: getFilterColor(filter),
-                      fontWeight: 'bold',
-                    }}>
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        color: getFilterColor(filter),
+                        fontWeight: 'bold',
+                      }}
+                    >
                       ×
                     </Text>
                   </TouchableOpacity>
@@ -346,12 +406,14 @@ export const ContextFiltersModal: React.FC<ContextFiltersModalProps> = ({
         )}
 
         {/* Footer Buttons */}
-        <View style={{
-          flexDirection: 'row',
-          padding: 20,
-          borderTopWidth: 1,
-          borderTopColor: theme.colors.border,
-        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            padding: 20,
+            borderTopWidth: 1,
+            borderTopColor: theme.colors.border,
+          }}
+        >
           <Button
             title="Temizle"
             onPress={clearAllFilters}

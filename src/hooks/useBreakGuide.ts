@@ -5,7 +5,13 @@ export interface BreakActivity {
   name: string;
   description: string;
   duration: number; // in minutes
-  category: 'stretching' | 'breathing' | 'movement' | 'mindfulness' | 'eye-care' | 'hydration';
+  category:
+    | 'stretching'
+    | 'breathing'
+    | 'movement'
+    | 'mindfulness'
+    | 'eye-care'
+    | 'hydration';
   difficulty: 'easy' | 'medium' | 'hard';
   equipment: string[];
   benefits: string[];
@@ -36,13 +42,17 @@ export const useBreakGuide = () => {
       category: 'stretching',
       difficulty: 'easy',
       equipment: [],
-      benefits: ['Boyun ağrısı azaltma', 'Gerginlik giderme', 'Kan dolaşımı artırma'],
+      benefits: [
+        'Boyun ağrısı azaltma',
+        'Gerginlik giderme',
+        'Kan dolaşımı artırma',
+      ],
       instructions: [
         'Başınızı yavaşça sağa eğin',
         '5 saniye bekleyin',
         'Sol tarafa eğin',
         '5 saniye bekleyin',
-        'Öne ve arkaya eğin'
+        'Öne ve arkaya eğin',
       ],
       icon: '🦒',
       color: '#10B981',
@@ -55,13 +65,17 @@ export const useBreakGuide = () => {
       category: 'stretching',
       difficulty: 'easy',
       equipment: [],
-      benefits: ['Omuz gerginliği azaltma', 'Postür iyileştirme', 'Kan dolaşımı artırma'],
+      benefits: [
+        'Omuz gerginliği azaltma',
+        'Postür iyileştirme',
+        'Kan dolaşımı artırma',
+      ],
       instructions: [
         'Omuzlarınızı yukarı kaldırın',
         'Arkaya doğru dairesel hareket yapın',
         '10 kez tekrarlayın',
         'Öne doğru da yapın',
-        'Derin nefes alın'
+        'Derin nefes alın',
       ],
       icon: '🤸',
       color: '#10B981',
@@ -74,13 +88,17 @@ export const useBreakGuide = () => {
       category: 'stretching',
       difficulty: 'medium',
       equipment: [],
-      benefits: ['Sırt ağrısı azaltma', 'Omurga esnekliği', 'Postür iyileştirme'],
+      benefits: [
+        'Sırt ağrısı azaltma',
+        'Omurga esnekliği',
+        'Postür iyileştirme',
+      ],
       instructions: [
         'Kollarınızı yukarı kaldırın',
         'Sağa doğru eğilin',
         '5 saniye bekleyin',
         'Sola doğru eğilin',
-        'Öne doğru eğilin'
+        'Öne doğru eğilin',
       ],
       icon: '🧘',
       color: '#10B981',
@@ -90,7 +108,8 @@ export const useBreakGuide = () => {
     {
       id: 'deep-breathing',
       name: 'Derin Nefes',
-      description: 'Stresi azaltmak ve odaklanmayı artırmak için nefes egzersizi',
+      description:
+        'Stresi azaltmak ve odaklanmayı artırmak için nefes egzersizi',
       duration: 3,
       category: 'breathing',
       difficulty: 'easy',
@@ -101,7 +120,7 @@ export const useBreakGuide = () => {
         '4 saniye nefes alın',
         '4 saniye tutun',
         '4 saniye verin',
-        '5 kez tekrarlayın'
+        '5 kez tekrarlayın',
       ],
       icon: '🫁',
       color: '#3B82F6',
@@ -120,7 +139,7 @@ export const useBreakGuide = () => {
         '4 saniye tutun',
         '4 saniye verin',
         '4 saniye boşluk',
-        '10 kez tekrarlayın'
+        '10 kez tekrarlayın',
       ],
       icon: '📦',
       color: '#3B82F6',
@@ -135,13 +154,17 @@ export const useBreakGuide = () => {
       category: 'movement',
       difficulty: 'easy',
       equipment: [],
-      benefits: ['Kan dolaşımı artırma', 'Enerji yenileme', 'Konsantrasyon artırma'],
+      benefits: [
+        'Kan dolaşımı artırma',
+        'Enerji yenileme',
+        'Konsantrasyon artırma',
+      ],
       instructions: [
         'Ofis içinde veya dışarıda yürüyün',
         'Rahat bir tempoda',
         'Derin nefes alın',
         'Etrafınızı gözlemleyin',
-        '5 dakika devam edin'
+        '5 dakika devam edin',
       ],
       icon: '🚶',
       color: '#8B5CF6',
@@ -160,7 +183,7 @@ export const useBreakGuide = () => {
         'Kolları yukarı kaldırın',
         'Zıplayın ve ayakları açın',
         'Kolları aşağı indirin',
-        '20 kez tekrarlayın'
+        '20 kez tekrarlayın',
       ],
       icon: '🏃',
       color: '#8B5CF6',
@@ -181,7 +204,7 @@ export const useBreakGuide = () => {
         'Gözlerinizi kapatın',
         'Nefesinizi takip edin',
         'Düşünceleri gözlemleyin',
-        '5 dakika devam edin'
+        '5 dakika devam edin',
       ],
       icon: '🧘‍♀️',
       color: '#F59E0B',
@@ -200,7 +223,7 @@ export const useBreakGuide = () => {
         'Hayatınızda minnettar olduğunuz',
         'Her biri için 1 dakika',
         'Detayları hayal edin',
-        'Teşekkür edin'
+        'Teşekkür edin',
       ],
       icon: '🙏',
       color: '#F59E0B',
@@ -221,7 +244,7 @@ export const useBreakGuide = () => {
         '20 saniye yakın bir noktaya bakın',
         'Gözlerinizi kapatın',
         'Dairesel hareket yapın',
-        '5 kez tekrarlayın'
+        '5 kez tekrarlayın',
       ],
       icon: '👁️',
       color: '#EF4444',
@@ -240,7 +263,7 @@ export const useBreakGuide = () => {
         'Hafifçe masaj yapın',
         'Dairesel hareketler',
         '5 dakika devam edin',
-        'Derin nefes alın'
+        'Derin nefes alın',
       ],
       icon: '👀',
       color: '#EF4444',
@@ -261,7 +284,7 @@ export const useBreakGuide = () => {
         'Yavaşça için',
         'Her yudumda düşünün',
         'Vücudunuza teşekkür edin',
-        '2 dakika devam edin'
+        '2 dakika devam edin',
       ],
       icon: '💧',
       color: '#06B6D4',
@@ -269,113 +292,151 @@ export const useBreakGuide = () => {
   ]);
 
   // Get activities by category
-  const getActivitiesByCategory = useCallback((category: BreakActivity['category']) => {
-    return breakActivities.filter(activity => activity.category === category);
-  }, [breakActivities]);
+  const getActivitiesByCategory = useCallback(
+    (category: BreakActivity['category']) => {
+      return breakActivities.filter(activity => activity.category === category);
+    },
+    [breakActivities]
+  );
 
   // Get activities by duration
-  const getActivitiesByDuration = useCallback((maxDuration: number) => {
-    return breakActivities.filter(activity => activity.duration <= maxDuration);
-  }, [breakActivities]);
+  const getActivitiesByDuration = useCallback(
+    (maxDuration: number) => {
+      return breakActivities.filter(
+        activity => activity.duration <= maxDuration
+      );
+    },
+    [breakActivities]
+  );
 
   // Get activities by difficulty
-  const getActivitiesByDifficulty = useCallback((difficulty: BreakActivity['difficulty']) => {
-    return breakActivities.filter(activity => activity.difficulty === difficulty);
-  }, [breakActivities]);
+  const getActivitiesByDifficulty = useCallback(
+    (difficulty: BreakActivity['difficulty']) => {
+      return breakActivities.filter(
+        activity => activity.difficulty === difficulty
+      );
+    },
+    [breakActivities]
+  );
 
   // Generate break session based on available time and energy
-  const generateBreakSession = useCallback((
-    availableTime: number,
-    energyLevel: 'low' | 'medium' | 'high',
-    mood: 'tired' | 'stressed' | 'neutral' | 'energized' | 'focused'
-  ): BreakSession => {
-    const session: BreakSession = {
-      id: Date.now().toString(),
-      activities: [],
-      totalDuration: 0,
-      startTime: new Date(),
-      isCompleted: false,
-      energyLevel,
-      mood,
-    };
+  const generateBreakSession = useCallback(
+    (
+      availableTime: number,
+      energyLevel: 'low' | 'medium' | 'high',
+      mood: 'tired' | 'stressed' | 'neutral' | 'energized' | 'focused'
+    ): BreakSession => {
+      const session: BreakSession = {
+        id: Date.now().toString(),
+        activities: [],
+        totalDuration: 0,
+        startTime: new Date(),
+        isCompleted: false,
+        energyLevel,
+        mood,
+      };
 
-    // Filter activities based on energy level and mood
-    let suitableActivities = breakActivities;
+      // Filter activities based on energy level and mood
+      let suitableActivities = breakActivities;
 
-    if (energyLevel === 'low') {
-      suitableActivities = suitableActivities.filter(a => a.difficulty === 'easy');
-    } else if (energyLevel === 'high') {
-      suitableActivities = suitableActivities.filter(a => a.difficulty !== 'hard');
-    }
-
-    if (mood === 'tired') {
-      suitableActivities = suitableActivities.filter(a => 
-        a.category === 'breathing' || a.category === 'mindfulness'
-      );
-    } else if (mood === 'stressed') {
-      suitableActivities = suitableActivities.filter(a => 
-        a.category === 'breathing' || a.category === 'stretching'
-      );
-    }
-
-    // Select activities that fit within available time
-    const selectedActivities: BreakActivity[] = [];
-    let remainingTime = availableTime;
-
-    // Always include breathing if time allows
-    const breathingActivity = suitableActivities.find(a => a.category === 'breathing');
-    if (breathingActivity && breathingActivity.duration <= remainingTime) {
-      selectedActivities.push(breathingActivity);
-      remainingTime -= breathingActivity.duration;
-    }
-
-    // Add other activities
-    const shuffledActivities = [...suitableActivities].sort(() => Math.random() - 0.5);
-    
-    for (const activity of shuffledActivities) {
-      if (activity.duration <= remainingTime && !selectedActivities.includes(activity)) {
-        selectedActivities.push(activity);
-        remainingTime -= activity.duration;
+      if (energyLevel === 'low') {
+        suitableActivities = suitableActivities.filter(
+          a => a.difficulty === 'easy'
+        );
+      } else if (energyLevel === 'high') {
+        suitableActivities = suitableActivities.filter(
+          a => a.difficulty !== 'hard'
+        );
       }
-    }
 
-    session.activities = selectedActivities;
-    session.totalDuration = selectedActivities.reduce((sum, a) => sum + a.duration, 0);
+      if (mood === 'tired') {
+        suitableActivities = suitableActivities.filter(
+          a => a.category === 'breathing' || a.category === 'mindfulness'
+        );
+      } else if (mood === 'stressed') {
+        suitableActivities = suitableActivities.filter(
+          a => a.category === 'breathing' || a.category === 'stretching'
+        );
+      }
 
-    return session;
-  }, [breakActivities]);
+      // Select activities that fit within available time
+      const selectedActivities: BreakActivity[] = [];
+      let remainingTime = availableTime;
+
+      // Always include breathing if time allows
+      const breathingActivity = suitableActivities.find(
+        a => a.category === 'breathing'
+      );
+      if (breathingActivity && breathingActivity.duration <= remainingTime) {
+        selectedActivities.push(breathingActivity);
+        remainingTime -= breathingActivity.duration;
+      }
+
+      // Add other activities
+      const shuffledActivities = [...suitableActivities].sort(
+        () => Math.random() - 0.5
+      );
+
+      for (const activity of shuffledActivities) {
+        if (
+          activity.duration <= remainingTime &&
+          !selectedActivities.includes(activity)
+        ) {
+          selectedActivities.push(activity);
+          remainingTime -= activity.duration;
+        }
+      }
+
+      session.activities = selectedActivities;
+      session.totalDuration = selectedActivities.reduce(
+        (sum, a) => sum + a.duration,
+        0
+      );
+
+      return session;
+    },
+    [breakActivities]
+  );
 
   // Get quick break suggestions
-  const getQuickBreakSuggestions = useCallback((timeAvailable: number) => {
-    const suggestions: BreakActivity[] = [];
-    
-    // Quick activities (1-2 minutes)
-    if (timeAvailable >= 1) {
-      suggestions.push(...breakActivities.filter(a => a.duration <= 2));
-    }
-    
-    // Medium activities (3-5 minutes)
-    if (timeAvailable >= 3) {
-      suggestions.push(...breakActivities.filter(a => a.duration >= 3 && a.duration <= 5));
-    }
-    
-    // Long activities (5+ minutes)
-    if (timeAvailable >= 5) {
-      suggestions.push(...breakActivities.filter(a => a.duration > 5));
-    }
+  const getQuickBreakSuggestions = useCallback(
+    (timeAvailable: number) => {
+      const suggestions: BreakActivity[] = [];
 
-    return suggestions.slice(0, 6); // Return top 6 suggestions
-  }, [breakActivities]);
+      // Quick activities (1-2 minutes)
+      if (timeAvailable >= 1) {
+        suggestions.push(...breakActivities.filter(a => a.duration <= 2));
+      }
+
+      // Medium activities (3-5 minutes)
+      if (timeAvailable >= 3) {
+        suggestions.push(
+          ...breakActivities.filter(a => a.duration >= 3 && a.duration <= 5)
+        );
+      }
+
+      // Long activities (5+ minutes)
+      if (timeAvailable >= 5) {
+        suggestions.push(...breakActivities.filter(a => a.duration > 5));
+      }
+
+      return suggestions.slice(0, 6); // Return top 6 suggestions
+    },
+    [breakActivities]
+  );
 
   // Get category statistics
   const getCategoryStats = useCallback(() => {
-    const stats = breakActivities.reduce((acc, activity) => {
-      if (!acc[activity.category]) {
-        acc[activity.category] = 0;
-      }
-      acc[activity.category]++;
-      return acc;
-    }, {} as Record<string, number>);
+    const stats = breakActivities.reduce(
+      (acc, activity) => {
+        if (!acc[activity.category]) {
+          acc[activity.category] = 0;
+        }
+        acc[activity.category]++;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return stats;
   }, [breakActivities]);

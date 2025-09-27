@@ -11,7 +11,11 @@ import {
   ActivityIndicator,
   FlatList,
 } from 'react-native';
-import { usePairFocusStore, PairFocusSession, PairFocusPartner } from '../../store/usePairFocusStore';
+import {
+  usePairFocusStore,
+  PairFocusSession,
+  PairFocusPartner,
+} from '../../store/usePairFocusStore';
 
 interface PairFocusModalProps {
   visible: boolean;
@@ -39,13 +43,16 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
     loadSessions,
   } = usePairFocusStore();
 
-  const [activeTab, setActiveTab] = useState<'find' | 'create' | 'active'>('find');
+  const [activeTab, setActiveTab] = useState<'find' | 'create' | 'active'>(
+    'find'
+  );
   const [newSessionName, setNewSessionName] = useState('');
   const [newSessionDescription, setNewSessionDescription] = useState('');
   const [newSessionDuration, setNewSessionDuration] = useState(25);
   const [newMessage, setNewMessage] = useState('');
   const [encouragementMessage, setEncouragementMessage] = useState('');
-  const [selectedSession, setSelectedSession] = useState<PairFocusSession | null>(null);
+  const [selectedSession, setSelectedSession] =
+    useState<PairFocusSession | null>(null);
 
   useEffect(() => {
     if (visible) {
@@ -164,7 +171,8 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
           <Text style={styles.sessionDescription}>{item.description}</Text>
         )}
         <Text style={styles.sessionDetails}>
-          {item.duration} dakika • {item.settings.videoEnabled ? 'Video' : 'Sadece ses'}
+          {item.duration} dakika •{' '}
+          {item.settings.videoEnabled ? 'Video' : 'Sadece ses'}
         </Text>
       </View>
       <TouchableOpacity
@@ -186,7 +194,8 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
       <View style={styles.partnerInfo}>
         <Text style={styles.partnerName}>{partner.name}</Text>
         <Text style={styles.partnerStatus}>
-          {partner.isOnline ? 'Çevrimiçi' : 'Çevrimdışı'} • {partner.focusStreak} gün streak
+          {partner.isOnline ? 'Çevrimiçi' : 'Çevrimdışı'} •{' '}
+          {partner.focusStreak} gün streak
         </Text>
         {partner.currentTask && (
           <Text style={styles.partnerTask}>Görev: {partner.currentTask}</Text>
@@ -196,22 +205,26 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
   );
 
   const renderMessageItem = ({ item }: { item: any }) => (
-    <View style={[
-      styles.messageItem,
-      item.userId === 'current-user-id' && styles.messageItemOwn,
-      item.type === 'encouragement' && styles.encouragementMessage
-    ]}>
+    <View
+      style={[
+        styles.messageItem,
+        item.userId === 'current-user-id' && styles.messageItemOwn,
+        item.type === 'encouragement' && styles.encouragementMessage,
+      ]}
+    >
       <Text style={styles.messageUserName}>{item.userName}</Text>
-      <Text style={[
-        styles.messageText,
-        item.type === 'encouragement' && styles.encouragementText
-      ]}>
+      <Text
+        style={[
+          styles.messageText,
+          item.type === 'encouragement' && styles.encouragementText,
+        ]}
+      >
         {item.message}
       </Text>
       <Text style={styles.messageTime}>
-        {new Date(item.timestamp).toLocaleTimeString('tr-TR', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
+        {new Date(item.timestamp).toLocaleTimeString('tr-TR', {
+          hour: '2-digit',
+          minute: '2-digit',
         })}
       </Text>
     </View>
@@ -227,7 +240,11 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
   ];
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Pair Focus</Text>
@@ -242,7 +259,12 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
             style={[styles.tab, activeTab === 'find' && styles.activeTab]}
             onPress={() => setActiveTab('find')}
           >
-            <Text style={[styles.tabText, activeTab === 'find' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'find' && styles.activeTabText,
+              ]}
+            >
               Bul
             </Text>
           </TouchableOpacity>
@@ -250,7 +272,12 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
             style={[styles.tab, activeTab === 'create' && styles.activeTab]}
             onPress={() => setActiveTab('create')}
           >
-            <Text style={[styles.tabText, activeTab === 'create' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'create' && styles.activeTabText,
+              ]}
+            >
               Oluştur
             </Text>
           </TouchableOpacity>
@@ -258,7 +285,12 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
             style={[styles.tab, activeTab === 'active' && styles.activeTab]}
             onPress={() => setActiveTab('active')}
           >
-            <Text style={[styles.tabText, activeTab === 'active' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'active' && styles.activeTabText,
+              ]}
+            >
               Aktif
             </Text>
           </TouchableOpacity>
@@ -273,11 +305,13 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
 
           {activeTab === 'find' && (
             <View>
-              <Text style={styles.sectionTitle}>Mevcut Pair Focus Oturumları</Text>
+              <Text style={styles.sectionTitle}>
+                Mevcut Pair Focus Oturumları
+              </Text>
               <FlatList
                 data={availableSessions}
                 renderItem={renderSessionItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -286,7 +320,7 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
           {activeTab === 'create' && (
             <View>
               <Text style={styles.sectionTitle}>Yeni Pair Focus Oturumu</Text>
-              
+
               <View style={styles.form}>
                 <TextInput
                   style={styles.input}
@@ -302,23 +336,33 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
                   multiline
                 />
                 <View style={styles.durationContainer}>
-                  <Text style={styles.durationLabel}>Süre: {newSessionDuration} dakika</Text>
+                  <Text style={styles.durationLabel}>
+                    Süre: {newSessionDuration} dakika
+                  </Text>
                   <View style={styles.durationButtons}>
                     <TouchableOpacity
                       style={styles.durationButton}
-                      onPress={() => setNewSessionDuration(Math.max(15, newSessionDuration - 5))}
+                      onPress={() =>
+                        setNewSessionDuration(
+                          Math.max(15, newSessionDuration - 5)
+                        )
+                      }
                     >
                       <Text style={styles.durationButtonText}>-</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.durationButton}
-                      onPress={() => setNewSessionDuration(Math.min(60, newSessionDuration + 5))}
+                      onPress={() =>
+                        setNewSessionDuration(
+                          Math.min(60, newSessionDuration + 5)
+                        )
+                      }
                     >
                       <Text style={styles.durationButtonText}>+</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-                
+
                 <TouchableOpacity
                   style={styles.createButton}
                   onPress={handleCreateSession}
@@ -327,7 +371,9 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
                   {loading ? (
                     <ActivityIndicator color="white" />
                   ) : (
-                    <Text style={styles.createButtonText}>Pair Focus Oluştur</Text>
+                    <Text style={styles.createButtonText}>
+                      Pair Focus Oluştur
+                    </Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -336,19 +382,29 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
 
           {activeTab === 'active' && selectedSession && (
             <View>
-              <Text style={styles.sectionTitle}>Aktif Pair Focus: {selectedSession.name}</Text>
-              
+              <Text style={styles.sectionTitle}>
+                Aktif Pair Focus: {selectedSession.name}
+              </Text>
+
               {/* Session Controls */}
               <View style={styles.sessionControls}>
                 <TouchableOpacity
                   style={[
                     styles.controlButton,
-                    selectedSession.isActive ? styles.endButton : styles.startButton
+                    selectedSession.isActive
+                      ? styles.endButton
+                      : styles.startButton,
                   ]}
-                  onPress={selectedSession.isActive ? handleEndSession : handleStartSession}
+                  onPress={
+                    selectedSession.isActive
+                      ? handleEndSession
+                      : handleStartSession
+                  }
                 >
                   <Text style={styles.controlButtonText}>
-                    {selectedSession.isActive ? 'Oturumu Sonlandır' : 'Oturumu Başlat'}
+                    {selectedSession.isActive
+                      ? 'Oturumu Sonlandır'
+                      : 'Oturumu Başlat'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -368,7 +424,7 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
                   <FlatList
                     data={selectedSession.chat.messages}
                     renderItem={renderMessageItem}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={item => item.id}
                     style={styles.messagesList}
                   />
                   <View style={styles.messageInputContainer}>
@@ -405,10 +461,12 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
                       style={styles.encouragementButton}
                       onPress={handleSendEncouragement}
                     >
-                      <Text style={styles.encouragementButtonText}>💪 Teşvik Et</Text>
+                      <Text style={styles.encouragementButtonText}>
+                        💪 Teşvik Et
+                      </Text>
                     </TouchableOpacity>
                   </View>
-                  
+
                   <Text style={styles.suggestionsTitle}>Hızlı Teşvikler:</Text>
                   <View style={styles.suggestionsContainer}>
                     {encouragementSuggestions.map((suggestion, index) => (
@@ -430,15 +488,21 @@ export const PairFocusModal: React.FC<PairFocusModalProps> = ({
               <Text style={styles.subsectionTitle}>İstatistikler</Text>
               <View style={styles.statsContainer}>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{selectedSession.statistics.totalSessions}</Text>
+                  <Text style={styles.statNumber}>
+                    {selectedSession.statistics.totalSessions}
+                  </Text>
                   <Text style={styles.statLabel}>Toplam Oturum</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{selectedSession.statistics.totalFocusTime}</Text>
+                  <Text style={styles.statNumber}>
+                    {selectedSession.statistics.totalFocusTime}
+                  </Text>
                   <Text style={styles.statLabel}>Odaklanma Süresi (dk)</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{selectedSession.statistics.mutualEncouragements}</Text>
+                  <Text style={styles.statNumber}>
+                    {selectedSession.statistics.mutualEncouragements}
+                  </Text>
                   <Text style={styles.statLabel}>Teşvik Mesajı</Text>
                 </View>
               </View>

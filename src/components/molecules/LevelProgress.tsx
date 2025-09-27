@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+} from 'react-native';
 import { useGamificationStore } from '../../store/useGamificationStore';
 import Card from '../atoms/Card';
 
 const LevelProgress: React.FC = () => {
   const { level, xp, xpToNextLevel, totalXp } = useGamificationStore();
   const [helpModalVisible, setHelpModalVisible] = useState(false);
-  
+
   const progressPercentage = xpToNextLevel > 0 ? (xp / xpToNextLevel) * 100 : 0;
 
   return (
@@ -16,7 +23,7 @@ const LevelProgress: React.FC = () => {
           <Text style={styles.title}>Seviye {level}</Text>
           <View style={styles.headerRight}>
             <Text style={styles.xpText}>{totalXp} XP</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.helpButton}
               onPress={() => setHelpModalVisible(true)}
             >
@@ -24,14 +31,14 @@ const LevelProgress: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
-        
+
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
-            <View 
+            <View
               style={[
-                styles.progressFill, 
-                { width: `${Math.min(progressPercentage, 100)}%` }
-              ]} 
+                styles.progressFill,
+                { width: `${Math.min(progressPercentage, 100)}%` },
+              ]}
             />
           </View>
           <Text style={styles.progressText}>
@@ -50,7 +57,7 @@ const LevelProgress: React.FC = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>XP Nasıl Kazanılır? 🎯</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setHelpModalVisible(false)}
             >
@@ -62,42 +69,47 @@ const LevelProgress: React.FC = () => {
             <View style={styles.xpMethod}>
               <Text style={styles.xpMethodTitle}>🍅 Pomodoro Tamamlama</Text>
               <Text style={styles.xpMethodDescription}>
-                Her pomodoro tamamladığınızda <Text style={styles.xpAmount}>+25 XP</Text> kazanırsınız.
+                Her pomodoro tamamladığınızda{' '}
+                <Text style={styles.xpAmount}>+25 XP</Text> kazanırsınız.
               </Text>
             </View>
 
             <View style={styles.xpMethod}>
               <Text style={styles.xpMethodTitle}>✅ Görev Tamamlama</Text>
               <Text style={styles.xpMethodDescription}>
-                Her görev tamamladığınızda <Text style={styles.xpAmount}>+10 XP</Text> kazanırsınız.
+                Her görev tamamladığınızda{' '}
+                <Text style={styles.xpAmount}>+10 XP</Text> kazanırsınız.
               </Text>
             </View>
 
             <View style={styles.xpMethod}>
               <Text style={styles.xpMethodTitle}>🔥 Streak Bonusu</Text>
               <Text style={styles.xpMethodDescription}>
-                Günlük streak'iniz için ekstra <Text style={styles.xpAmount}>+5 XP/gün</Text> kazanırsınız.
+                Günlük streak'iniz için ekstra{' '}
+                <Text style={styles.xpAmount}>+5 XP/gün</Text> kazanırsınız.
               </Text>
             </View>
 
             <View style={styles.xpMethod}>
               <Text style={styles.xpMethodTitle}>🏆 Rozet Açma</Text>
               <Text style={styles.xpMethodDescription}>
-                Yeni rozetler açtığınızda <Text style={styles.xpAmount}>+50-500 XP</Text> kazanırsınız.
+                Yeni rozetler açtığınızda{' '}
+                <Text style={styles.xpAmount}>+50-500 XP</Text> kazanırsınız.
               </Text>
             </View>
 
             <View style={styles.xpMethod}>
               <Text style={styles.xpMethodTitle}>🧠 Odaklanma Bonusu</Text>
               <Text style={styles.xpMethodDescription}>
-                Yüksek odaklanma skorları için ekstra <Text style={styles.xpAmount}>+10-50 XP</Text> kazanırsınız.
+                Yüksek odaklanma skorları için ekstra{' '}
+                <Text style={styles.xpAmount}>+10-50 XP</Text> kazanırsınız.
               </Text>
             </View>
 
             <View style={styles.tipCard}>
               <Text style={styles.tipTitle}>💡 İpucu</Text>
               <Text style={styles.tipText}>
-                Düzenli olarak pomodoro yaparak hem seviyenizi yükseltin hem de 
+                Düzenli olarak pomodoro yaparak hem seviyenizi yükseltin hem de
                 odaklanma alışkanlığınızı güçlendirin!
               </Text>
             </View>

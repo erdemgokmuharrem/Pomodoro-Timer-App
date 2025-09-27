@@ -3,13 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useOfflineStore } from '../../store/useOfflineStore';
 
 const OfflineStatus: React.FC = () => {
-  const { 
-    isOnline, 
-    isSyncing, 
-    getQueueStatus, 
-    processSyncQueue 
-  } = useOfflineStore();
-  
+  const { isOnline, isSyncing, getQueueStatus, processSyncQueue } =
+    useOfflineStore();
+
   const queueStatus = getQueueStatus();
 
   if (isOnline && queueStatus.pending === 0 && queueStatus.failed === 0) {
@@ -17,7 +13,9 @@ const OfflineStatus: React.FC = () => {
   }
 
   return (
-    <View style={[styles.container, isOnline ? styles.syncing : styles.offline]}>
+    <View
+      style={[styles.container, isOnline ? styles.syncing : styles.offline]}
+    >
       <View style={styles.content}>
         <View style={styles.statusInfo}>
           <Text style={styles.statusText}>
@@ -36,7 +34,7 @@ const OfflineStatus: React.FC = () => {
         </View>
 
         {isOnline && queueStatus.pending > 0 && (
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.syncButton}
             onPress={() => processSyncQueue()}
             disabled={isSyncing}

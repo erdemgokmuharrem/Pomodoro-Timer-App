@@ -10,7 +10,10 @@ import {
   ActivityIndicator,
   FlatList,
 } from 'react-native';
-import { useSmartDuration, DurationRecommendation } from '../../hooks/useSmartDuration';
+import {
+  useSmartDuration,
+  DurationRecommendation,
+} from '../../hooks/useSmartDuration';
 
 interface SmartDurationModalProps {
   visible: boolean;
@@ -35,8 +38,11 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
   } = useSmartDuration();
 
   const [selectedTaskId, setSelectedTaskId] = useState<string>('');
-  const [selectedRecommendation, setSelectedRecommendation] = useState<DurationRecommendation | null>(null);
-  const [activeTab, setActiveTab] = useState<'recommendations' | 'settings' | 'insights'>('recommendations');
+  const [selectedRecommendation, setSelectedRecommendation] =
+    useState<DurationRecommendation | null>(null);
+  const [activeTab, setActiveTab] = useState<
+    'recommendations' | 'settings' | 'insights'
+  >('recommendations');
 
   useEffect(() => {
     if (visible) {
@@ -62,18 +68,24 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
     Alert.alert('Başarılı', 'Ayarlar güncellendi');
   };
 
-  const renderRecommendationItem = ({ item }: { item: DurationRecommendation }) => (
+  const renderRecommendationItem = ({
+    item,
+  }: {
+    item: DurationRecommendation;
+  }) => (
     <View style={styles.recommendationItem}>
       <View style={styles.recommendationHeader}>
-        <Text style={styles.recommendationDuration}>{item.recommendedDuration} dk</Text>
+        <Text style={styles.recommendationDuration}>
+          {item.recommendedDuration} dk
+        </Text>
         <View style={styles.confidenceContainer}>
           <Text style={styles.confidenceLabel}>Güven:</Text>
           <View style={styles.confidenceBar}>
-            <View 
+            <View
               style={[
-                styles.confidenceFill, 
-                { width: `${item.confidence * 100}%` }
-              ]} 
+                styles.confidenceFill,
+                { width: `${item.confidence * 100}%` },
+              ]}
             />
           </View>
           <Text style={styles.confidenceText}>
@@ -81,9 +93,9 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
           </Text>
         </View>
       </View>
-      
+
       <Text style={styles.recommendationReasoning}>{item.reasoning}</Text>
-      
+
       <View style={styles.factorsContainer}>
         <Text style={styles.factorsTitle}>Faktörler:</Text>
         <View style={styles.factorsGrid}>
@@ -138,21 +150,24 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
     </View>
   );
 
-  const renderSettingsItem = ({ item }: { item: { key: string; label: string; value: any; type: string } }) => (
+  const renderSettingsItem = ({
+    item,
+  }: {
+    item: { key: string; label: string; value: any; type: string };
+  }) => (
     <View style={styles.settingItem}>
       <Text style={styles.settingLabel}>{item.label}</Text>
       {item.type === 'boolean' ? (
         <TouchableOpacity
-          style={[
-            styles.toggleButton,
-            item.value && styles.toggleButtonActive
-          ]}
+          style={[styles.toggleButton, item.value && styles.toggleButtonActive]}
           onPress={() => handleUpdateSettings({ [item.key]: !item.value })}
         >
-          <Text style={[
-            styles.toggleButtonText,
-            item.value && styles.toggleButtonTextActive
-          ]}>
+          <Text
+            style={[
+              styles.toggleButtonText,
+              item.value && styles.toggleButtonTextActive,
+            ]}
+          >
             {item.value ? 'Açık' : 'Kapalı'}
           </Text>
         </TouchableOpacity>
@@ -160,7 +175,9 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
         <View style={styles.numberContainer}>
           <TouchableOpacity
             style={styles.numberButton}
-            onPress={() => handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })}
+            onPress={() =>
+              handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })
+            }
           >
             <Text style={styles.numberButtonText}>-</Text>
           </TouchableOpacity>
@@ -224,7 +241,11 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
   ];
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Akıllı Süre Önerileri</Text>
@@ -236,10 +257,18 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
         {/* Tab Navigation */}
         <View style={styles.tabContainer}>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'recommendations' && styles.activeTab]}
+            style={[
+              styles.tab,
+              activeTab === 'recommendations' && styles.activeTab,
+            ]}
             onPress={() => setActiveTab('recommendations')}
           >
-            <Text style={[styles.tabText, activeTab === 'recommendations' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'recommendations' && styles.activeTabText,
+              ]}
+            >
               Öneriler
             </Text>
           </TouchableOpacity>
@@ -247,7 +276,12 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
             style={[styles.tab, activeTab === 'settings' && styles.activeTab]}
             onPress={() => setActiveTab('settings')}
           >
-            <Text style={[styles.tabText, activeTab === 'settings' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'settings' && styles.activeTabText,
+              ]}
+            >
               Ayarlar
             </Text>
           </TouchableOpacity>
@@ -255,7 +289,12 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
             style={[styles.tab, activeTab === 'insights' && styles.activeTab]}
             onPress={() => setActiveTab('insights')}
           >
-            <Text style={[styles.tabText, activeTab === 'insights' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'insights' && styles.activeTabText,
+              ]}
+            >
               İstatistikler
             </Text>
           </TouchableOpacity>
@@ -274,13 +313,15 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
               {loading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="large" color="#4CAF50" />
-                  <Text style={styles.loadingText}>Öneriler hesaplanıyor...</Text>
+                  <Text style={styles.loadingText}>
+                    Öneriler hesaplanıyor...
+                  </Text>
                 </View>
               ) : (
                 <FlatList
                   data={recommendations}
                   renderItem={renderRecommendationItem}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={item => item.id}
                   style={styles.list}
                 />
               )}
@@ -293,7 +334,7 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
               <FlatList
                 data={settingsData}
                 renderItem={renderSettingsItem}
-                keyExtractor={(item) => item.key}
+                keyExtractor={item => item.key}
                 style={styles.list}
               />
             </View>
@@ -305,7 +346,9 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
               {insights ? (
                 <View style={styles.insightsContainer}>
                   <View style={styles.insightCard}>
-                    <Text style={styles.insightNumber}>{insights.totalRecommendations}</Text>
+                    <Text style={styles.insightNumber}>
+                      {insights.totalRecommendations}
+                    </Text>
                     <Text style={styles.insightLabel}>Toplam Öneri</Text>
                   </View>
                   <View style={styles.insightCard}>
@@ -321,7 +364,9 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
                     <Text style={styles.insightLabel}>Ortalama Süre</Text>
                   </View>
                   <View style={styles.insightCard}>
-                    <Text style={styles.insightNumber}>{insights.highConfidenceCount}</Text>
+                    <Text style={styles.insightNumber}>
+                      {insights.highConfidenceCount}
+                    </Text>
                     <Text style={styles.insightLabel}>Yüksek Güven</Text>
                   </View>
                 </View>

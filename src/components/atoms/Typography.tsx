@@ -22,13 +22,13 @@ const Typography: React.FC<TypographyProps> = ({
 }) => {
   const getVariantStyle = (): TextStyle => {
     const variantStyles = {
-      h1: { fontSize: 32, lineHeight: 40, fontWeight: 'bold' },
-      h2: { fontSize: 24, lineHeight: 32, fontWeight: 'bold' },
-      h3: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
-      h4: { fontSize: 18, lineHeight: 24, fontWeight: '600' },
-      body: { fontSize: 16, lineHeight: 24, fontWeight: 'normal' },
-      caption: { fontSize: 14, lineHeight: 20, fontWeight: 'normal' },
-      label: { fontSize: 12, lineHeight: 16, fontWeight: '500' },
+      h1: { fontSize: 32, lineHeight: 40, fontWeight: 'bold' as const },
+      h2: { fontSize: 24, lineHeight: 32, fontWeight: 'bold' as const },
+      h3: { fontSize: 20, lineHeight: 28, fontWeight: '600' as const },
+      h4: { fontSize: 18, lineHeight: 24, fontWeight: '600' as const },
+      body: { fontSize: 16, lineHeight: 24, fontWeight: 'normal' as const },
+      caption: { fontSize: 14, lineHeight: 20, fontWeight: 'normal' as const },
+      label: { fontSize: 12, lineHeight: 16, fontWeight: '500' as const },
     };
     return variantStyles[variant];
   };
@@ -47,10 +47,10 @@ const Typography: React.FC<TypographyProps> = ({
 
   const getWeightStyle = (): TextStyle => {
     const weightStyles = {
-      normal: { fontWeight: 'normal' },
-      medium: { fontWeight: '500' },
-      semibold: { fontWeight: '600' },
-      bold: { fontWeight: 'bold' },
+      normal: { fontWeight: 'normal' as const },
+      medium: { fontWeight: '500' as const },
+      semibold: { fontWeight: '600' as const },
+      bold: { fontWeight: 'bold' as const },
     };
     return weightStyles[weight];
   };

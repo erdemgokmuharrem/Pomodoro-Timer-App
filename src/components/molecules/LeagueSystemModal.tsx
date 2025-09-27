@@ -10,7 +10,12 @@ import {
   ActivityIndicator,
   FlatList,
 } from 'react-native';
-import { useLeagueStore, LeaguePlayer, LeagueTier, LeagueMatch } from '../../store/useLeagueStore';
+import {
+  useLeagueStore,
+  LeaguePlayer,
+  LeagueTier,
+  LeagueMatch,
+} from '../../store/useLeagueStore';
 
 interface LeagueSystemModalProps {
   visible: boolean;
@@ -42,7 +47,9 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
     loadLeagueData,
   } = useLeagueStore();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'leaderboard' | 'matches' | 'tiers' | 'achievements'>('overview');
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'leaderboard' | 'matches' | 'tiers' | 'achievements'
+  >('overview');
   const [selectedTier, setSelectedTier] = useState<string>('');
   const [leaderboardData, setLeaderboardData] = useState<LeaguePlayer[]>([]);
   const [myRank, setMyRank] = useState<number>(0);
@@ -152,11 +159,19 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
     }
   };
 
-  const renderPlayerItem = ({ item, index }: { item: LeaguePlayer; index: number }) => (
-    <View style={[
-      styles.playerItem,
-      myPlayer?.id === item.id && styles.myPlayerItem
-    ]}>
+  const renderPlayerItem = ({
+    item,
+    index,
+  }: {
+    item: LeaguePlayer;
+    index: number;
+  }) => (
+    <View
+      style={[
+        styles.playerItem,
+        myPlayer?.id === item.id && styles.myPlayerItem,
+      ]}
+    >
       <View style={styles.playerRank}>
         <Text style={styles.playerRankText}>#{index + 1}</Text>
       </View>
@@ -170,7 +185,8 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
           {item.name} {myPlayer?.id === item.id && '(Siz)'}
         </Text>
         <Text style={styles.playerTier}>
-          {availableTiers.find(tier => tier.id === item.currentTier)?.icon} {availableTiers.find(tier => tier.id === item.currentTier)?.name}
+          {availableTiers.find(tier => tier.id === item.currentTier)?.icon}{' '}
+          {availableTiers.find(tier => tier.id === item.currentTier)?.name}
         </Text>
         <Text style={styles.playerStats}>
           {item.totalPoints} puan • {item.streak} gün streak
@@ -188,7 +204,7 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
       style={[
         styles.tierItem,
         selectedTier === item.id && styles.tierItemActive,
-        myPlayer?.currentTier === item.id && styles.myTierItem
+        myPlayer?.currentTier === item.id && styles.myTierItem,
       ]}
       onPress={() => setSelectedTier(selectedTier === item.id ? '' : item.id)}
     >
@@ -204,9 +220,7 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
           <Text style={styles.currentTierBadge}>Mevcut</Text>
         )}
       </View>
-      <Text style={styles.tierBenefits}>
-        {item.benefits.join(' • ')}
-      </Text>
+      <Text style={styles.tierBenefits}>{item.benefits.join(' • ')}</Text>
     </TouchableOpacity>
   );
 
@@ -214,9 +228,13 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
     <View style={styles.matchItem}>
       <View style={styles.matchHeader}>
         <Text style={styles.matchType}>
-          {item.type === 'pomodoro' ? '🍅 Pomodoro' :
-           item.type === 'focus_time' ? '⏰ Odaklanma' :
-           item.type === 'streak' ? '🔥 Streak' : '💪 Combo'}
+          {item.type === 'pomodoro'
+            ? '🍅 Pomodoro'
+            : item.type === 'focus_time'
+              ? '⏰ Odaklanma'
+              : item.type === 'streak'
+                ? '🔥 Streak'
+                : '💪 Combo'}
         </Text>
         <Text style={styles.matchStatus}>
           {item.isActive ? '🟢 Aktif' : '⚪ Tamamlandı'}
@@ -225,9 +243,7 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
       <Text style={styles.matchDuration}>
         {Math.floor(item.duration / 60)} dakika
       </Text>
-      <Text style={styles.matchPlayers}>
-        {item.players.length} oyuncu
-      </Text>
+      <Text style={styles.matchPlayers}>{item.players.length} oyuncu</Text>
       {item.winner && (
         <Text style={styles.matchWinner}>
           🏆 Kazanan: {item.players.find(p => p.id === item.winner)?.name}
@@ -295,7 +311,11 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
   ];
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Lig Sistemi</Text>
@@ -310,15 +330,28 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
             style={[styles.tab, activeTab === 'overview' && styles.activeTab]}
             onPress={() => setActiveTab('overview')}
           >
-            <Text style={[styles.tabText, activeTab === 'overview' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'overview' && styles.activeTabText,
+              ]}
+            >
               Genel
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'leaderboard' && styles.activeTab]}
+            style={[
+              styles.tab,
+              activeTab === 'leaderboard' && styles.activeTab,
+            ]}
             onPress={() => setActiveTab('leaderboard')}
           >
-            <Text style={[styles.tabText, activeTab === 'leaderboard' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'leaderboard' && styles.activeTabText,
+              ]}
+            >
               Sıralama
             </Text>
           </TouchableOpacity>
@@ -326,7 +359,12 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
             style={[styles.tab, activeTab === 'matches' && styles.activeTab]}
             onPress={() => setActiveTab('matches')}
           >
-            <Text style={[styles.tabText, activeTab === 'matches' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'matches' && styles.activeTabText,
+              ]}
+            >
               Maçlar
             </Text>
           </TouchableOpacity>
@@ -334,15 +372,28 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
             style={[styles.tab, activeTab === 'tiers' && styles.activeTab]}
             onPress={() => setActiveTab('tiers')}
           >
-            <Text style={[styles.tabText, activeTab === 'tiers' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'tiers' && styles.activeTabText,
+              ]}
+            >
               Seviyeler
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'achievements' && styles.activeTab]}
+            style={[
+              styles.tab,
+              activeTab === 'achievements' && styles.activeTab,
+            ]}
             onPress={() => setActiveTab('achievements')}
           >
-            <Text style={[styles.tabText, activeTab === 'achievements' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'achievements' && styles.activeTabText,
+              ]}
+            >
               Başarılar
             </Text>
           </TouchableOpacity>
@@ -359,7 +410,9 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
             <View>
               {!myPlayer ? (
                 <View style={styles.createPlayerContainer}>
-                  <Text style={styles.createPlayerTitle}>Lig Sistemine Katıl</Text>
+                  <Text style={styles.createPlayerTitle}>
+                    Lig Sistemine Katıl
+                  </Text>
                   <Text style={styles.createPlayerDescription}>
                     Rekabetçi gamification ile odaklanma gücünüzü test edin!
                   </Text>
@@ -371,7 +424,9 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
                     {loading ? (
                       <ActivityIndicator color="white" />
                     ) : (
-                      <Text style={styles.createPlayerButtonText}>Lig Oyuncusu Oluştur</Text>
+                      <Text style={styles.createPlayerButtonText}>
+                        Lig Oyuncusu Oluştur
+                      </Text>
                     )}
                   </TouchableOpacity>
                 </View>
@@ -386,16 +441,31 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
                         </Text>
                       </View>
                       <View style={styles.playerCardInfo}>
-                        <Text style={styles.playerCardName}>{myPlayer.name}</Text>
-                        <Text style={styles.playerCardTier}>
-                          {availableTiers.find(tier => tier.id === myPlayer.currentTier)?.icon} {availableTiers.find(tier => tier.id === myPlayer.currentTier)?.name}
+                        <Text style={styles.playerCardName}>
+                          {myPlayer.name}
                         </Text>
-                        <Text style={styles.playerCardRank}>#{myRank} sırada</Text>
+                        <Text style={styles.playerCardTier}>
+                          {
+                            availableTiers.find(
+                              tier => tier.id === myPlayer.currentTier
+                            )?.icon
+                          }{' '}
+                          {
+                            availableTiers.find(
+                              tier => tier.id === myPlayer.currentTier
+                            )?.name
+                          }
+                        </Text>
+                        <Text style={styles.playerCardRank}>
+                          #{myRank} sırada
+                        </Text>
                       </View>
                     </View>
                     <View style={styles.playerCardStats}>
                       <View style={styles.statItem}>
-                        <Text style={styles.statNumber}>{myPlayer.totalPoints}</Text>
+                        <Text style={styles.statNumber}>
+                          {myPlayer.totalPoints}
+                        </Text>
                         <Text style={styles.statLabel}>Toplam Puan</Text>
                       </View>
                       <View style={styles.statItem}>
@@ -403,7 +473,9 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
                         <Text style={styles.statLabel}>Günlük Streak</Text>
                       </View>
                       <View style={styles.statItem}>
-                        <Text style={styles.statNumber}>{myPlayer.totalPomodoros}</Text>
+                        <Text style={styles.statNumber}>
+                          {myPlayer.totalPomodoros}
+                        </Text>
                         <Text style={styles.statLabel}>Pomodoro</Text>
                       </View>
                     </View>
@@ -413,7 +485,9 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
                     style={styles.startMatchButton}
                     onPress={handleStartMatch}
                   >
-                    <Text style={styles.startMatchButtonText}>Lig Maçı Başlat</Text>
+                    <Text style={styles.startMatchButtonText}>
+                      Lig Maçı Başlat
+                    </Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -426,7 +500,7 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
               <FlatList
                 data={leaderboardData}
                 renderItem={renderPlayerItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -438,7 +512,7 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
               <FlatList
                 data={recentMatches}
                 renderItem={renderMatchItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -450,7 +524,7 @@ export const LeagueSystemModal: React.FC<LeagueSystemModalProps> = ({
               <FlatList
                 data={availableTiers}
                 renderItem={renderTierItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>

@@ -56,8 +56,10 @@ export interface SchedulingSettings {
 export const useTaskScheduling = () => {
   const { tasks, completedPomodoros } = usePomodoroStore();
   const { userLevel, totalXP } = useGamificationStore();
-  
-  const [recommendations, setRecommendations] = useState<SchedulingRecommendation[]>([]);
+
+  const [recommendations, setRecommendations] = useState<
+    SchedulingRecommendation[]
+  >([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [settings, setSettings] = useState<SchedulingSettings>({
     enableAI: true,
@@ -76,27 +78,35 @@ export const useTaskScheduling = () => {
   // Analyze user's energy patterns
   const analyzeEnergyPatterns = (): { [hour: number]: number } => {
     const energyPatterns: { [hour: number]: number } = {};
-    
+
     // Default energy patterns based on circadian rhythms
     for (let hour = 0; hour < 24; hour++) {
-      if (hour >= 9 && hour <= 11) energyPatterns[hour] = 0.9; // Morning peak
-      else if (hour >= 14 && hour <= 16) energyPatterns[hour] = 0.8; // Afternoon peak
-      else if (hour >= 20 && hour <= 22) energyPatterns[hour] = 0.7; // Evening
-      else if (hour >= 6 && hour <= 8) energyPatterns[hour] = 0.6; // Early morning
-      else if (hour >= 12 && hour <= 13) energyPatterns[hour] = 0.4; // Lunch dip
-      else if (hour >= 18 && hour <= 19) energyPatterns[hour] = 0.5; // Evening transition
+      if (hour >= 9 && hour <= 11)
+        energyPatterns[hour] = 0.9; // Morning peak
+      else if (hour >= 14 && hour <= 16)
+        energyPatterns[hour] = 0.8; // Afternoon peak
+      else if (hour >= 20 && hour <= 22)
+        energyPatterns[hour] = 0.7; // Evening
+      else if (hour >= 6 && hour <= 8)
+        energyPatterns[hour] = 0.6; // Early morning
+      else if (hour >= 12 && hour <= 13)
+        energyPatterns[hour] = 0.4; // Lunch dip
+      else if (hour >= 18 && hour <= 19)
+        energyPatterns[hour] = 0.5; // Evening transition
       else energyPatterns[hour] = 0.3; // Low energy times
     }
 
     // Adjust based on user's historical performance
-    const historicalData = completedPomodoros.filter(p => 
-      (Date.now() - new Date(p.completedAt).getTime()) < 30 * 24 * 60 * 60 * 1000 // Last 30 days
+    const historicalData = (completedPomodoros || []).filter(
+      p =>
+        Date.now() - new Date(p.completedAt).getTime() <
+        30 * 24 * 60 * 60 * 1000 // Last 30 days
     );
 
     historicalData.forEach(pomodoro => {
       const hour = new Date(pomodoro.completedAt).getHours();
       const performance = pomodoro.completed ? 1 : 0;
-      
+
       if (energyPatterns[hour] !== undefined) {
         energyPatterns[hour] = (energyPatterns[hour] + performance) / 2; // Average with historical data
       }
@@ -110,21 +120,22 @@ export const useTaskScheduling = () => {
     const slots: TimeSlot[] = [];
     const energyPatterns = analyzeEnergyPatterns();
     const { start, end } = settings.workingHours;
-    
+
     for (let hour = start; hour < end; hour++) {
       const startTime = new Date(date);
       startTime.setHours(hour, 0, 0, 0);
-      
+
       const endTime = new Date(startTime);
       endTime.setHours(hour + 1, 0, 0, 0);
-      
+
       const energyLevel = energyPatterns[hour] || 0.5;
-      const focusScore = energyLevel * 0.8 + (Math.random() * 0.2); // Add some variation
-      
+      const focusScore = energyLevel * 0.8 + Math.random() * 0.2; // Add some variation
+
       let availability: TimeSlot['availability'] = 'free';
       if (energyLevel < settings.energyThreshold) {
         availability = 'low_energy';
-      } else if (hour % 4 === 0) { // Every 4 hours suggest break
+      } else if (hour % 4 === 0) {
+        // Every 4 hours suggest break
         availability = 'break_needed';
       }
 
@@ -181,7 +192,9 @@ export const useTaskScheduling = () => {
 
     // Deadline factor
     if (task.deadline) {
-      const daysUntilDeadline = (new Date(task.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+      const daysUntilDeadline =
+        (new Date(task.deadline).getTime() - Date.now()) /
+        (1000 * 60 * 60 * 24);
       if (daysUntilDeadline < 1) complexity += 0.3;
       else if (daysUntilDeadline < 3) complexity += 0.2;
       else if (daysUntilDeadline < 7) complexity += 0.1;
@@ -191,38 +204,42 @@ export const useTaskScheduling = () => {
   };
 
   // Calculate optimal time slots for a task
-  const calculateOptimalTimeSlots = (task: any, availableSlots: TimeSlot[]): TimeSlot[] => {
+  const calculateOptimalTimeSlots = (
+    task: any,
+    availableSlots: TimeSlot[]
+  ): TimeSlot[] => {
     const complexity = analyzeTaskComplexity(task);
     const taskDuration = task.estimatedTime || 25; // Default to 25 minutes
-    
+
     // Filter slots based on task requirements
     const suitableSlots = availableSlots.filter(slot => {
       // Check if slot has enough energy for task complexity
       if (complexity > 0.7 && slot.energyLevel < 0.7) return false;
       if (complexity > 0.5 && slot.energyLevel < 0.5) return false;
-      
+
       // Check if slot duration is sufficient
       if (slot.duration < taskDuration) return false;
-      
+
       // Check availability
       if (slot.availability === 'busy') return false;
-      
+
       return true;
     });
 
     // Score and sort slots
     const scoredSlots = suitableSlots.map(slot => {
       let score = slot.energyLevel * 0.4 + slot.focusScore * 0.3;
-      
+
       // Bonus for high energy slots with complex tasks
       if (complexity > 0.7 && slot.energyLevel > 0.8) score += 0.2;
-      
+
       // Bonus for morning slots (generally better for focus)
-      if (slot.startTime.getHours() >= 9 && slot.startTime.getHours() <= 11) score += 0.1;
-      
+      if (slot.startTime.getHours() >= 9 && slot.startTime.getHours() <= 11)
+        score += 0.1;
+
       // Penalty for low energy slots
       if (slot.availability === 'low_energy') score -= 0.2;
-      
+
       return { ...slot, score };
     });
 
@@ -234,50 +251,64 @@ export const useTaskScheduling = () => {
   };
 
   // Generate scheduling recommendation for a task
-  const generateSchedulingRecommendation = (task: any): SchedulingRecommendation => {
+  const generateSchedulingRecommendation = (
+    task: any
+  ): SchedulingRecommendation => {
     const today = new Date();
     const availableSlots = generateTimeSlots(today);
     const optimalSlots = calculateOptimalTimeSlots(task, availableSlots);
-    
+
     const complexity = analyzeTaskComplexity(task);
-    const energyLevel = availableSlots.reduce((sum, slot) => sum + slot.energyLevel, 0) / availableSlots.length;
+    const energyLevel =
+      availableSlots.reduce((sum, slot) => sum + slot.energyLevel, 0) /
+      availableSlots.length;
     const timeOfDay = today.getHours() / 24;
     const dayOfWeek = today.getDay() / 7;
-    
+
     // Calculate deadline factor
     let deadline = 1;
     if (task.deadline) {
-      const daysUntilDeadline = (new Date(task.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+      const daysUntilDeadline =
+        (new Date(task.deadline).getTime() - Date.now()) /
+        (1000 * 60 * 60 * 24);
       deadline = Math.max(0, daysUntilDeadline / 7); // Normalize to 0-1
     }
-    
+
     // Calculate priority factor
     let priority = 0.5;
     if (task.priority === 'high') priority = 0.9;
     else if (task.priority === 'medium') priority = 0.7;
     else if (task.priority === 'low') priority = 0.3;
-    
+
     // Calculate confidence
-    const confidence = Math.min(1, 
-      (complexity * 0.2) + 
-      (energyLevel * 0.3) + 
-      (timeOfDay * 0.1) + 
-      (dayOfWeek * 0.1) + 
-      (deadline * 0.2) + 
-      (priority * 0.1)
+    const confidence = Math.min(
+      1,
+      complexity * 0.2 +
+        energyLevel * 0.3 +
+        timeOfDay * 0.1 +
+        dayOfWeek * 0.1 +
+        deadline * 0.2 +
+        priority * 0.1
     );
 
     // Generate reasoning
-    const reasoning = generateSchedulingReasoning(complexity, energyLevel, optimalSlots[0]);
+    const reasoning = generateSchedulingReasoning(
+      complexity,
+      energyLevel,
+      optimalSlots[0]
+    );
 
     // Generate alternatives
     const alternatives = optimalSlots.slice(1).map(slot => ({
       timeSlot: slot,
       confidence: Math.max(0.3, confidence - 0.2),
-      reasoning: `Alternatif zaman: ${slot.startTime.toLocaleTimeString('tr-TR', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      })}`,
+      reasoning: `Alternatif zaman: ${slot.startTime.toLocaleTimeString(
+        'tr-TR',
+        {
+          hour: '2-digit',
+          minute: '2-digit',
+        }
+      )}`,
     }));
 
     return {
@@ -302,39 +333,55 @@ export const useTaskScheduling = () => {
   };
 
   // Generate reasoning text
-  const generateSchedulingReasoning = (complexity: number, energyLevel: number, bestSlot: TimeSlot): string => {
+  const generateSchedulingReasoning = (
+    complexity: number,
+    energyLevel: number,
+    bestSlot: TimeSlot
+  ): string => {
     const reasons = [];
-    
+
     if (complexity > 0.7) {
       reasons.push('Karmaşık görev için yüksek enerji gerekiyor');
     } else if (complexity < 0.3) {
       reasons.push('Basit görev, düşük enerji ile de yapılabilir');
     }
-    
+
     if (energyLevel > 0.8) {
       reasons.push('Bu saatlerde enerji seviyeniz yüksek');
     } else if (energyLevel < 0.4) {
       reasons.push('Bu saatlerde enerji seviyeniz düşük');
     }
-    
-    if (bestSlot.startTime.getHours() >= 9 && bestSlot.startTime.getHours() <= 11) {
+
+    if (
+      bestSlot.startTime.getHours() >= 9 &&
+      bestSlot.startTime.getHours() <= 11
+    ) {
       reasons.push('Sabah saatleri odaklanma için ideal');
-    } else if (bestSlot.startTime.getHours() >= 14 && bestSlot.startTime.getHours() <= 16) {
+    } else if (
+      bestSlot.startTime.getHours() >= 14 &&
+      bestSlot.startTime.getHours() <= 16
+    ) {
       reasons.push('Öğleden sonra ikinci enerji zirvesi');
     }
-    
-    return reasons.length > 0 ? reasons.join(', ') : 'Standart zamanlama önerisi';
+
+    return reasons.length > 0
+      ? reasons.join(', ')
+      : 'Standart zamanlama önerisi';
   };
 
   // Get scheduling recommendations for all tasks
-  const getSchedulingRecommendations = async (): Promise<SchedulingRecommendation[]> => {
+  const getSchedulingRecommendations = async (): Promise<
+    SchedulingRecommendation[]
+  > => {
     try {
       setLoading(true);
       setError(null);
-      
-      const newRecommendations = tasks.map(task => generateSchedulingRecommendation(task));
+
+      const newRecommendations = (tasks || []).map(task =>
+        generateSchedulingRecommendation(task)
+      );
       setRecommendations(newRecommendations);
-      
+
       return newRecommendations;
     } catch (err) {
       setError('Failed to get scheduling recommendations');
@@ -346,11 +393,13 @@ export const useTaskScheduling = () => {
   };
 
   // Get recommendation for specific task
-  const getTaskSchedulingRecommendation = async (taskId: string): Promise<SchedulingRecommendation | null> => {
+  const getTaskSchedulingRecommendation = async (
+    taskId: string
+  ): Promise<SchedulingRecommendation | null> => {
     try {
       const task = tasks.find(t => t.id === taskId);
       if (!task) return null;
-      
+
       const recommendation = generateSchedulingRecommendation(task);
       return recommendation;
     } catch (err) {
@@ -360,16 +409,25 @@ export const useTaskScheduling = () => {
   };
 
   // Apply scheduling recommendation
-  const applySchedulingRecommendation = async (recommendationId: string, timeSlotId: string): Promise<boolean> => {
+  const applySchedulingRecommendation = async (
+    recommendationId: string,
+    timeSlotId: string
+  ): Promise<boolean> => {
     try {
-      const recommendation = recommendations.find(r => r.id === recommendationId);
+      const recommendation = recommendations.find(
+        r => r.id === recommendationId
+      );
       if (!recommendation) return false;
-      
-      const timeSlot = recommendation.recommendedTimeSlots.find(slot => slot.id === timeSlotId);
+
+      const timeSlot = recommendation.recommendedTimeSlots.find(
+        slot => slot.id === timeSlotId
+      );
       if (!timeSlot) return false;
-      
+
       // In a real app, this would update the task's scheduled time
-      console.log(`Applied scheduling: Task ${recommendation.taskId} scheduled for ${timeSlot.startTime}`);
+      console.log(
+        `Applied scheduling: Task ${recommendation.taskId} scheduled for ${timeSlot.startTime}`
+      );
       return true;
     } catch (err) {
       console.error('Apply scheduling recommendation error:', err);
@@ -381,20 +439,20 @@ export const useTaskScheduling = () => {
   const autoScheduleTasks = async (): Promise<boolean> => {
     try {
       if (!settings.autoSchedule) return false;
-      
+
       const recommendations = await getSchedulingRecommendations();
       let scheduledCount = 0;
-      
+
       for (const recommendation of recommendations) {
         if (recommendation.confidence > settings.energyThreshold) {
           const success = await applySchedulingRecommendation(
-            recommendation.id, 
+            recommendation.id,
             recommendation.recommendedTimeSlots[0].id
           );
           if (success) scheduledCount++;
         }
       }
-      
+
       console.log(`Auto-scheduled ${scheduledCount} tasks`);
       return scheduledCount > 0;
     } catch (err) {
@@ -409,12 +467,19 @@ export const useTaskScheduling = () => {
   };
 
   // Learn from scheduling results
-  const learnFromScheduling = async (taskId: string, scheduledTime: Date, completed: boolean, actualDuration: number) => {
+  const learnFromScheduling = async (
+    taskId: string,
+    scheduledTime: Date,
+    completed: boolean,
+    actualDuration: number
+  ) => {
     try {
       if (!settings.learningEnabled) return;
-      
+
       // In a real app, this would update the AI model with feedback
-      console.log(`Learning from scheduling: Task ${taskId}, Time ${scheduledTime}, Completed ${completed}, Duration ${actualDuration}`);
+      console.log(
+        `Learning from scheduling: Task ${taskId}, Time ${scheduledTime}, Completed ${completed}, Duration ${actualDuration}`
+      );
     } catch (err) {
       console.error('Learn from scheduling error:', err);
     }
@@ -423,14 +488,19 @@ export const useTaskScheduling = () => {
   // Get scheduling insights
   const getSchedulingInsights = () => {
     if (recommendations.length === 0) return null;
-    
-    const avgConfidence = recommendations.reduce((sum, r) => sum + r.confidence, 0) / recommendations.length;
-    const highConfidenceCount = recommendations.filter(r => r.confidence > 0.8).length;
-    const morningSlots = recommendations.filter(r => 
-      r.recommendedTimeSlots[0]?.startTime.getHours() >= 9 && 
-      r.recommendedTimeSlots[0]?.startTime.getHours() <= 11
+
+    const avgConfidence =
+      recommendations.reduce((sum, r) => sum + r.confidence, 0) /
+      recommendations.length;
+    const highConfidenceCount = (recommendations || []).filter(
+      r => r.confidence > 0.8
     ).length;
-    
+    const morningSlots = (recommendations || []).filter(
+      r =>
+        r.recommendedTimeSlots[0]?.startTime.getHours() >= 9 &&
+        r.recommendedTimeSlots[0]?.startTime.getHours() <= 11
+    ).length;
+
     return {
       averageConfidence: avgConfidence,
       totalRecommendations: recommendations.length,

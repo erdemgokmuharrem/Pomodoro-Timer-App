@@ -11,13 +11,17 @@ jest.mock('react-native-reanimated', () => {
 jest.mock('expo-notifications', () => ({
   setNotificationHandler: jest.fn(),
   getPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
-  requestPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+  requestPermissionsAsync: jest.fn(() =>
+    Promise.resolve({ status: 'granted' })
+  ),
   scheduleNotificationAsync: jest.fn(() => Promise.resolve('notification-id')),
   cancelScheduledNotificationAsync: jest.fn(() => Promise.resolve()),
   cancelAllScheduledNotificationsAsync: jest.fn(() => Promise.resolve()),
   getAllScheduledNotificationsAsync: jest.fn(() => Promise.resolve([])),
   addNotificationReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
-  addNotificationResponseReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
+  addNotificationResponseReceivedListener: jest.fn(() => ({
+    remove: jest.fn(),
+  })),
   removeNotificationSubscription: jest.fn(),
   announceForAccessibility: jest.fn(),
 }));
@@ -26,7 +30,11 @@ jest.mock('expo-av', () => ({
   Audio: {
     setAudioModeAsync: jest.fn(() => Promise.resolve()),
     Sound: {
-      createAsync: jest.fn(() => Promise.resolve({ sound: { replayAsync: jest.fn(), unloadAsync: jest.fn() } })),
+      createAsync: jest.fn(() =>
+        Promise.resolve({
+          sound: { replayAsync: jest.fn(), unloadAsync: jest.fn() },
+        })
+      ),
     },
   },
 }));
@@ -78,7 +86,7 @@ jest.mock('react-native-svg', () => ({
 
 // Mock zustand persist
 jest.mock('zustand/middleware', () => ({
-  persist: (fn) => fn,
+  persist: fn => fn,
   createJSONStorage: () => ({
     getItem: jest.fn(() => Promise.resolve(null)),
     setItem: jest.fn(() => Promise.resolve()),
@@ -126,7 +134,8 @@ beforeAll(() => {
   console.error = (...args) => {
     if (
       typeof args[0] === 'string' &&
-      (args[0].includes('Warning:') || args[0].includes('Error: Could not find'))
+      (args[0].includes('Warning:') ||
+        args[0].includes('Error: Could not find'))
     ) {
       return;
     }

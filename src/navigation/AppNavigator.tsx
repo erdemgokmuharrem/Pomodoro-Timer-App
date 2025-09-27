@@ -54,23 +54,23 @@ const MainTabNavigator = () => {
         headerShown: false,
       })}
     >
-      <Tab.Screen 
-        name="Dashboard" 
+      <Tab.Screen
+        name="Dashboard"
         component={DashboardScreen}
         options={{ title: 'Ana Sayfa' }}
       />
-      <Tab.Screen 
-        name="Tasks" 
+      <Tab.Screen
+        name="Tasks"
         component={TasksScreen}
         options={{ title: 'Görevler' }}
       />
-      <Tab.Screen 
-        name="Statistics" 
+      <Tab.Screen
+        name="Statistics"
         component={StatisticsScreen}
         options={{ title: 'İstatistikler' }}
       />
-      <Tab.Screen 
-        name="Settings" 
+      <Tab.Screen
+        name="Settings"
         component={SettingsScreen}
         options={{ title: 'Ayarlar' }}
       />
@@ -87,13 +87,13 @@ const AppNavigator = () => {
         }}
       >
         <Stack.Screen name="MainTabs" component={MainTabNavigator} />
-        <Stack.Screen 
-          name="Timer" 
+        <Stack.Screen
+          name="Timer"
           component={TimerScreen}
-          options={{ 
+          options={{
             title: 'Odaklanma',
             headerShown: true,
-            headerBackTitle: 'Geri'
+            headerBackTitle: 'Geri',
           }}
         />
       </Stack.Navigator>

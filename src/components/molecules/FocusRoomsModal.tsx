@@ -12,7 +12,11 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import { useFocusRoomsStore, FocusRoom, FocusRoomMember } from '../../store/useFocusRoomsStore';
+import {
+  useFocusRoomsStore,
+  FocusRoom,
+  FocusRoomMember,
+} from '../../store/useFocusRoomsStore';
 
 interface FocusRoomsModalProps {
   visible: boolean;
@@ -45,15 +49,21 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
     loadRooms,
   } = useFocusRoomsStore();
 
-  const [activeTab, setActiveTab] = useState<'discover' | 'create' | 'myRooms' | 'active'>('discover');
+  const [activeTab, setActiveTab] = useState<
+    'discover' | 'create' | 'myRooms' | 'active'
+  >('discover');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedTheme, setSelectedTheme] = useState<string>('');
   const [newRoomName, setNewRoomName] = useState('');
   const [newRoomDescription, setNewRoomDescription] = useState('');
   const [newRoomDuration, setNewRoomDuration] = useState(25);
-  const [newRoomCategory, setNewRoomCategory] = useState<'study' | 'work' | 'creative' | 'fitness' | 'meditation' | 'other'>('study');
-  const [newRoomTheme, setNewRoomTheme] = useState<'forest' | 'ocean' | 'mountain' | 'city' | 'space' | 'library' | 'cafe'>('forest');
+  const [newRoomCategory, setNewRoomCategory] = useState<
+    'study' | 'work' | 'creative' | 'fitness' | 'meditation' | 'other'
+  >('study');
+  const [newRoomTheme, setNewRoomTheme] = useState<
+    'forest' | 'ocean' | 'mountain' | 'city' | 'space' | 'library' | 'cafe'
+  >('forest');
   const [newMessage, setNewMessage] = useState('');
   const [encouragementMessage, setEncouragementMessage] = useState('');
   const [achievementMessage, setAchievementMessage] = useState('');
@@ -88,14 +98,24 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
   useEffect(() => {
     const performSearch = async () => {
       if (searchQuery || selectedCategory || selectedTheme) {
-        const results = await searchRooms(searchQuery, selectedCategory, selectedTheme);
+        const results = await searchRooms(
+          searchQuery,
+          selectedCategory,
+          selectedTheme
+        );
         setFilteredRooms(results);
       } else {
         setFilteredRooms(availableRooms);
       }
     };
     performSearch();
-  }, [searchQuery, selectedCategory, selectedTheme, availableRooms, searchRooms]);
+  }, [
+    searchQuery,
+    selectedCategory,
+    selectedTheme,
+    availableRooms,
+    searchRooms,
+  ]);
 
   const handleCreateRoom = async () => {
     if (!newRoomName.trim()) {
@@ -150,7 +170,7 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
       if (success) {
         setSelectedRoom(room);
         setActiveTab('active');
-        Alert.alert('Başarılı', 'Focus Room\'a katıldınız');
+        Alert.alert('Başarılı', "Focus Room'a katıldınız");
       }
     } catch (err) {
       Alert.alert('Hata', 'Odaya katılamadınız');
@@ -221,19 +241,26 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
   };
 
   const renderRoomItem = ({ item }: { item: FocusRoom }) => (
-    <TouchableOpacity style={styles.roomItem} onPress={() => handleJoinRoom(item)}>
+    <TouchableOpacity
+      style={styles.roomItem}
+      onPress={() => handleJoinRoom(item)}
+    >
       <View style={styles.roomHeader}>
         <View style={styles.roomInfo}>
           <Text style={styles.roomName}>{item.name}</Text>
           <Text style={styles.roomCategory}>
-            {categories.find(c => c.id === item.category)?.icon} {categories.find(c => c.id === item.category)?.name}
+            {categories.find(c => c.id === item.category)?.icon}{' '}
+            {categories.find(c => c.id === item.category)?.name}
           </Text>
           <Text style={styles.roomTheme}>
-            {themes.find(t => t.id === item.theme)?.icon} {themes.find(t => t.id === item.theme)?.name}
+            {themes.find(t => t.id === item.theme)?.icon}{' '}
+            {themes.find(t => t.id === item.theme)?.name}
           </Text>
         </View>
         <View style={styles.roomStats}>
-          <Text style={styles.roomMembers}>{item.members.length}/{item.maxMembers}</Text>
+          <Text style={styles.roomMembers}>
+            {item.members.length}/{item.maxMembers}
+          </Text>
           <Text style={styles.roomStatus}>
             {item.isActive ? '🟢 Aktif' : '⚪ Beklemede'}
           </Text>
@@ -245,8 +272,11 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
       <View style={styles.roomFooter}>
         <Text style={styles.roomDuration}>{item.duration} dakika</Text>
         <Text style={styles.roomRules}>
-          {item.rules.focusLevel === 'strict' ? '🔒 Sıkı' : 
-           item.rules.focusLevel === 'moderate' ? '⚖️ Orta' : '😌 Rahat'}
+          {item.rules.focusLevel === 'strict'
+            ? '🔒 Sıkı'
+            : item.rules.focusLevel === 'moderate'
+              ? '⚖️ Orta'
+              : '😌 Rahat'}
         </Text>
       </View>
     </TouchableOpacity>
@@ -264,7 +294,8 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
           {item.name} {item.isHost && '👑'} {item.isModerator && '🛡️'}
         </Text>
         <Text style={styles.memberStatus}>
-          {item.isOnline ? '🟢 Çevrimiçi' : '⚪ Çevrimdışı'} • {item.focusStreak} gün streak
+          {item.isOnline ? '🟢 Çevrimiçi' : '⚪ Çevrimdışı'} •{' '}
+          {item.focusStreak} gün streak
         </Text>
         {item.currentTask && (
           <Text style={styles.memberTask}>Görev: {item.currentTask}</Text>
@@ -274,24 +305,28 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
   );
 
   const renderMessageItem = ({ item }: { item: any }) => (
-    <View style={[
-      styles.messageItem,
-      item.userId === 'current-user-id' && styles.messageItemOwn,
-      item.type === 'encouragement' && styles.encouragementMessage,
-      item.type === 'achievement' && styles.achievementMessage
-    ]}>
+    <View
+      style={[
+        styles.messageItem,
+        item.userId === 'current-user-id' && styles.messageItemOwn,
+        item.type === 'encouragement' && styles.encouragementMessage,
+        item.type === 'achievement' && styles.achievementMessage,
+      ]}
+    >
       <Text style={styles.messageUserName}>{item.userName}</Text>
-      <Text style={[
-        styles.messageText,
-        item.type === 'encouragement' && styles.encouragementText,
-        item.type === 'achievement' && styles.achievementText
-      ]}>
+      <Text
+        style={[
+          styles.messageText,
+          item.type === 'encouragement' && styles.encouragementText,
+          item.type === 'achievement' && styles.achievementText,
+        ]}
+      >
         {item.message}
       </Text>
       <Text style={styles.messageTime}>
-        {new Date(item.timestamp).toLocaleTimeString('tr-TR', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
+        {new Date(item.timestamp).toLocaleTimeString('tr-TR', {
+          hour: '2-digit',
+          minute: '2-digit',
         })}
       </Text>
     </View>
@@ -316,7 +351,11 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
   ];
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Focus Rooms</Text>
@@ -331,7 +370,12 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
             style={[styles.tab, activeTab === 'discover' && styles.activeTab]}
             onPress={() => setActiveTab('discover')}
           >
-            <Text style={[styles.tabText, activeTab === 'discover' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'discover' && styles.activeTabText,
+              ]}
+            >
               Keşfet
             </Text>
           </TouchableOpacity>
@@ -339,7 +383,12 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
             style={[styles.tab, activeTab === 'create' && styles.activeTab]}
             onPress={() => setActiveTab('create')}
           >
-            <Text style={[styles.tabText, activeTab === 'create' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'create' && styles.activeTabText,
+              ]}
+            >
               Oluştur
             </Text>
           </TouchableOpacity>
@@ -347,7 +396,12 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
             style={[styles.tab, activeTab === 'myRooms' && styles.activeTab]}
             onPress={() => setActiveTab('myRooms')}
           >
-            <Text style={[styles.tabText, activeTab === 'myRooms' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'myRooms' && styles.activeTabText,
+              ]}
+            >
               Odalarım
             </Text>
           </TouchableOpacity>
@@ -355,7 +409,12 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
             style={[styles.tab, activeTab === 'active' && styles.activeTab]}
             onPress={() => setActiveTab('active')}
           >
-            <Text style={[styles.tabText, activeTab === 'active' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'active' && styles.activeTabText,
+              ]}
+            >
               Aktif
             </Text>
           </TouchableOpacity>
@@ -381,21 +440,33 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
               </View>
 
               {/* Category Filter */}
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
-                {categories.map((category) => (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.categoryContainer}
+              >
+                {categories.map(category => (
                   <TouchableOpacity
                     key={category.id}
                     style={[
                       styles.categoryButton,
-                      selectedCategory === category.id && styles.categoryButtonActive
+                      selectedCategory === category.id &&
+                        styles.categoryButtonActive,
                     ]}
-                    onPress={() => setSelectedCategory(selectedCategory === category.id ? '' : category.id)}
+                    onPress={() =>
+                      setSelectedCategory(
+                        selectedCategory === category.id ? '' : category.id
+                      )
+                    }
                   >
                     <Text style={styles.categoryIcon}>{category.icon}</Text>
-                    <Text style={[
-                      styles.categoryText,
-                      selectedCategory === category.id && styles.categoryTextActive
-                    ]}>
+                    <Text
+                      style={[
+                        styles.categoryText,
+                        selectedCategory === category.id &&
+                          styles.categoryTextActive,
+                      ]}
+                    >
                       {category.name}
                     </Text>
                   </TouchableOpacity>
@@ -403,21 +474,31 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
               </ScrollView>
 
               {/* Theme Filter */}
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.themeContainer}>
-                {themes.map((theme) => (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.themeContainer}
+              >
+                {themes.map(theme => (
                   <TouchableOpacity
                     key={theme.id}
                     style={[
                       styles.themeButton,
-                      selectedTheme === theme.id && styles.themeButtonActive
+                      selectedTheme === theme.id && styles.themeButtonActive,
                     ]}
-                    onPress={() => setSelectedTheme(selectedTheme === theme.id ? '' : theme.id)}
+                    onPress={() =>
+                      setSelectedTheme(
+                        selectedTheme === theme.id ? '' : theme.id
+                      )
+                    }
                   >
                     <Text style={styles.themeIcon}>{theme.icon}</Text>
-                    <Text style={[
-                      styles.themeText,
-                      selectedTheme === theme.id && styles.themeTextActive
-                    ]}>
+                    <Text
+                      style={[
+                        styles.themeText,
+                        selectedTheme === theme.id && styles.themeTextActive,
+                      ]}
+                    >
                       {theme.name}
                     </Text>
                   </TouchableOpacity>
@@ -428,7 +509,7 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
               <FlatList
                 data={filteredRooms}
                 renderItem={renderRoomItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -437,7 +518,7 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
           {activeTab === 'create' && (
             <View>
               <Text style={styles.sectionTitle}>Yeni Focus Room Oluştur</Text>
-              
+
               <View style={styles.form}>
                 <TextInput
                   style={styles.input}
@@ -452,24 +533,30 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
                   onChangeText={setNewRoomDescription}
                   multiline
                 />
-                
+
                 {/* Category Selection */}
                 <Text style={styles.formLabel}>Kategori</Text>
                 <View style={styles.categoryGrid}>
-                  {categories.map((category) => (
+                  {categories.map(category => (
                     <TouchableOpacity
                       key={category.id}
                       style={[
                         styles.categoryOption,
-                        newRoomCategory === category.id && styles.categoryOptionActive
+                        newRoomCategory === category.id &&
+                          styles.categoryOptionActive,
                       ]}
                       onPress={() => setNewRoomCategory(category.id as any)}
                     >
-                      <Text style={styles.categoryOptionIcon}>{category.icon}</Text>
-                      <Text style={[
-                        styles.categoryOptionText,
-                        newRoomCategory === category.id && styles.categoryOptionTextActive
-                      ]}>
+                      <Text style={styles.categoryOptionIcon}>
+                        {category.icon}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.categoryOptionText,
+                          newRoomCategory === category.id &&
+                            styles.categoryOptionTextActive,
+                        ]}
+                      >
                         {category.name}
                       </Text>
                     </TouchableOpacity>
@@ -479,20 +566,23 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
                 {/* Theme Selection */}
                 <Text style={styles.formLabel}>Tema</Text>
                 <View style={styles.themeGrid}>
-                  {themes.map((theme) => (
+                  {themes.map(theme => (
                     <TouchableOpacity
                       key={theme.id}
                       style={[
                         styles.themeOption,
-                        newRoomTheme === theme.id && styles.themeOptionActive
+                        newRoomTheme === theme.id && styles.themeOptionActive,
                       ]}
                       onPress={() => setNewRoomTheme(theme.id as any)}
                     >
                       <Text style={styles.themeOptionIcon}>{theme.icon}</Text>
-                      <Text style={[
-                        styles.themeOptionText,
-                        newRoomTheme === theme.id && styles.themeOptionTextActive
-                      ]}>
+                      <Text
+                        style={[
+                          styles.themeOptionText,
+                          newRoomTheme === theme.id &&
+                            styles.themeOptionTextActive,
+                        ]}
+                      >
                         {theme.name}
                       </Text>
                     </TouchableOpacity>
@@ -500,23 +590,29 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
                 </View>
 
                 <View style={styles.durationContainer}>
-                  <Text style={styles.durationLabel}>Süre: {newRoomDuration} dakika</Text>
+                  <Text style={styles.durationLabel}>
+                    Süre: {newRoomDuration} dakika
+                  </Text>
                   <View style={styles.durationButtons}>
                     <TouchableOpacity
                       style={styles.durationButton}
-                      onPress={() => setNewRoomDuration(Math.max(15, newRoomDuration - 5))}
+                      onPress={() =>
+                        setNewRoomDuration(Math.max(15, newRoomDuration - 5))
+                      }
                     >
                       <Text style={styles.durationButtonText}>-</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.durationButton}
-                      onPress={() => setNewRoomDuration(Math.min(120, newRoomDuration + 5))}
+                      onPress={() =>
+                        setNewRoomDuration(Math.min(120, newRoomDuration + 5))
+                      }
                     >
                       <Text style={styles.durationButtonText}>+</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-                
+
                 <TouchableOpacity
                   style={styles.createButton}
                   onPress={handleCreateRoom}
@@ -525,7 +621,9 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
                   {loading ? (
                     <ActivityIndicator color="white" />
                   ) : (
-                    <Text style={styles.createButtonText}>Focus Room Oluştur</Text>
+                    <Text style={styles.createButtonText}>
+                      Focus Room Oluştur
+                    </Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -538,7 +636,7 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
               <FlatList
                 data={myRooms}
                 renderItem={renderRoomItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -546,16 +644,22 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
 
           {activeTab === 'active' && selectedRoom && (
             <View>
-              <Text style={styles.sectionTitle}>Aktif Room: {selectedRoom.name}</Text>
-              
+              <Text style={styles.sectionTitle}>
+                Aktif Room: {selectedRoom.name}
+              </Text>
+
               {/* Room Controls */}
               <View style={styles.roomControls}>
                 <TouchableOpacity
                   style={[
                     styles.controlButton,
-                    selectedRoom.isActive ? styles.endButton : styles.startButton
+                    selectedRoom.isActive
+                      ? styles.endButton
+                      : styles.startButton,
                   ]}
-                  onPress={selectedRoom.isActive ? handleEndRoom : handleStartRoom}
+                  onPress={
+                    selectedRoom.isActive ? handleEndRoom : handleStartRoom
+                  }
                 >
                   <Text style={styles.controlButtonText}>
                     {selectedRoom.isActive ? 'Odayı Sonlandır' : 'Odayı Başlat'}
@@ -564,11 +668,13 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
               </View>
 
               {/* Members */}
-              <Text style={styles.subsectionTitle}>Üyeler ({selectedRoom.members.length})</Text>
+              <Text style={styles.subsectionTitle}>
+                Üyeler ({selectedRoom.members.length})
+              </Text>
               <FlatList
                 data={selectedRoom.members}
                 renderItem={renderMemberItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.membersList}
               />
 
@@ -580,7 +686,7 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
                     <FlatList
                       data={selectedRoom.chat.messages}
                       renderItem={renderMessageItem}
-                      keyExtractor={(item) => item.id}
+                      keyExtractor={item => item.id}
                       style={styles.messagesList}
                     />
                     <View style={styles.messageInputContainer}>
@@ -617,10 +723,12 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
                     style={styles.encouragementButton}
                     onPress={handleSendEncouragement}
                   >
-                    <Text style={styles.encouragementButtonText}>💪 Teşvik Et</Text>
+                    <Text style={styles.encouragementButtonText}>
+                      💪 Teşvik Et
+                    </Text>
                   </TouchableOpacity>
                 </View>
-                
+
                 <Text style={styles.suggestionsTitle}>Hızlı Teşvikler:</Text>
                 <View style={styles.suggestionsContainer}>
                   {encouragementSuggestions.map((suggestion, index) => (
@@ -653,7 +761,7 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
                     <Text style={styles.achievementButtonText}>🎉 Paylaş</Text>
                   </TouchableOpacity>
                 </View>
-                
+
                 <Text style={styles.suggestionsTitle}>Hızlı Başarılar:</Text>
                 <View style={styles.suggestionsContainer}>
                   {achievementSuggestions.map((achievement, index) => (
@@ -672,15 +780,21 @@ export const FocusRoomsModal: React.FC<FocusRoomsModalProps> = ({
               <Text style={styles.subsectionTitle}>İstatistikler</Text>
               <View style={styles.statsContainer}>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{selectedRoom.statistics.totalSessions}</Text>
+                  <Text style={styles.statNumber}>
+                    {selectedRoom.statistics.totalSessions}
+                  </Text>
                   <Text style={styles.statLabel}>Toplam Oturum</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{selectedRoom.statistics.totalFocusTime}</Text>
+                  <Text style={styles.statNumber}>
+                    {selectedRoom.statistics.totalFocusTime}
+                  </Text>
                   <Text style={styles.statLabel}>Odaklanma Süresi (dk)</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{selectedRoom.statistics.activeMembers}</Text>
+                  <Text style={styles.statNumber}>
+                    {selectedRoom.statistics.activeMembers}
+                  </Text>
                   <Text style={styles.statLabel}>Aktif Üye</Text>
                 </View>
               </View>

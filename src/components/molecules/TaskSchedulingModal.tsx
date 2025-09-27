@@ -10,7 +10,11 @@ import {
   ActivityIndicator,
   FlatList,
 } from 'react-native';
-import { useTaskScheduling, SchedulingRecommendation, TimeSlot } from '../../hooks/useTaskScheduling';
+import {
+  useTaskScheduling,
+  SchedulingRecommendation,
+  TimeSlot,
+} from '../../hooks/useTaskScheduling';
 
 interface TaskSchedulingModalProps {
   visible: boolean;
@@ -35,9 +39,12 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
     getSchedulingInsights,
   } = useTaskScheduling();
 
-  const [activeTab, setActiveTab] = useState<'recommendations' | 'calendar' | 'settings' | 'insights'>('recommendations');
+  const [activeTab, setActiveTab] = useState<
+    'recommendations' | 'calendar' | 'settings' | 'insights'
+  >('recommendations');
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedRecommendation, setSelectedRecommendation] = useState<SchedulingRecommendation | null>(null);
+  const [selectedRecommendation, setSelectedRecommendation] =
+    useState<SchedulingRecommendation | null>(null);
 
   useEffect(() => {
     if (visible) {
@@ -45,9 +52,15 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
     }
   }, [visible, getSchedulingRecommendations]);
 
-  const handleApplyRecommendation = async (recommendationId: string, timeSlotId: string) => {
+  const handleApplyRecommendation = async (
+    recommendationId: string,
+    timeSlotId: string
+  ) => {
     try {
-      const success = await applySchedulingRecommendation(recommendationId, timeSlotId);
+      const success = await applySchedulingRecommendation(
+        recommendationId,
+        timeSlotId
+      );
       if (success) {
         Alert.alert('Başarılı', 'Görev zamanlandı');
       } else {
@@ -76,18 +89,24 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
     Alert.alert('Başarılı', 'Ayarlar güncellendi');
   };
 
-  const renderRecommendationItem = ({ item }: { item: SchedulingRecommendation }) => (
+  const renderRecommendationItem = ({
+    item,
+  }: {
+    item: SchedulingRecommendation;
+  }) => (
     <View style={styles.recommendationItem}>
       <View style={styles.recommendationHeader}>
-        <Text style={styles.recommendationTaskId}>Görev #{item.taskId.slice(-4)}</Text>
+        <Text style={styles.recommendationTaskId}>
+          Görev #{item.taskId.slice(-4)}
+        </Text>
         <View style={styles.confidenceContainer}>
           <Text style={styles.confidenceLabel}>Güven:</Text>
           <View style={styles.confidenceBar}>
-            <View 
+            <View
               style={[
-                styles.confidenceFill, 
-                { width: `${item.confidence * 100}%` }
-              ]} 
+                styles.confidenceFill,
+                { width: `${item.confidence * 100}%` },
+              ]}
             />
           </View>
           <Text style={styles.confidenceText}>
@@ -95,38 +114,37 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
           </Text>
         </View>
       </View>
-      
+
       <Text style={styles.recommendationReasoning}>{item.reasoning}</Text>
-      
+
       <View style={styles.timeSlotsContainer}>
         <Text style={styles.timeSlotsTitle}>Önerilen Zamanlar:</Text>
         {item.recommendedTimeSlots.map((slot, index) => (
           <TouchableOpacity
             key={slot.id}
-            style={[
-              styles.timeSlotItem,
-              index === 0 && styles.primaryTimeSlot
-            ]}
+            style={[styles.timeSlotItem, index === 0 && styles.primaryTimeSlot]}
             onPress={() => handleApplyRecommendation(item.id, slot.id)}
           >
             <View style={styles.timeSlotHeader}>
               <Text style={styles.timeSlotTime}>
-                {slot.startTime.toLocaleTimeString('tr-TR', { 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
-                })} - {slot.endTime.toLocaleTimeString('tr-TR', { 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
+                {slot.startTime.toLocaleTimeString('tr-TR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}{' '}
+                -{' '}
+                {slot.endTime.toLocaleTimeString('tr-TR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
                 })}
               </Text>
               <View style={styles.energyContainer}>
                 <Text style={styles.energyLabel}>Enerji:</Text>
                 <View style={styles.energyBar}>
-                  <View 
+                  <View
                     style={[
-                      styles.energyFill, 
-                      { width: `${slot.energyLevel * 100}%` }
-                    ]} 
+                      styles.energyFill,
+                      { width: `${slot.energyLevel * 100}%` },
+                    ]}
                   />
                 </View>
                 <Text style={styles.energyText}>
@@ -136,12 +154,14 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
             </View>
             <Text style={styles.timeSlotReasoning}>{slot.reasoning}</Text>
             <View style={styles.timeSlotStatus}>
-              <Text style={[
-                styles.statusText,
-                slot.availability === 'free' && styles.statusFree,
-                slot.availability === 'low_energy' && styles.statusLowEnergy,
-                slot.availability === 'break_needed' && styles.statusBreak
-              ]}>
+              <Text
+                style={[
+                  styles.statusText,
+                  slot.availability === 'free' && styles.statusFree,
+                  slot.availability === 'low_energy' && styles.statusLowEnergy,
+                  slot.availability === 'break_needed' && styles.statusBreak,
+                ]}
+              >
                 {slot.availability === 'free' && '✅ Müsait'}
                 {slot.availability === 'low_energy' && '⚠️ Düşük Enerji'}
                 {slot.availability === 'break_needed' && '☕ Mola Gerekli'}
@@ -158,9 +178,9 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
           {item.alternatives.map((alt, index) => (
             <View key={index} style={styles.alternativeItem}>
               <Text style={styles.alternativeTime}>
-                {alt.timeSlot.startTime.toLocaleTimeString('tr-TR', { 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
+                {alt.timeSlot.startTime.toLocaleTimeString('tr-TR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
                 })}
               </Text>
               <Text style={styles.alternativeReasoning}>{alt.reasoning}</Text>
@@ -208,22 +228,24 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
     <View style={styles.timeSlotItem}>
       <View style={styles.timeSlotHeader}>
         <Text style={styles.timeSlotTime}>
-          {item.startTime.toLocaleTimeString('tr-TR', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-          })} - {item.endTime.toLocaleTimeString('tr-TR', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
+          {item.startTime.toLocaleTimeString('tr-TR', {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}{' '}
+          -{' '}
+          {item.endTime.toLocaleTimeString('tr-TR', {
+            hour: '2-digit',
+            minute: '2-digit',
           })}
         </Text>
         <View style={styles.energyContainer}>
           <Text style={styles.energyLabel}>Enerji:</Text>
           <View style={styles.energyBar}>
-            <View 
+            <View
               style={[
-                styles.energyFill, 
-                { width: `${item.energyLevel * 100}%` }
-              ]} 
+                styles.energyFill,
+                { width: `${item.energyLevel * 100}%` },
+              ]}
             />
           </View>
           <Text style={styles.energyText}>
@@ -233,12 +255,14 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
       </View>
       <Text style={styles.timeSlotReasoning}>{item.reasoning}</Text>
       <View style={styles.timeSlotStatus}>
-        <Text style={[
-          styles.statusText,
-          item.availability === 'free' && styles.statusFree,
-          item.availability === 'low_energy' && styles.statusLowEnergy,
-          item.availability === 'break_needed' && styles.statusBreak
-        ]}>
+        <Text
+          style={[
+            styles.statusText,
+            item.availability === 'free' && styles.statusFree,
+            item.availability === 'low_energy' && styles.statusLowEnergy,
+            item.availability === 'break_needed' && styles.statusBreak,
+          ]}
+        >
           {item.availability === 'free' && '✅ Müsait'}
           {item.availability === 'low_energy' && '⚠️ Düşük Enerji'}
           {item.availability === 'break_needed' && '☕ Mola Gerekli'}
@@ -248,21 +272,24 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
     </View>
   );
 
-  const renderSettingsItem = ({ item }: { item: { key: string; label: string; value: any; type: string } }) => (
+  const renderSettingsItem = ({
+    item,
+  }: {
+    item: { key: string; label: string; value: any; type: string };
+  }) => (
     <View style={styles.settingItem}>
       <Text style={styles.settingLabel}>{item.label}</Text>
       {item.type === 'boolean' ? (
         <TouchableOpacity
-          style={[
-            styles.toggleButton,
-            item.value && styles.toggleButtonActive
-          ]}
+          style={[styles.toggleButton, item.value && styles.toggleButtonActive]}
           onPress={() => handleUpdateSettings({ [item.key]: !item.value })}
         >
-          <Text style={[
-            styles.toggleButtonText,
-            item.value && styles.toggleButtonTextActive
-          ]}>
+          <Text
+            style={[
+              styles.toggleButtonText,
+              item.value && styles.toggleButtonTextActive,
+            ]}
+          >
             {item.value ? 'Açık' : 'Kapalı'}
           </Text>
         </TouchableOpacity>
@@ -270,7 +297,9 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
         <View style={styles.numberContainer}>
           <TouchableOpacity
             style={styles.numberButton}
-            onPress={() => handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })}
+            onPress={() =>
+              handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })
+            }
           >
             <Text style={styles.numberButtonText}>-</Text>
           </TouchableOpacity>
@@ -303,7 +332,7 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
     },
     {
       key: 'respectDeadlines',
-      label: 'Deadline\'ları Dikkate Al',
+      label: "Deadline'ları Dikkate Al",
       value: settings.respectDeadlines,
       type: 'boolean',
     },
@@ -346,7 +375,11 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
   ];
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Görev Zamanlama</Text>
@@ -358,10 +391,18 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
         {/* Tab Navigation */}
         <View style={styles.tabContainer}>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'recommendations' && styles.activeTab]}
+            style={[
+              styles.tab,
+              activeTab === 'recommendations' && styles.activeTab,
+            ]}
             onPress={() => setActiveTab('recommendations')}
           >
-            <Text style={[styles.tabText, activeTab === 'recommendations' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'recommendations' && styles.activeTabText,
+              ]}
+            >
               Öneriler
             </Text>
           </TouchableOpacity>
@@ -369,7 +410,12 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
             style={[styles.tab, activeTab === 'calendar' && styles.activeTab]}
             onPress={() => setActiveTab('calendar')}
           >
-            <Text style={[styles.tabText, activeTab === 'calendar' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'calendar' && styles.activeTabText,
+              ]}
+            >
               Takvim
             </Text>
           </TouchableOpacity>
@@ -377,7 +423,12 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
             style={[styles.tab, activeTab === 'settings' && styles.activeTab]}
             onPress={() => setActiveTab('settings')}
           >
-            <Text style={[styles.tabText, activeTab === 'settings' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'settings' && styles.activeTabText,
+              ]}
+            >
               Ayarlar
             </Text>
           </TouchableOpacity>
@@ -385,7 +436,12 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
             style={[styles.tab, activeTab === 'insights' && styles.activeTab]}
             onPress={() => setActiveTab('insights')}
           >
-            <Text style={[styles.tabText, activeTab === 'insights' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'insights' && styles.activeTabText,
+              ]}
+            >
               İstatistikler
             </Text>
           </TouchableOpacity>
@@ -410,18 +466,20 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
                   </Text>
                 </TouchableOpacity>
               </View>
-              
+
               <Text style={styles.sectionTitle}>AI Zamanlama Önerileri</Text>
               {loading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="large" color="#2196F3" />
-                  <Text style={styles.loadingText}>Öneriler hesaplanıyor...</Text>
+                  <Text style={styles.loadingText}>
+                    Öneriler hesaplanıyor...
+                  </Text>
                 </View>
               ) : (
                 <FlatList
                   data={recommendations}
                   renderItem={renderRecommendationItem}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={item => item.id}
                   style={styles.list}
                 />
               )}
@@ -432,17 +490,17 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
             <View>
               <Text style={styles.sectionTitle}>Günlük Takvim</Text>
               <Text style={styles.dateText}>
-                {selectedDate.toLocaleDateString('tr-TR', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                {selectedDate.toLocaleDateString('tr-TR', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
                 })}
               </Text>
               <FlatList
                 data={timeSlots}
                 renderItem={renderTimeSlotItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -454,7 +512,7 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
               <FlatList
                 data={settingsData}
                 renderItem={renderSettingsItem}
-                keyExtractor={(item) => item.key}
+                keyExtractor={item => item.key}
                 style={styles.list}
               />
             </View>
@@ -466,7 +524,9 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
               {insights ? (
                 <View style={styles.insightsContainer}>
                   <View style={styles.insightCard}>
-                    <Text style={styles.insightNumber}>{insights.totalRecommendations}</Text>
+                    <Text style={styles.insightNumber}>
+                      {insights.totalRecommendations}
+                    </Text>
                     <Text style={styles.insightLabel}>Toplam Öneri</Text>
                   </View>
                   <View style={styles.insightCard}>
@@ -476,11 +536,15 @@ export const TaskSchedulingModal: React.FC<TaskSchedulingModalProps> = ({
                     <Text style={styles.insightLabel}>Ortalama Güven</Text>
                   </View>
                   <View style={styles.insightCard}>
-                    <Text style={styles.insightNumber}>{insights.highConfidenceCount}</Text>
+                    <Text style={styles.insightNumber}>
+                      {insights.highConfidenceCount}
+                    </Text>
                     <Text style={styles.insightLabel}>Yüksek Güven</Text>
                   </View>
                   <View style={styles.insightCard}>
-                    <Text style={styles.insightNumber}>{insights.morningSlotsCount}</Text>
+                    <Text style={styles.insightNumber}>
+                      {insights.morningSlotsCount}
+                    </Text>
                     <Text style={styles.insightLabel}>Sabah Seansları</Text>
                   </View>
                   <View style={styles.insightCard}>

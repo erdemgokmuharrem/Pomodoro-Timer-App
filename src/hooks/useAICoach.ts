@@ -4,12 +4,28 @@ import { useGamificationStore } from '../store/useGamificationStore';
 
 export interface CoachMessage {
   id: string;
-  type: 'motivation' | 'advice' | 'celebration' | 'warning' | 'reminder' | 'insight';
+  type:
+    | 'motivation'
+    | 'advice'
+    | 'celebration'
+    | 'warning'
+    | 'reminder'
+    | 'insight';
   title: string;
   content: string;
-  tone: 'encouraging' | 'supportive' | 'celebratory' | 'concerned' | 'analytical';
+  tone:
+    | 'encouraging'
+    | 'supportive'
+    | 'celebratory'
+    | 'concerned'
+    | 'analytical';
   priority: 'high' | 'medium' | 'low';
-  category: 'productivity' | 'wellness' | 'goal_achievement' | 'habit_building' | 'time_management';
+  category:
+    | 'productivity'
+    | 'wellness'
+    | 'goal_achievement'
+    | 'habit_building'
+    | 'time_management';
   actionable: boolean;
   actionText?: string;
   actionType?: 'navigate' | 'open_modal' | 'start_activity' | 'view_insights';
@@ -32,7 +48,12 @@ export interface CoachInsight {
 
 export interface CoachSettings {
   enableAICoach: boolean;
-  personality: 'motivational' | 'analytical' | 'supportive' | 'challenging' | 'balanced';
+  personality:
+    | 'motivational'
+    | 'analytical'
+    | 'supportive'
+    | 'challenging'
+    | 'balanced';
   frequency: 'low' | 'medium' | 'high';
   categories: string[];
   showCelebrations: boolean;
@@ -47,14 +68,20 @@ export interface CoachSettings {
 export const useAICoach = () => {
   const { tasks, completedPomodoros } = usePomodoroStore();
   const { userLevel, totalXP, badges } = useGamificationStore();
-  
+
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [insights, setInsights] = useState<CoachInsight[]>([]);
   const [settings, setSettings] = useState<CoachSettings>({
     enableAICoach: true,
     personality: 'balanced',
     frequency: 'medium',
-    categories: ['productivity', 'wellness', 'goal_achievement', 'habit_building', 'time_management'],
+    categories: [
+      'productivity',
+      'wellness',
+      'goal_achievement',
+      'habit_building',
+      'time_management',
+    ],
     showCelebrations: true,
     showWarnings: true,
     showInsights: true,
@@ -72,24 +99,28 @@ export const useAICoach = () => {
     const last7Days = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
     const last30Days = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    const recentPomodoros = completedPomodoros.filter(p => 
-      new Date(p.completedAt) >= last7Days
+    const recentPomodoros = (completedPomodoros || []).filter(
+      p => new Date(p.completedAt) >= last7Days
     );
-    const historicalPomodoros = completedPomodoros.filter(p => 
-      new Date(p.completedAt) >= last30Days
-    );
-
-    const todayPomodoros = completedPomodoros.filter(p => 
-      new Date(p.completedAt).toDateString() === today.toDateString()
+    const historicalPomodoros = (completedPomodoros || []).filter(
+      p => new Date(p.completedAt) >= last30Days
     );
 
-    const completionRate = recentPomodoros.length > 0 
-      ? recentPomodoros.filter(p => p.completed).length / recentPomodoros.length 
-      : 0;
+    const todayPomodoros = (completedPomodoros || []).filter(
+      p => new Date(p.completedAt).toDateString() === today.toDateString()
+    );
 
-    const avgDuration = recentPomodoros.length > 0
-      ? recentPomodoros.reduce((sum, p) => sum + p.duration, 0) / recentPomodoros.length
-      : 0;
+    const completionRate =
+      recentPomodoros.length > 0
+        ? recentPomodoros.filter(p => p.completed).length /
+          recentPomodoros.length
+        : 0;
+
+    const avgDuration =
+      recentPomodoros.length > 0
+        ? recentPomodoros.reduce((sum, p) => sum + p.duration, 0) /
+          recentPomodoros.length
+        : 0;
 
     const streak = calculateStreak();
     const productivity = calculateProductivity();
@@ -110,8 +141,11 @@ export const useAICoach = () => {
 
   // Calculate current streak
   const calculateStreak = (): number => {
-    const sortedPomodoros = completedPomodoros
-      .sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
+    if (!completedPomodoros || completedPomodoros.length === 0) return 0;
+    const sortedPomodoros = completedPomodoros.sort(
+      (a, b) =>
+        new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
+    );
 
     let streak = 0;
     let currentDate = new Date();
@@ -120,9 +154,11 @@ export const useAICoach = () => {
     for (const pomodoro of sortedPomodoros) {
       const pomodoroDate = new Date(pomodoro.completedAt);
       pomodoroDate.setHours(0, 0, 0, 0);
-      
-      const dayDiff = Math.floor((currentDate.getTime() - pomodoroDate.getTime()) / (1000 * 60 * 60 * 24));
-      
+
+      const dayDiff = Math.floor(
+        (currentDate.getTime() - pomodoroDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+
       if (dayDiff === streak) {
         if (pomodoro.completed) {
           streak++;
@@ -146,17 +182,20 @@ export const useAICoach = () => {
   // Calculate productivity score
   const calculateProductivity = (): number => {
     const last7Days = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const recentPomodoros = completedPomodoros.filter(p => 
-      new Date(p.completedAt) >= last7Days
+    const recentPomodoros = (completedPomodoros || []).filter(
+      p => new Date(p.completedAt) >= last7Days
     );
 
     if (recentPomodoros.length === 0) return 0;
 
-    const completionRate = recentPomodoros.filter(p => p.completed).length / recentPomodoros.length;
+    const completionRate =
+      recentPomodoros.filter(p => p.completed).length / recentPomodoros.length;
     const consistency = Math.min(1, recentPomodoros.length / 7); // Daily consistency
-    const efficiency = recentPomodoros.reduce((sum, p) => sum + (p.completed ? 1 : 0), 0) / recentPomodoros.length;
+    const efficiency =
+      recentPomodoros.reduce((sum, p) => sum + (p.completed ? 1 : 0), 0) /
+      recentPomodoros.length;
 
-    return (completionRate * 0.4 + consistency * 0.3 + efficiency * 0.3);
+    return completionRate * 0.4 + consistency * 0.3 + efficiency * 0.3;
   };
 
   // Generate motivational messages
@@ -222,7 +261,8 @@ export const useAICoach = () => {
           id: `warning-streak-${Date.now()}`,
           type: 'warning',
           title: '⚠️ Streak Kaybı Riski',
-          content: 'Birkaç gündür pomodoro yapmadınız. Streak\'inizi korumak için bugün bir seans başlatın!',
+          content:
+            "Birkaç gündür pomodoro yapmadınız. Streak'inizi korumak için bugün bir seans başlatın!",
           tone: 'concerned',
           priority: 'high',
           category: 'habit_building',
@@ -241,7 +281,8 @@ export const useAICoach = () => {
           id: `warning-completion-${Date.now()}`,
           type: 'warning',
           title: '📉 Tamamlanma Oranı Düşük',
-          content: 'Son pomodorolarınızın yarısı tamamlanmadı. Daha kısa seanslar deneyebilirsiniz.',
+          content:
+            'Son pomodorolarınızın yarısı tamamlanmadı. Daha kısa seanslar deneyebilirsiniz.',
           tone: 'concerned',
           priority: 'medium',
           category: 'productivity',
@@ -261,7 +302,8 @@ export const useAICoach = () => {
         id: `motivation-daily-${Date.now()}`,
         type: 'motivation',
         title: '💪 Günün İlk Pomodorosu',
-        content: 'Bugün henüz pomodoro yapmadınız. İlk adımı atın ve gününüzü verimli geçirin!',
+        content:
+          'Bugün henüz pomodoro yapmadınız. İlk adımı atın ve gününüzü verimli geçirin!',
         tone: 'encouraging',
         priority: 'medium',
         category: 'productivity',
@@ -281,7 +323,8 @@ export const useAICoach = () => {
         id: `advice-productivity-${Date.now()}`,
         type: 'advice',
         title: '🎯 Verimlilik İpuçları',
-        content: 'Verimliliğinizi artırmak için daha kısa seanslar ve düzenli molalar deneyin.',
+        content:
+          'Verimliliğinizi artırmak için daha kısa seanslar ve düzenli molalar deneyin.',
         tone: 'supportive',
         priority: 'low',
         category: 'productivity',
@@ -321,17 +364,22 @@ export const useAICoach = () => {
     }
 
     // Pattern insight
-    const hourlyData = completedPomodoros.reduce((acc, p) => {
-      const hour = new Date(p.completedAt).getHours();
-      if (!acc[hour]) acc[hour] = { total: 0, completed: 0 };
-      acc[hour].total++;
-      if (p.completed) acc[hour].completed++;
-      return acc;
-    }, {} as { [hour: number]: { total: number; completed: number } });
+    const hourlyData = (completedPomodoros || []).reduce(
+      (acc, p) => {
+        const hour = new Date(p.completedAt).getHours();
+        if (!acc[hour]) acc[hour] = { total: 0, completed: 0 };
+        acc[hour].total++;
+        if (p.completed) acc[hour].completed++;
+        return acc;
+      },
+      {} as { [hour: number]: { total: number; completed: number } }
+    );
 
     const bestHour = Object.keys(hourlyData).reduce((a, b) => {
-      const aRate = hourlyData[parseInt(a)].completed / hourlyData[parseInt(a)].total;
-      const bRate = hourlyData[parseInt(b)].completed / hourlyData[parseInt(b)].total;
+      const aRate =
+        hourlyData[parseInt(a)].completed / hourlyData[parseInt(a)].total;
+      const bRate =
+        hourlyData[parseInt(b)].completed / hourlyData[parseInt(b)].total;
       return aRate > bRate ? a : b;
     });
 
@@ -355,8 +403,8 @@ export const useAICoach = () => {
     const weeklyTrend = [];
     for (let i = 6; i >= 0; i--) {
       const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-      const dayPomodoros = completedPomodoros.filter(p => 
-        new Date(p.completedAt).toDateString() === date.toDateString()
+      const dayPomodoros = (completedPomodoros || []).filter(
+        p => new Date(p.completedAt).toDateString() === date.toDateString()
       );
       weeklyTrend.push({
         date: date.toDateString(),
@@ -388,21 +436,25 @@ export const useAICoach = () => {
       const newMessages = generateMotivationalMessages();
       const filteredMessages = newMessages.filter(msg => {
         // Check if message already exists
-        const exists = messages.some(m => m.id === msg.id);
+        const exists = (messages || []).some(m => m.id === msg.id);
         if (exists) return false;
 
         // Check quiet hours
         if (settings.respectQuietHours) {
           const now = new Date();
           const currentHour = now.getHours();
-          if (currentHour >= settings.quietHoursStart || currentHour < settings.quietHoursEnd) {
+          if (
+            currentHour >= settings.quietHoursStart ||
+            currentHour < settings.quietHoursEnd
+          ) {
             return false;
           }
         }
 
         // Check message limit
-        const todayMessages = messages.filter(m => 
-          new Date(m.createdAt).toDateString() === new Date().toDateString()
+        const todayMessages = (messages || []).filter(
+          m =>
+            new Date(m.createdAt).toDateString() === new Date().toDateString()
         );
         if (todayMessages.length >= settings.maxMessagesPerDay) {
           return false;
@@ -437,16 +489,14 @@ export const useAICoach = () => {
 
   // Mark message as read
   const markMessageAsRead = (messageId: string) => {
-    setMessages(prev => 
-      prev.map(msg => 
-        msg.id === messageId ? { ...msg, read: true } : msg
-      )
+    setMessages(prev =>
+      prev.map(msg => (msg.id === messageId ? { ...msg, read: true } : msg))
     );
   };
 
   // Dismiss message
   const dismissMessage = (messageId: string) => {
-    setMessages(prev => prev.filter(msg => msg.id !== messageId));
+    setMessages(prev => (prev || []).filter(msg => msg.id !== messageId));
   };
 
   // Execute message action
@@ -455,8 +505,12 @@ export const useAICoach = () => {
     if (!message || !message.actionable) return;
 
     // In a real app, this would execute the action
-    console.log(`Executing action for message ${messageId}:`, message.actionType, message.actionData);
-    
+    console.log(
+      `Executing action for message ${messageId}:`,
+      message.actionType,
+      message.actionData
+    );
+
     // Mark as read after action
     markMessageAsRead(messageId);
   };
@@ -469,9 +523,9 @@ export const useAICoach = () => {
   // Get coach insights
   const getCoachInsights = () => {
     const performance = analyzePerformance();
-    const unreadMessages = messages.filter(m => !m.read).length;
-    const todayMessages = messages.filter(m => 
-      new Date(m.createdAt).toDateString() === new Date().toDateString()
+    const unreadMessages = (messages || []).filter(m => !m.read).length;
+    const todayMessages = (messages || []).filter(
+      m => new Date(m.createdAt).toDateString() === new Date().toDateString()
     ).length;
 
     return {
@@ -487,7 +541,7 @@ export const useAICoach = () => {
 
   // Auto-generate messages and insights
   useEffect(() => {
-    if (settings.enableAICoach && completedPomodoros.length > 0) {
+    if (settings.enableAICoach && (completedPomodoros || []).length > 0) {
       generateDailyMessages();
       generateDailyInsights();
     }

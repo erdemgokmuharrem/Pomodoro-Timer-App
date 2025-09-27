@@ -42,9 +42,14 @@ class CalendarService {
     }
   }
 
-  async updateSettings(newSettings: Partial<CalendarSyncSettings>): Promise<void> {
+  async updateSettings(
+    newSettings: Partial<CalendarSyncSettings>
+  ): Promise<void> {
     this.settings = { ...this.settings, ...newSettings };
-    await AsyncStorage.setItem('calendarSyncSettings', JSON.stringify(this.settings));
+    await AsyncStorage.setItem(
+      'calendarSyncSettings',
+      JSON.stringify(this.settings)
+    );
   }
 
   getSettings(): CalendarSyncSettings {
@@ -68,7 +73,10 @@ class CalendarService {
     await this.updateSettings({ googleEnabled: false });
   }
 
-  async getGoogleEvents(startDate: Date, endDate: Date): Promise<CalendarEvent[]> {
+  async getGoogleEvents(
+    startDate: Date,
+    endDate: Date
+  ): Promise<CalendarEvent[]> {
     if (!this.settings.googleEnabled) {
       return [];
     }
@@ -108,7 +116,10 @@ class CalendarService {
     await this.updateSettings({ outlookEnabled: false });
   }
 
-  async getOutlookEvents(startDate: Date, endDate: Date): Promise<CalendarEvent[]> {
+  async getOutlookEvents(
+    startDate: Date,
+    endDate: Date
+  ): Promise<CalendarEvent[]> {
     if (!this.settings.outlookEnabled) {
       return [];
     }
@@ -208,10 +219,13 @@ class CalendarService {
   }
 
   // Check for time conflicts
-  async checkTimeConflict(startTime: Date, endTime: Date): Promise<CalendarEvent[]> {
+  async checkTimeConflict(
+    startTime: Date,
+    endTime: Date
+  ): Promise<CalendarEvent[]> {
     const events = await this.getAllEvents(startTime, endTime);
     return events.filter(
-      (event) =>
+      event =>
         (event.startTime < endTime && event.endTime > startTime) ||
         (event.startTime <= startTime && event.endTime >= endTime)
     );
@@ -230,11 +244,11 @@ class CalendarService {
 
     while (currentTime < endDate) {
       const slotEnd = new Date(currentTime.getTime() + duration * 60 * 1000);
-      
+
       if (slotEnd > endDate) break;
 
       const conflicts = await this.checkTimeConflict(currentTime, slotEnd);
-      
+
       if (conflicts.length === 0) {
         slots.push({ start: new Date(currentTime), end: new Date(slotEnd) });
       }

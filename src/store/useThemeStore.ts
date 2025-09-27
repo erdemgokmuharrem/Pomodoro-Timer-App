@@ -6,7 +6,7 @@ import { Theme, ThemeMode, lightTheme, darkTheme } from '../constants/theme';
 interface ThemeState {
   mode: ThemeMode;
   theme: Theme;
-  
+
   setMode: (mode: ThemeMode) => void;
   toggleTheme: () => void;
   getSystemTheme: () => 'light' | 'dark';
@@ -20,11 +20,14 @@ export const useThemeStore = create<ThemeState>()(
 
       setMode: (mode: ThemeMode) => {
         const systemTheme = get().getSystemTheme();
-        const theme = mode === 'system' 
-          ? (systemTheme === 'dark' ? darkTheme : lightTheme)
-          : mode === 'dark' 
-          ? darkTheme 
-          : lightTheme;
+        const theme =
+          mode === 'system'
+            ? systemTheme === 'dark'
+              ? darkTheme
+              : lightTheme
+            : mode === 'dark'
+              ? darkTheme
+              : lightTheme;
 
         set({ mode, theme });
       },
@@ -41,7 +44,7 @@ export const useThemeStore = create<ThemeState>()(
     }),
     {
       name: 'theme-storage',
-      partialize: (state) => ({ mode: state.mode }),
+      partialize: state => ({ mode: state.mode }),
     }
   )
 );

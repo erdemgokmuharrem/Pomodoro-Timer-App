@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./App.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
-  presets: [require("nativewind/preset")],
+  content: ['./App.{js,jsx,ts,tsx}', './src/**/*.{js,jsx,ts,tsx}'],
+  presets: [require('nativewind/preset')],
   theme: {
     extend: {
       colors: {
@@ -21,11 +21,11 @@ module.exports = {
           red: '#ef4444',
           green: '#10b981',
           yellow: '#f59e0b',
-        }
+        },
       },
       fontFamily: {
-        'mono': ['Courier New', 'monospace'],
-      }
+        mono: ['Courier New', 'monospace'],
+      },
     },
   },
   plugins: [],

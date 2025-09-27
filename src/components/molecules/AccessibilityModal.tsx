@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
-import { useAccessibility, AccessibilitySettings } from '../../hooks/useAccessibility';
+import {
+  useAccessibility,
+  AccessibilitySettings,
+} from '../../hooks/useAccessibility';
 import Card from '../atoms/Card';
 
 interface AccessibilityModalProps {
@@ -15,7 +18,10 @@ interface AccessibilityModalProps {
   onClose: () => void;
 }
 
-const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ visible, onClose }) => {
+const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
+  visible,
+  onClose,
+}) => {
   const {
     accessibilitySettings,
     updateFontSize,
@@ -25,12 +31,12 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ visible, onClos
 
   const highContrastColors = getHighContrastColors();
 
-  const SettingItem = ({ 
-    title, 
-    subtitle, 
-    value, 
-    onValueChange, 
-    type = 'switch' 
+  const SettingItem = ({
+    title,
+    subtitle,
+    value,
+    onValueChange,
+    type = 'switch',
   }: {
     title: string;
     subtitle: string;
@@ -40,10 +46,20 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ visible, onClos
   }) => (
     <View style={styles.settingItem}>
       <View style={styles.settingInfo}>
-        <Text style={[styles.settingTitle, highContrastColors && { color: highContrastColors.text }]}>
+        <Text
+          style={[
+            styles.settingTitle,
+            highContrastColors && { color: highContrastColors.text },
+          ]}
+        >
           {title}
         </Text>
-        <Text style={[styles.settingSubtitle, highContrastColors && { color: highContrastColors.textSecondary }]}>
+        <Text
+          style={[
+            styles.settingSubtitle,
+            highContrastColors && { color: highContrastColors.textSecondary },
+          ]}
+        >
           {subtitle}
         </Text>
       </View>
@@ -57,11 +73,18 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ visible, onClos
       ) : (
         <TouchableOpacity
           style={styles.selectButton}
-          onPress={() => {/* Handle selection */}}
+          onPress={() => {
+            /* Handle selection */
+          }}
           accessibilityLabel={`${title}: ${value}`}
           accessibilityHint="Seçenekleri görmek için dokunun"
         >
-          <Text style={[styles.selectText, highContrastColors && { color: highContrastColors.text }]}>
+          <Text
+            style={[
+              styles.selectText,
+              highContrastColors && { color: highContrastColors.text },
+            ]}
+          >
             {value}
           </Text>
         </TouchableOpacity>
@@ -69,50 +92,103 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ visible, onClos
     </View>
   );
 
-  const FontSizeOption = ({ size, label }: { size: AccessibilitySettings['fontSize']; label: string }) => (
+  const FontSizeOption = ({
+    size,
+    label,
+  }: {
+    size: AccessibilitySettings['fontSize'];
+    label: string;
+  }) => (
     <TouchableOpacity
       style={[
         styles.fontSizeOption,
         accessibilitySettings.fontSize === size && styles.fontSizeOptionActive,
-        highContrastColors && { borderColor: highContrastColors.border }
+        highContrastColors && { borderColor: highContrastColors.border },
       ]}
       onPress={() => updateFontSize(size)}
       accessibilityLabel={`Font boyutu: ${label}`}
       accessibilityRole="button"
     >
-      <Text style={[
-        styles.fontSizeText,
-        accessibilitySettings.fontSize === size && styles.fontSizeTextActive,
-        highContrastColors && { color: highContrastColors.text }
-      ]}>
+      <Text
+        style={[
+          styles.fontSizeText,
+          accessibilitySettings.fontSize === size && styles.fontSizeTextActive,
+          highContrastColors && { color: highContrastColors.text },
+        ]}
+      >
         {label}
       </Text>
     </TouchableOpacity>
   );
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
-      <View style={[styles.container, highContrastColors && { backgroundColor: highContrastColors.background }]}>
-        <View style={[styles.header, highContrastColors && { borderBottomColor: highContrastColors.border }]}>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
+      <View
+        style={[
+          styles.container,
+          highContrastColors && {
+            backgroundColor: highContrastColors.background,
+          },
+        ]}
+      >
+        <View
+          style={[
+            styles.header,
+            highContrastColors && {
+              borderBottomColor: highContrastColors.border,
+            },
+          ]}
+        >
           <TouchableOpacity onPress={onClose}>
-            <Text style={[styles.cancelButton, highContrastColors && { color: highContrastColors.text }]}>
+            <Text
+              style={[
+                styles.cancelButton,
+                highContrastColors && { color: highContrastColors.text },
+              ]}
+            >
               İptal
             </Text>
           </TouchableOpacity>
-          <Text style={[styles.title, highContrastColors && { color: highContrastColors.text }]}>
+          <Text
+            style={[
+              styles.title,
+              highContrastColors && { color: highContrastColors.text },
+            ]}
+          >
             Erişilebilirlik
           </Text>
           <View style={{ width: 60 }} />
         </View>
 
         <View style={styles.content}>
-          <Card style={[styles.section, highContrastColors && { backgroundColor: highContrastColors.surface }]}>
-            <Text style={[styles.sectionTitle, highContrastColors && { color: highContrastColors.text }]}>
+          <Card
+            style={[
+              styles.section,
+              highContrastColors ? {
+                backgroundColor: highContrastColors.surface,
+              } : null,
+            ].filter(Boolean)}
+          >
+            <Text
+              style={[
+                styles.sectionTitle,
+                highContrastColors && { color: highContrastColors.text },
+              ]}
+            >
               Görsel Ayarlar
             </Text>
-            
+
             <View style={styles.fontSizeContainer}>
-              <Text style={[styles.fontSizeLabel, highContrastColors && { color: highContrastColors.text }]}>
+              <Text
+                style={[
+                  styles.fontSizeLabel,
+                  highContrastColors && { color: highContrastColors.text },
+                ]}
+              >
                 Font Boyutu
               </Text>
               <View style={styles.fontSizeOptions}>
@@ -124,39 +200,77 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ visible, onClos
             </View>
           </Card>
 
-          <Card style={[styles.section, highContrastColors && { backgroundColor: highContrastColors.surface }]}>
-            <Text style={[styles.sectionTitle, highContrastColors && { color: highContrastColors.text }]}>
+          <Card
+            style={[
+              styles.section,
+              highContrastColors ? {
+                backgroundColor: highContrastColors.surface,
+              } : null,
+            ].filter(Boolean)}
+          >
+            <Text
+              style={[
+                styles.sectionTitle,
+                highContrastColors && { color: highContrastColors.text },
+              ]}
+            >
               Sistem Ayarları
             </Text>
-            
+
             <SettingItem
               title="Yüksek Kontrast"
               subtitle="Daha belirgin renkler kullan"
               value={accessibilitySettings.isHighContrastEnabled}
-              onValueChange={() => {/* This is read-only from system */}}
+              onValueChange={() => {
+                /* This is read-only from system */
+              }}
             />
-            
+
             <SettingItem
               title="Ekran Okuyucu"
               subtitle="VoiceOver/TalkBack desteği"
               value={accessibilitySettings.isScreenReaderEnabled}
-              onValueChange={() => {/* This is read-only from system */}}
+              onValueChange={() => {
+                /* This is read-only from system */
+              }}
             />
-            
+
             <SettingItem
               title="Hareket Azaltma"
               subtitle="Animasyonları azalt"
               value={accessibilitySettings.isReduceMotionEnabled}
-              onValueChange={() => {/* This is read-only from system */}}
+              onValueChange={() => {
+                /* This is read-only from system */
+              }}
             />
           </Card>
 
-          <Card style={[styles.infoCard, highContrastColors && { backgroundColor: highContrastColors.surface }]}>
-            <Text style={[styles.infoTitle, highContrastColors && { color: highContrastColors.text }]}>
+          <Card
+            style={[
+              styles.infoCard,
+              highContrastColors ? {
+                backgroundColor: highContrastColors.surface,
+              } : null,
+            ].filter(Boolean)}
+          >
+            <Text
+              style={[
+                styles.infoTitle,
+                highContrastColors && { color: highContrastColors.text },
+              ]}
+            >
               💡 Erişilebilirlik İpuçları
             </Text>
-            <Text style={[styles.infoText, highContrastColors && { color: highContrastColors.textSecondary }]}>
-              • Ekran okuyucu kullanıyorsanız, tüm öğeler için açıklayıcı etiketler eklenmiştir
+            <Text
+              style={[
+                styles.infoText,
+                highContrastColors && {
+                  color: highContrastColors.textSecondary,
+                },
+              ]}
+            >
+              • Ekran okuyucu kullanıyorsanız, tüm öğeler için açıklayıcı
+              etiketler eklenmiştir
               {'\n'}• Yüksek kontrast modu otomatik olarak algılanır
               {'\n'}• Timer sesli geri bildirim sağlar
               {'\n'}• Tüm butonlar dokunma alanı standartlarına uygundur

@@ -42,7 +42,9 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
     error,
   } = useAppBlocking();
 
-  const [activeTab, setActiveTab] = useState<'apps' | 'websites' | 'settings' | 'stats'>('apps');
+  const [activeTab, setActiveTab] = useState<
+    'apps' | 'websites' | 'settings' | 'stats'
+  >('apps');
   const [newWebsiteUrl, setNewWebsiteUrl] = useState('');
   const [newWebsiteName, setNewWebsiteName] = useState('');
 
@@ -103,7 +105,11 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
       'Bu uygulamayı engellenenler listesinden kaldırmak istediğinizden emin misiniz?',
       [
         { text: 'İptal', style: 'cancel' },
-        { text: 'Kaldır', style: 'destructive', onPress: () => removeBlockedApp(appId) },
+        {
+          text: 'Kaldır',
+          style: 'destructive',
+          onPress: () => removeBlockedApp(appId),
+        },
       ]
     );
   };
@@ -114,7 +120,11 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
       'Bu websiteyi engellenenler listesinden kaldırmak istediğinizden emin misiniz?',
       [
         { text: 'İptal', style: 'cancel' },
-        { text: 'Kaldır', style: 'destructive', onPress: () => removeBlockedWebsite(websiteId) },
+        {
+          text: 'Kaldır',
+          style: 'destructive',
+          onPress: () => removeBlockedWebsite(websiteId),
+        },
       ]
     );
   };
@@ -128,7 +138,7 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
       <View style={styles.listItemActions}>
         <Switch
           value={item.isBlocked}
-          onValueChange={(value) => handleToggleApp(item.id, value)}
+          onValueChange={value => handleToggleApp(item.id, value)}
           trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
           thumbColor={item.isBlocked ? '#FFFFFF' : '#FFFFFF'}
         />
@@ -151,7 +161,7 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
       <View style={styles.listItemActions}>
         <Switch
           value={item.isBlocked}
-          onValueChange={(value) => handleToggleWebsite(item.id, value)}
+          onValueChange={value => handleToggleWebsite(item.id, value)}
           trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
           thumbColor={item.isBlocked ? '#FFFFFF' : '#FFFFFF'}
         />
@@ -175,10 +185,12 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
         <Text style={styles.statNumber}>{stats.blocksToday}</Text>
         <Text style={styles.statLabel}>Bugün</Text>
       </View>
-      
+
       {stats.mostBlockedApps.length > 0 && (
         <View style={styles.statsSection}>
-          <Text style={styles.statsSectionTitle}>En Çok Engellenen Uygulamalar</Text>
+          <Text style={styles.statsSectionTitle}>
+            En Çok Engellenen Uygulamalar
+          </Text>
           {stats.mostBlockedApps.slice(0, 5).map((app, index) => (
             <View key={index} style={styles.statsItem}>
               <Text style={styles.statsItemName}>{app.name}</Text>
@@ -187,10 +199,12 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
           ))}
         </View>
       )}
-      
+
       {stats.mostBlockedWebsites.length > 0 && (
         <View style={styles.statsSection}>
-          <Text style={styles.statsSectionTitle}>En Çok Engellenen Websiteler</Text>
+          <Text style={styles.statsSectionTitle}>
+            En Çok Engellenen Websiteler
+          </Text>
           {stats.mostBlockedWebsites.slice(0, 5).map((website, index) => (
             <View key={index} style={styles.statsItem}>
               <Text style={styles.statsItemName}>{website.name}</Text>
@@ -203,7 +217,11 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
   );
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Dikkat Engelleme</Text>
@@ -218,7 +236,12 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
             style={[styles.tab, activeTab === 'apps' && styles.activeTab]}
             onPress={() => setActiveTab('apps')}
           >
-            <Text style={[styles.tabText, activeTab === 'apps' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'apps' && styles.activeTabText,
+              ]}
+            >
               Uygulamalar
             </Text>
           </TouchableOpacity>
@@ -226,7 +249,12 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
             style={[styles.tab, activeTab === 'websites' && styles.activeTab]}
             onPress={() => setActiveTab('websites')}
           >
-            <Text style={[styles.tabText, activeTab === 'websites' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'websites' && styles.activeTabText,
+              ]}
+            >
               Websiteler
             </Text>
           </TouchableOpacity>
@@ -234,7 +262,12 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
             style={[styles.tab, activeTab === 'settings' && styles.activeTab]}
             onPress={() => setActiveTab('settings')}
           >
-            <Text style={[styles.tabText, activeTab === 'settings' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'settings' && styles.activeTabText,
+              ]}
+            >
               Ayarlar
             </Text>
           </TouchableOpacity>
@@ -242,7 +275,12 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
             style={[styles.tab, activeTab === 'stats' && styles.activeTab]}
             onPress={() => setActiveTab('stats')}
           >
-            <Text style={[styles.tabText, activeTab === 'stats' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'stats' && styles.activeTabText,
+              ]}
+            >
               İstatistikler
             </Text>
           </TouchableOpacity>
@@ -261,7 +299,7 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
               <FlatList
                 data={blockedApps}
                 renderItem={renderAppItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -270,7 +308,7 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
           {activeTab === 'websites' && (
             <View>
               <Text style={styles.sectionTitle}>Engellenen Websiteler</Text>
-              
+
               {/* Add Website Form */}
               <View style={styles.addForm}>
                 <TextInput
@@ -285,7 +323,10 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
                   value={newWebsiteUrl}
                   onChangeText={setNewWebsiteUrl}
                 />
-                <TouchableOpacity style={styles.addButton} onPress={handleAddWebsite}>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={handleAddWebsite}
+                >
                   <Text style={styles.addButtonText}>Ekle</Text>
                 </TouchableOpacity>
               </View>
@@ -293,7 +334,7 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
               <FlatList
                 data={blockedWebsites}
                 renderItem={renderWebsiteItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 style={styles.list}
               />
             </View>
@@ -302,7 +343,7 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
           {activeTab === 'settings' && (
             <View>
               <Text style={styles.sectionTitle}>Engelleme Ayarları</Text>
-              
+
               <View style={styles.settingItem}>
                 <View style={styles.settingInfo}>
                   <Text style={styles.settingName}>Engelleme Aktif</Text>
@@ -312,7 +353,7 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
                 </View>
                 <Switch
                   value={settings.enabled}
-                  onValueChange={(value) => updateSettings({ enabled: value })}
+                  onValueChange={value => updateSettings({ enabled: value })}
                   trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
                   thumbColor={settings.enabled ? '#FFFFFF' : '#FFFFFF'}
                 />
@@ -320,16 +361,22 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
 
               <View style={styles.settingItem}>
                 <View style={styles.settingInfo}>
-                  <Text style={styles.settingName}>Pomodoro Sırasında Engelle</Text>
+                  <Text style={styles.settingName}>
+                    Pomodoro Sırasında Engelle
+                  </Text>
                   <Text style={styles.settingDescription}>
                     Pomodoro seansı sırasında dikkat dağıtıcıları engelle
                   </Text>
                 </View>
                 <Switch
                   value={settings.blockDuringPomodoro}
-                  onValueChange={(value) => updateSettings({ blockDuringPomodoro: value })}
+                  onValueChange={value =>
+                    updateSettings({ blockDuringPomodoro: value })
+                  }
                   trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-                  thumbColor={settings.blockDuringPomodoro ? '#FFFFFF' : '#FFFFFF'}
+                  thumbColor={
+                    settings.blockDuringPomodoro ? '#FFFFFF' : '#FFFFFF'
+                  }
                 />
               </View>
 
@@ -342,9 +389,13 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
                 </View>
                 <Switch
                   value={settings.blockDuringBreaks}
-                  onValueChange={(value) => updateSettings({ blockDuringBreaks: value })}
+                  onValueChange={value =>
+                    updateSettings({ blockDuringBreaks: value })
+                  }
                   trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-                  thumbColor={settings.blockDuringBreaks ? '#FFFFFF' : '#FFFFFF'}
+                  thumbColor={
+                    settings.blockDuringBreaks ? '#FFFFFF' : '#FFFFFF'
+                  }
                 />
               </View>
 
@@ -357,7 +408,7 @@ export const AppBlockingModal: React.FC<AppBlockingModalProps> = ({
                 </View>
                 <Switch
                   value={settings.strictMode}
-                  onValueChange={(value) => updateSettings({ strictMode: value })}
+                  onValueChange={value => updateSettings({ strictMode: value })}
                   trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
                   thumbColor={settings.strictMode ? '#FFFFFF' : '#FFFFFF'}
                 />

@@ -6,7 +6,13 @@ export interface SmartSchedule {
   id: string;
   title: string;
   description: string;
-  type: 'pomodoro' | 'break' | 'deep_work' | 'meeting' | 'learning' | 'creative';
+  type:
+    | 'pomodoro'
+    | 'break'
+    | 'deep_work'
+    | 'meeting'
+    | 'learning'
+    | 'creative';
   priority: 'urgent' | 'high' | 'medium' | 'low';
   estimatedDuration: number; // minutes
   optimalStartTime: Date;
@@ -19,12 +25,21 @@ export interface SmartSchedule {
   confidence: number; // 0-1, AI confidence in the schedule
   reasoning: string;
   createdAt: Date;
-  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled' | 'rescheduled';
+  status:
+    | 'scheduled'
+    | 'in_progress'
+    | 'completed'
+    | 'cancelled'
+    | 'rescheduled';
 }
 
 export interface ScheduleOptimization {
   id: string;
-  type: 'time_optimization' | 'energy_optimization' | 'context_optimization' | 'dependency_optimization';
+  type:
+    | 'time_optimization'
+    | 'energy_optimization'
+    | 'context_optimization'
+    | 'dependency_optimization';
   title: string;
   description: string;
   currentSchedule: SmartSchedule;
@@ -39,7 +54,12 @@ export interface ScheduleOptimization {
 
 export interface ScheduleConflict {
   id: string;
-  type: 'overlap' | 'energy_conflict' | 'context_conflict' | 'dependency_conflict' | 'deadline_conflict';
+  type:
+    | 'overlap'
+    | 'energy_conflict'
+    | 'context_conflict'
+    | 'dependency_conflict'
+    | 'deadline_conflict';
   title: string;
   description: string;
   conflictingSchedules: SmartSchedule[];
@@ -70,9 +90,11 @@ export interface SmartSchedulingSettings {
 export const useSmartScheduling = () => {
   const { tasks, completedPomodoros } = usePomodoroStore();
   const { userLevel, totalXP } = useGamificationStore();
-  
+
   const [schedules, setSchedules] = useState<SmartSchedule[]>([]);
-  const [optimizations, setOptimizations] = useState<ScheduleOptimization[]>([]);
+  const [optimizations, setOptimizations] = useState<ScheduleOptimization[]>(
+    []
+  );
   const [conflicts, setConflicts] = useState<ScheduleConflict[]>([]);
   const [settings, setSettings] = useState<SmartSchedulingSettings>({
     enableSmartScheduling: true,
@@ -103,23 +125,23 @@ export const useSmartScheduling = () => {
     completedPomodoros.forEach(pomodoro => {
       const hour = new Date(pomodoro.completedAt).getHours();
       const day = new Date(pomodoro.completedAt).getDay();
-      
+
       if (!hourlyProductivity[hour]) hourlyProductivity[hour] = 0;
       if (!dailyProductivity[day]) dailyProductivity[day] = 0;
-      
+
       hourlyProductivity[hour] += pomodoro.completed ? 1 : 0;
       dailyProductivity[day] += pomodoro.completed ? 1 : 0;
     });
 
     // Find optimal hours
-    const optimalHours = Object.keys(hourlyProductivity)
-      .filter(hour => hourlyProductivity[parseInt(hour)] > 0.7)
+    const optimalHours = Object.keys(hourlyProductivity || {})
+      .filter(hour => (hourlyProductivity || {})[parseInt(hour)] > 0.7)
       .map(Number)
-      .sort((a, b) => hourlyProductivity[b] - hourlyProductivity[a]);
+      .sort((a, b) => (hourlyProductivity || {})[b] - (hourlyProductivity || {})[a]);
 
     // Find optimal days
-    const optimalDays = Object.keys(dailyProductivity)
-      .filter(day => dailyProductivity[parseInt(day)] > 0.7)
+    const optimalDays = Object.keys(dailyProductivity || {})
+      .filter(day => (dailyProductivity || {})[parseInt(day)] > 0.7)
       .map(Number);
 
     return {
@@ -128,8 +150,8 @@ export const useSmartScheduling = () => {
       optimalHours,
       optimalDays,
       peakHours: optimalHours.slice(0, 3),
-      lowEnergyHours: Object.keys(hourlyProductivity)
-        .filter(hour => hourlyProductivity[parseInt(hour)] < 0.3)
+      lowEnergyHours: Object.keys(hourlyProductivity || {})
+        .filter(hour => (hourlyProductivity || {})[parseInt(hour)] < 0.3)
         .map(Number),
     };
   };
@@ -154,18 +176,23 @@ export const useSmartScheduling = () => {
   };
 
   // Calculate focus levels for different task types
-  const calculateFocusLevels = (taskType: string): 'high' | 'medium' | 'low' => {
+  const calculateFocusLevels = (
+    taskType: string
+  ): 'high' | 'medium' | 'low' => {
     // This would be based on historical performance with similar tasks
-    const taskPerformance = tasks.filter(task => 
-      task.title.toLowerCase().includes(taskType.toLowerCase()) ||
-      task.description?.toLowerCase().includes(taskType.toLowerCase())
+    if (!tasks) return 'medium';
+    const taskPerformance = tasks.filter(
+      task =>
+        task.title.toLowerCase().includes(taskType.toLowerCase()) ||
+        task.description?.toLowerCase().includes(taskType.toLowerCase())
     );
 
     if (taskPerformance.length === 0) return 'medium';
 
-    const completionRate = taskPerformance.filter(task => 
-      completedPomodoros.some(p => p.taskId === task.id && p.completed)
-    ).length / taskPerformance.length;
+    const completionRate =
+      taskPerformance.filter(task =>
+        completedPomodoros.some(p => p.taskId === task.id && p.completed)
+      ).length / taskPerformance.length;
 
     if (completionRate > 0.8) return 'high';
     if (completionRate > 0.5) return 'medium';
@@ -188,7 +215,9 @@ export const useSmartScheduling = () => {
     const complexityMultiplier = task.priority === 'high' ? 1.2 : 1;
     const estimatedDuration = Math.round(baseDuration * complexityMultiplier);
 
-    const optimalEndTime = new Date(optimalStartTime.getTime() + estimatedDuration * 60 * 1000);
+    const optimalEndTime = new Date(
+      optimalStartTime.getTime() + estimatedDuration * 60 * 1000
+    );
 
     // Determine energy level for the time slot
     const energyLevel = energyLevels[optimalHour] || 'medium';
@@ -222,10 +251,26 @@ export const useSmartScheduling = () => {
     const title = task.title.toLowerCase();
     const description = (task.description || '').toLowerCase();
 
-    if (title.includes('meeting') || title.includes('toplantı')) return 'meeting';
-    if (title.includes('learn') || title.includes('öğren') || title.includes('study')) return 'learning';
-    if (title.includes('creative') || title.includes('yaratıcı') || title.includes('design')) return 'creative';
-    if (title.includes('deep') || title.includes('derin') || title.includes('focus')) return 'deep_work';
+    if (title.includes('meeting') || title.includes('toplantı'))
+      return 'meeting';
+    if (
+      title.includes('learn') ||
+      title.includes('öğren') ||
+      title.includes('study')
+    )
+      return 'learning';
+    if (
+      title.includes('creative') ||
+      title.includes('yaratıcı') ||
+      title.includes('design')
+    )
+      return 'creative';
+    if (
+      title.includes('deep') ||
+      title.includes('derin') ||
+      title.includes('focus')
+    )
+      return 'deep_work';
     if (title.includes('break') || title.includes('mola')) return 'break';
     return 'pomodoro';
   };
@@ -236,11 +281,16 @@ export const useSmartScheduling = () => {
     const title = task.title.toLowerCase();
     const description = (task.description || '').toLowerCase();
 
-    if (title.includes('urgent') || title.includes('acil')) context.push('urgent');
-    if (title.includes('important') || title.includes('önemli')) context.push('important');
-    if (title.includes('deadline') || title.includes('son tarih')) context.push('deadline');
-    if (title.includes('review') || title.includes('gözden geçir')) context.push('review');
-    if (title.includes('plan') || title.includes('planla')) context.push('planning');
+    if (title.includes('urgent') || title.includes('acil'))
+      context.push('urgent');
+    if (title.includes('important') || title.includes('önemli'))
+      context.push('important');
+    if (title.includes('deadline') || title.includes('son tarih'))
+      context.push('deadline');
+    if (title.includes('review') || title.includes('gözden geçir'))
+      context.push('review');
+    if (title.includes('plan') || title.includes('planla'))
+      context.push('planning');
 
     return context;
   };
@@ -253,10 +303,10 @@ export const useSmartScheduling = () => {
     // Find better time slot
     const currentHour = schedule.optimalStartTime.getHours();
     const currentEnergy = energyLevels[currentHour] || 'medium';
-    
+
     // Look for higher energy time slots
-    const betterHours = patterns.peakHours.filter(hour => 
-      energyLevels[hour] === 'high' && hour !== currentHour
+    const betterHours = (patterns.peakHours || []).filter(
+      hour => energyLevels[hour] === 'high' && hour !== currentHour
     );
 
     let optimizedSchedule = { ...schedule };
@@ -267,9 +317,14 @@ export const useSmartScheduling = () => {
       const newHour = betterHours[0];
       optimizedSchedule.optimalStartTime = new Date(schedule.optimalStartTime);
       optimizedSchedule.optimalStartTime.setHours(newHour, 0, 0, 0);
-      optimizedSchedule.optimalEndTime = new Date(optimizedSchedule.optimalStartTime.getTime() + schedule.estimatedDuration * 60 * 1000);
+      optimizedSchedule.optimalEndTime = new Date(
+        optimizedSchedule.optimalStartTime.getTime() +
+          schedule.estimatedDuration * 60 * 1000
+      );
       optimizedSchedule.energyLevel = 'high';
-      improvements.push(`Daha yüksek enerji seviyesi olan ${newHour}:00 saatine taşındı`);
+      improvements.push(
+        `Daha yüksek enerji seviyesi olan ${newHour}:00 saatine taşındı`
+      );
       impact = 'high';
     }
 
@@ -282,20 +337,25 @@ export const useSmartScheduling = () => {
 
     // Check for duration optimization
     if (schedule.estimatedDuration > 60 && schedule.type === 'pomodoro') {
-      optimizedSchedule.estimatedDuration = Math.min(schedule.estimatedDuration, 45);
+      optimizedSchedule.estimatedDuration = Math.min(
+        schedule.estimatedDuration,
+        45
+      );
       improvements.push('Daha kısa süreye optimize edildi');
       impact = 'medium';
     }
 
-    const reasoning = improvements.length > 0 
-      ? `Optimizasyon: ${improvements.join(', ')}`
-      : 'Mevcut zamanlama optimal';
+    const reasoning =
+      improvements.length > 0
+        ? `Optimizasyon: ${improvements.join(', ')}`
+        : 'Mevcut zamanlama optimal';
 
     return {
       id: `optimization-${Date.now()}-${Math.random()}`,
       type: 'time_optimization',
       title: 'Zamanlama Optimizasyonu',
-      description: 'Mevcut zamanlamanızı daha verimli hale getirmek için öneriler',
+      description:
+        'Mevcut zamanlamanızı daha verimli hale getirmek için öneriler',
       currentSchedule: schedule,
       optimizedSchedule,
       improvements,
@@ -310,8 +370,8 @@ export const useSmartScheduling = () => {
   // Detect schedule conflicts
   const detectConflicts = (): ScheduleConflict[] => {
     const conflicts: ScheduleConflict[] = [];
-    const sortedSchedules = schedules.sort((a, b) => 
-      a.optimalStartTime.getTime() - b.optimalStartTime.getTime()
+    const sortedSchedules = schedules.sort(
+      (a, b) => a.optimalStartTime.getTime() - b.optimalStartTime.getTime()
     );
 
     // Check for time overlaps
@@ -330,7 +390,7 @@ export const useSmartScheduling = () => {
           suggestions: [
             'Görevlerden birini daha sonraya erteleyin',
             'Görevlerden birinin süresini kısaltın',
-            'Görevleri birleştirin'
+            'Görevleri birleştirin',
           ],
           autoResolvable: true,
           createdAt: new Date(),
@@ -343,7 +403,7 @@ export const useSmartScheduling = () => {
     schedules.forEach(schedule => {
       const hour = schedule.optimalStartTime.getHours();
       const energyLevel = energyLevels[hour] || 'medium';
-      
+
       if (schedule.type === 'deep_work' && energyLevel === 'low') {
         conflicts.push({
           id: `conflict-energy-${schedule.id}`,
@@ -355,7 +415,7 @@ export const useSmartScheduling = () => {
           suggestions: [
             'Daha yüksek enerji saatine taşıyın',
             'Görev türünü değiştirin',
-            'Enerji seviyenizi artırın'
+            'Enerji seviyenizi artırın',
           ],
           autoResolvable: true,
           createdAt: new Date(),
@@ -372,8 +432,8 @@ export const useSmartScheduling = () => {
       setLoading(true);
       setError(null);
 
-      const unscheduledTasks = tasks.filter(task => 
-        !schedules.some(schedule => schedule.title === task.title)
+      const unscheduledTasks = (tasks || []).filter(
+        task => !schedules.some(schedule => schedule.title === task.title)
       );
 
       const newSchedules: SmartSchedule[] = [];
@@ -383,14 +443,22 @@ export const useSmartScheduling = () => {
 
       for (const task of unscheduledTasks) {
         const schedule = generateSmartSchedule(task);
-        
+
         // Adjust time to avoid conflicts
-        while (schedules.some(s => 
-          s.optimalStartTime <= schedule.optimalStartTime && 
-          s.optimalEndTime > schedule.optimalStartTime
-        )) {
-          schedule.optimalStartTime.setMinutes(schedule.optimalStartTime.getMinutes() + 30);
-          schedule.optimalEndTime = new Date(schedule.optimalStartTime.getTime() + schedule.estimatedDuration * 60 * 1000);
+        while (
+          schedules.some(
+            s =>
+              s.optimalStartTime <= schedule.optimalStartTime &&
+              s.optimalEndTime > schedule.optimalStartTime
+          )
+        ) {
+          schedule.optimalStartTime.setMinutes(
+            schedule.optimalStartTime.getMinutes() + 30
+          );
+          schedule.optimalEndTime = new Date(
+            schedule.optimalStartTime.getTime() +
+              schedule.estimatedDuration * 60 * 1000
+          );
         }
 
         newSchedules.push(schedule);
@@ -442,21 +510,23 @@ export const useSmartScheduling = () => {
   };
 
   // Apply optimization
-  const applyOptimization = async (optimizationId: string): Promise<boolean> => {
+  const applyOptimization = async (
+    optimizationId: string
+  ): Promise<boolean> => {
     try {
       const optimization = optimizations.find(o => o.id === optimizationId);
       if (!optimization) return false;
 
-      setSchedules(prev => 
-        prev.map(schedule => 
-          schedule.id === optimization.currentSchedule.id 
-            ? optimization.optimizedSchedule 
+      setSchedules(prev =>
+        prev.map(schedule =>
+          schedule.id === optimization.currentSchedule.id
+            ? optimization.optimizedSchedule
             : schedule
         )
       );
 
       // Remove the optimization
-      setOptimizations(prev => prev.filter(o => o.id !== optimizationId));
+      setOptimizations(prev => (prev || []).filter(o => o.id !== optimizationId));
       return true;
     } catch (err) {
       console.error('Apply optimization error:', err);
@@ -465,16 +535,21 @@ export const useSmartScheduling = () => {
   };
 
   // Resolve conflict
-  const resolveConflict = async (conflictId: string, resolution: string): Promise<boolean> => {
+  const resolveConflict = async (
+    conflictId: string,
+    resolution: string
+  ): Promise<boolean> => {
     try {
       const conflict = conflicts.find(c => c.id === conflictId);
       if (!conflict) return false;
 
       // In a real app, this would implement the resolution logic
-      console.log(`Resolving conflict ${conflictId} with resolution: ${resolution}`);
-      
+      console.log(
+        `Resolving conflict ${conflictId} with resolution: ${resolution}`
+      );
+
       // Remove the conflict
-      setConflicts(prev => prev.filter(c => c.id !== conflictId));
+      setConflicts(prev => (prev || []).filter(c => c.id !== conflictId));
       return true;
     } catch (err) {
       console.error('Resolve conflict error:', err);
@@ -490,13 +565,17 @@ export const useSmartScheduling = () => {
   // Get scheduling insights
   const getSchedulingInsights = () => {
     const totalSchedules = schedules.length;
-    const completedSchedules = schedules.filter(s => s.status === 'completed').length;
-    const completionRate = totalSchedules > 0 ? completedSchedules / totalSchedules : 0;
+    const completedSchedules = schedules.filter(
+      s => s.status === 'completed'
+    ).length;
+    const completionRate =
+      totalSchedules > 0 ? completedSchedules / totalSchedules : 0;
     const totalOptimizations = optimizations.length;
     const totalConflicts = conflicts.length;
-    const avgConfidence = schedules.length > 0 
-      ? schedules.reduce((sum, s) => sum + s.confidence, 0) / schedules.length 
-      : 0;
+    const avgConfidence =
+      schedules.length > 0
+        ? schedules.reduce((sum, s) => sum + s.confidence, 0) / schedules.length
+        : 0;
 
     return {
       totalSchedules,

@@ -26,38 +26,53 @@ export interface EnergyPattern {
 export const useEnergyAnalysis = () => {
   const { sessions, tasks } = usePomodoroStore();
   const { energyLevel, calculateEnergyLevel } = useAutoRescheduleStore();
-  
+
   const [energyPatterns, setEnergyPatterns] = useState<EnergyPattern[]>([]);
-  const [recommendations, setRecommendations] = useState<EnergyRecommendation[]>([]);
+  const currentHour = new Date().getHours();
+  const [recommendations, setRecommendations] = useState<
+    EnergyRecommendation[]
+  >([]);
 
   // Analyze energy patterns from historical data
   const analyzeEnergyPatterns = useCallback(() => {
+    if (!sessions) return [];
     const patterns: EnergyPattern[] = [];
-    
+
     // Group sessions by hour of day
-    const sessionsByHour = sessions.reduce((acc, session) => {
-      const hour = new Date(session.startTime).getHours();
-      if (!acc[hour]) acc[hour] = [];
-      acc[hour].push(session);
-      return acc;
-    }, {} as Record<number, typeof sessions>);
+    const sessionsByHour = sessions.reduce(
+      (acc, session) => {
+        const hour = new Date(session.startTime).getHours();
+        if (!acc[hour]) acc[hour] = [];
+        acc[hour].push(session);
+        return acc;
+      },
+      {} as Record<number, typeof sessions>
+    );
 
     // Calculate energy patterns for each hour
     Object.entries(sessionsByHour).forEach(([hour, hourSessions]) => {
       const hourNum = parseInt(hour);
-      const completedSessions = hourSessions.filter(s => s.isCompleted);
-      const totalDuration = completedSessions.reduce((sum, s) => sum + s.duration, 0);
-      const avgInterruptions = completedSessions.reduce((sum, s) => sum + s.interruptions, 0) / completedSessions.length;
-      
+      const completedSessions = (hourSessions || []).filter(s => s.isCompleted);
+      const totalDuration = completedSessions.reduce(
+        (sum, s) => sum + s.duration,
+        0
+      );
+      const avgInterruptions =
+        completedSessions.reduce((sum, s) => sum + s.interruptions, 0) /
+        completedSessions.length;
+
       // Calculate productivity score (0-1)
-      const productivity = Math.min(1, totalDuration / (completedSessions.length * 25));
-      
+      const productivity = Math.min(
+        1,
+        totalDuration / (completedSessions.length * 25)
+      );
+
       // Calculate focus score (0-1) - lower interruptions = higher focus
-      const focus = Math.max(0, 1 - (avgInterruptions / 3));
-      
+      const focus = Math.max(0, 1 - avgInterruptions / 3);
+
       // Calculate motivation score (0-1) - based on completion rate
       const motivation = completedSessions.length / hourSessions.length;
-      
+
       // Determine energy level
       let energyLevel: 'low' | 'medium' | 'high';
       const avgScore = (productivity + focus + motivation) / 3;
@@ -91,7 +106,8 @@ export const useEnergyAnalysis = () => {
         id: 'morning-focus',
         type: 'task',
         title: 'Sabah Odaklanma',
-        description: 'Sabah saatleri en yüksek enerji zamanınız. Zor görevlerle başlayın.',
+        description:
+          'Sabah saatleri en yüksek enerji zamanınız. Zor görevlerle başlayın.',
         priority: 'high',
         energyLevel: 'high',
         estimatedDuration: 25,
@@ -104,7 +120,8 @@ export const useEnergyAnalysis = () => {
         id: 'midday-balance',
         type: 'task',
         title: 'Öğle Dengesi',
-        description: 'Öğle saatleri dengeli enerji zamanı. Orta zorlukta görevler yapın.',
+        description:
+          'Öğle saatleri dengeli enerji zamanı. Orta zorlukta görevler yapın.',
         priority: 'medium',
         energyLevel: 'medium',
         estimatedDuration: 25,
@@ -117,7 +134,8 @@ export const useEnergyAnalysis = () => {
         id: 'afternoon-easy',
         type: 'task',
         title: 'Öğleden Sonra Kolay',
-        description: 'Öğleden sonra enerji düşüyor. Kolay görevlerle devam edin.',
+        description:
+          'Öğleden sonra enerji düşüyor. Kolay görevlerle devam edin.',
         priority: 'low',
         energyLevel: 'low',
         estimatedDuration: 15,
@@ -145,14 +163,15 @@ export const useEnergyAnalysis = () => {
         id: 'low-energy-break',
         type: 'break',
         title: 'Enerji Yenileme',
-        description: 'Düşük enerji seviyesi. Kısa bir mola alın ve enerji toplayın.',
+        description:
+          'Düşük enerji seviyesi. Kısa bir mola alın ve enerji toplayın.',
         priority: 'high',
         energyLevel: 'low',
         estimatedDuration: 10,
         benefits: ['Enerji yenileme', 'Stres azaltma', 'Odaklanma artırma'],
         icon: '🔋',
       });
-      
+
       recs.push({
         id: 'low-energy-easy',
         type: 'task',
@@ -176,7 +195,7 @@ export const useEnergyAnalysis = () => {
         benefits: ['Zorlu görevler', 'Hızlı ilerleme', 'Yüksek verimlilik'],
         icon: '🚀',
       });
-      
+
       recs.push({
         id: 'high-energy-focus',
         type: 'environment',
@@ -185,7 +204,11 @@ export const useEnergyAnalysis = () => {
         priority: 'medium',
         energyLevel: 'high',
         estimatedDuration: 5,
-        benefits: ['Sessiz ortam', 'Dikkat dağıtıcıları kaldırma', 'Odaklanma artırma'],
+        benefits: [
+          'Sessiz ortam',
+          'Dikkat dağıtıcıları kaldırma',
+          'Odaklanma artırma',
+        ],
         icon: '🎯',
       });
     }
@@ -199,7 +222,11 @@ export const useEnergyAnalysis = () => {
       priority: 'medium',
       energyLevel: 'medium',
       estimatedDuration: 5,
-      benefits: ['Kan dolaşımı artırma', 'Kas gerginliği azaltma', 'Enerji yenileme'],
+      benefits: [
+        'Kan dolaşımı artırma',
+        'Kas gerginliği azaltma',
+        'Enerji yenileme',
+      ],
       icon: '🤸',
     });
 
@@ -221,17 +248,22 @@ export const useEnergyAnalysis = () => {
 
   // Get task recommendations based on energy
   const getTaskRecommendations = useCallback(() => {
+    if (!tasks) return [];
     const availableTasks = tasks.filter(task => !task.isCompleted);
     const currentEnergy = energyLevel.level;
-    
+
     let recommendedTasks = availableTasks;
 
     if (currentEnergy === 'low') {
       // Low energy - recommend easy tasks
-      recommendedTasks = availableTasks.filter(task => task.estimatedPomodoros <= 2);
+      recommendedTasks = availableTasks.filter(
+        task => task.estimatedPomodoros <= 2
+      );
     } else if (currentEnergy === 'high') {
       // High energy - recommend challenging tasks
-      recommendedTasks = availableTasks.filter(task => task.estimatedPomodoros >= 3);
+      recommendedTasks = availableTasks.filter(
+        task => task.estimatedPomodoros >= 3
+      );
     }
 
     // Sort by priority
@@ -257,7 +289,11 @@ export const useEnergyAnalysis = () => {
         priority: 'high',
         energyLevel: 'low',
         estimatedDuration: 15,
-        benefits: ['Enerji yenileme', 'Zihinsel tazelenme', 'Performans artırma'],
+        benefits: [
+          'Enerji yenileme',
+          'Zihinsel tazelenme',
+          'Performans artırma',
+        ],
         icon: '😴',
       });
     } else if (currentEnergy === 'high') {
@@ -269,7 +305,11 @@ export const useEnergyAnalysis = () => {
         priority: 'medium',
         energyLevel: 'high',
         estimatedDuration: 10,
-        benefits: ['Kan dolaşımı artırma', 'Enerji koruma', 'Odaklanma artırma'],
+        benefits: [
+          'Kan dolaşımı artırma',
+          'Enerji koruma',
+          'Odaklanma artırma',
+        ],
         icon: '🚶',
       });
     }

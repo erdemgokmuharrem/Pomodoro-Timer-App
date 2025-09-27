@@ -113,7 +113,9 @@ const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === 'secondary' || variant === 'ghost' ? '#3B82F6' : 'white'}
+          color={
+            variant === 'secondary' || variant === 'ghost' ? '#3B82F6' : 'white'
+          }
         />
       ) : (
         <Text style={getTextStyle()}>{title}</Text>

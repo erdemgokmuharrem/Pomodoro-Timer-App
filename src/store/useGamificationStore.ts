@@ -46,7 +46,7 @@ export interface UserStats {
 
 interface GamificationState {
   userStats: UserStats;
-  
+
   // Computed properties
   level: number;
   xp: number;
@@ -54,7 +54,7 @@ interface GamificationState {
   totalXp: number;
   badges: Badge[];
   recentBadges: Badge[];
-  
+
   // Actions
   addXp: (amount: number, reason: string) => void;
   updateStreak: (increment: boolean) => void;
@@ -71,7 +71,7 @@ const defaultBadges: Badge[] = [
   {
     id: 'first_pomodoro',
     name: 'İlk Adım',
-    description: 'İlk pomodoro\'nuzu tamamlayın',
+    description: "İlk pomodoro'nuzu tamamlayın",
     icon: '🎯',
     emoji: '🎯',
     color: '#3B82F6',
@@ -126,7 +126,7 @@ const defaultBadges: Badge[] = [
   {
     id: 'focus_master',
     name: 'Odak Ustası',
-    description: 'Focus Score\'unuz 90\'ın üzerinde olsun',
+    description: "Focus Score'unuz 90'ın üzerinde olsun",
     icon: '🧠',
     emoji: '🧠',
     color: '#EF4444',
@@ -241,8 +241,12 @@ export const useGamificationStore = create<GamificationState>()(
         return get().userStats.badges;
       },
       get recentBadges() {
-        return get().userStats.badges
-          .sort((a, b) => new Date(b.unlockedAt || 0).getTime() - new Date(a.unlockedAt || 0).getTime())
+        return get()
+          .userStats.badges.sort(
+            (a, b) =>
+              new Date(b.unlockedAt || 0).getTime() -
+              new Date(a.unlockedAt || 0).getTime()
+          )
           .slice(0, 3);
       },
 
@@ -251,7 +255,7 @@ export const useGamificationStore = create<GamificationState>()(
         const newXp = state.userStats.xp + amount;
         const newTotalXp = state.userStats.totalXp + amount;
         const newLevel = calculateLevel(newTotalXp);
-        
+
         set({
           userStats: {
             ...state.userStats,
@@ -270,7 +274,7 @@ export const useGamificationStore = create<GamificationState>()(
       updateStreak: (increment: boolean) => {
         const state = get();
         const today = new Date().toDateString();
-        
+
         if (increment) {
           const newStreak = state.userStats.currentStreak + 1;
           set({
@@ -295,25 +299,28 @@ export const useGamificationStore = create<GamificationState>()(
       checkBadges: () => {
         const state = get();
         const availableBadges = get().getAvailableBadges();
-        
+
         availableBadges.forEach(badge => {
           let shouldUnlock = false;
-          
+
           switch (badge.requirement.type) {
             case 'pomodoros':
-              shouldUnlock = badge.requirement.condition === 'greater_than' 
-                ? state.userStats.totalPomodoros > badge.requirement.value
-                : state.userStats.totalPomodoros === badge.requirement.value;
+              shouldUnlock =
+                badge.requirement.condition === 'greater_than'
+                  ? state.userStats.totalPomodoros > badge.requirement.value
+                  : state.userStats.totalPomodoros === badge.requirement.value;
               break;
             case 'streak':
-              shouldUnlock = badge.requirement.condition === 'greater_than'
-                ? state.userStats.currentStreak > badge.requirement.value
-                : state.userStats.currentStreak === badge.requirement.value;
+              shouldUnlock =
+                badge.requirement.condition === 'greater_than'
+                  ? state.userStats.currentStreak > badge.requirement.value
+                  : state.userStats.currentStreak === badge.requirement.value;
               break;
             case 'tasks':
-              shouldUnlock = badge.requirement.condition === 'greater_than'
-                ? state.userStats.totalTasks > badge.requirement.value
-                : state.userStats.totalTasks === badge.requirement.value;
+              shouldUnlock =
+                badge.requirement.condition === 'greater_than'
+                  ? state.userStats.totalTasks > badge.requirement.value
+                  : state.userStats.totalTasks === badge.requirement.value;
               break;
             case 'focus_score':
               // This would need to be calculated from recent sessions
@@ -322,7 +329,7 @@ export const useGamificationStore = create<GamificationState>()(
               // This would need to be tracked from recent sessions
               break;
           }
-          
+
           if (shouldUnlock) {
             get().unlockBadge(badge.id);
           }
@@ -331,12 +338,12 @@ export const useGamificationStore = create<GamificationState>()(
 
       checkAchievements: () => {
         const state = get();
-        
+
         state.userStats.achievements.forEach(achievement => {
           if (achievement.unlockedAt) return; // Already unlocked
-          
+
           let progress = 0;
-          
+
           switch (achievement.id) {
             case 'pomodoro_milestone_10':
             case 'pomodoro_milestone_50':
@@ -350,7 +357,7 @@ export const useGamificationStore = create<GamificationState>()(
               progress = state.userStats.totalFocusTime;
               break;
           }
-          
+
           if (progress >= achievement.maxProgress) {
             get().unlockAchievement(achievement.id);
           } else {
@@ -370,30 +377,37 @@ export const useGamificationStore = create<GamificationState>()(
       unlockBadge: (badgeId: string) => {
         const state = get();
         const badge = defaultBadges.find(b => b.id === badgeId);
-        
+
         if (badge && !state.userStats.badges.find(b => b.id === badgeId)) {
           const now = new Date();
           const unlockedBadge = { ...badge, unlockedAt: now, earnedAt: now };
-          
+
           set({
             userStats: {
               ...state.userStats,
               badges: [...state.userStats.badges, unlockedBadge],
             },
           });
-          
+
           // Award XP for badge
-          const xpReward = badge.rarity === 'common' ? 50 : 
-                          badge.rarity === 'rare' ? 100 :
-                          badge.rarity === 'epic' ? 200 : 500;
+          const xpReward =
+            badge.rarity === 'common'
+              ? 50
+              : badge.rarity === 'rare'
+                ? 100
+                : badge.rarity === 'epic'
+                  ? 200
+                  : 500;
           get().addXp(xpReward, `Badge unlocked: ${badge.name}`);
         }
       },
 
       unlockAchievement: (achievementId: string) => {
         const state = get();
-        const achievement = state.userStats.achievements.find(a => a.id === achievementId);
-        
+        const achievement = state.userStats.achievements.find(
+          a => a.id === achievementId
+        );
+
         if (achievement && !achievement.unlockedAt) {
           set({
             userStats: {
@@ -403,8 +417,11 @@ export const useGamificationStore = create<GamificationState>()(
               ),
             },
           });
-          
-          get().addXp(achievement.xpReward, `Achievement unlocked: ${achievement.name}`);
+
+          get().addXp(
+            achievement.xpReward,
+            `Achievement unlocked: ${achievement.name}`
+          );
         }
       },
 
@@ -414,7 +431,7 @@ export const useGamificationStore = create<GamificationState>()(
         const nextLevelXp = calculateXpForLevel(state.userStats.level + 1);
         const currentXp = state.userStats.totalXp - currentLevelXp;
         const xpNeeded = nextLevelXp - currentLevelXp;
-        
+
         return {
           current: currentXp,
           next: xpNeeded,
@@ -424,8 +441,8 @@ export const useGamificationStore = create<GamificationState>()(
 
       getAvailableBadges: () => {
         const state = get();
-        return defaultBadges.filter(badge => 
-          !state.userStats.badges.find(b => b.id === badge.id)
+        return defaultBadges.filter(
+          badge => !state.userStats.badges.find(b => b.id === badge.id)
         );
       },
 
@@ -436,7 +453,7 @@ export const useGamificationStore = create<GamificationState>()(
     }),
     {
       name: 'gamification-storage',
-      partialize: (state) => ({ userStats: state.userStats }),
+      partialize: state => ({ userStats: state.userStats }),
     }
   )
 );

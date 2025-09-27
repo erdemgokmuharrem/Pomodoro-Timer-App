@@ -28,9 +28,11 @@ export interface TemplateCategory {
 interface TemplateState {
   templates: TaskTemplate[];
   categories: TemplateCategory[];
-  
+
   // Actions
-  addTemplate: (template: Omit<TaskTemplate, 'id' | 'createdAt' | 'usageCount' | 'lastUsed'>) => void;
+  addTemplate: (
+    template: Omit<TaskTemplate, 'id' | 'createdAt' | 'usageCount' | 'lastUsed'>
+  ) => void;
   updateTemplate: (id: string, updates: Partial<TaskTemplate>) => void;
   deleteTemplate: (id: string) => void;
   useTemplate: (id: string) => TaskTemplate | null;
@@ -276,7 +278,7 @@ export const useTemplateStore = create<TemplateState>()(
       templates: defaultTemplates,
       categories: defaultCategories,
 
-      addTemplate: (templateData) => {
+      addTemplate: templateData => {
         const newTemplate: TaskTemplate = {
           ...templateData,
           id: Date.now().toString(),
@@ -293,20 +295,18 @@ export const useTemplateStore = create<TemplateState>()(
       updateTemplate: (id, updates) => {
         set({
           templates: get().templates.map(template =>
-            template.id === id
-              ? { ...template, ...updates }
-              : template
+            template.id === id ? { ...template, ...updates } : template
           ),
         });
       },
 
-      deleteTemplate: (id) => {
+      deleteTemplate: id => {
         set({
           templates: get().templates.filter(template => template.id !== id),
         });
       },
 
-      useTemplate: (id) => {
+      useTemplate: id => {
         const template = get().templates.find(t => t.id === id);
         if (!template) return null;
 
@@ -326,35 +326,43 @@ export const useTemplateStore = create<TemplateState>()(
         return updatedTemplate;
       },
 
-      getTemplatesByCategory: (categoryId) => {
-        return get().templates.filter(template => template.category === categoryId);
+      getTemplatesByCategory: categoryId => {
+        return get().templates.filter(
+          template => template.category === categoryId
+        );
       },
 
       getMostUsedTemplates: (limit = 5) => {
-        return get().templates
-          .sort((a, b) => b.usageCount - a.usageCount)
+        return get()
+          .templates.sort((a, b) => b.usageCount - a.usageCount)
           .slice(0, limit);
       },
 
       getRecentTemplates: (limit = 5) => {
-        return get().templates
-          .filter(template => template.lastUsed)
-          .sort((a, b) => (b.lastUsed?.getTime() || 0) - (a.lastUsed?.getTime() || 0))
+        return get()
+          .templates.filter(template => template.lastUsed)
+          .sort(
+            (a, b) =>
+              (b.lastUsed?.getTime() || 0) - (a.lastUsed?.getTime() || 0)
+          )
           .slice(0, limit);
       },
 
-      searchTemplates: (query) => {
+      searchTemplates: query => {
         const lowercaseQuery = query.toLowerCase();
-        return get().templates.filter(template =>
-          template.name.toLowerCase().includes(lowercaseQuery) ||
-          template.description.toLowerCase().includes(lowercaseQuery) ||
-          template.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
+        return get().templates.filter(
+          template =>
+            template.name.toLowerCase().includes(lowercaseQuery) ||
+            template.description.toLowerCase().includes(lowercaseQuery) ||
+            template.tags.some(tag =>
+              tag.toLowerCase().includes(lowercaseQuery)
+            )
         );
       },
     }),
     {
       name: 'template-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         templates: state.templates,
         categories: state.categories,
       }),

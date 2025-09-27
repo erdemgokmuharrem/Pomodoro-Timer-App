@@ -37,11 +37,11 @@ export const usePomodoroTimer = () => {
   } = useSound();
 
   const { awardPomodoroXp, awardTaskXp } = useGamification();
-  
-  const { 
-    handlePomodoroComplete, 
+
+  const {
+    handlePomodoroComplete,
     handleBreakComplete,
-    settings: autoRescheduleSettings 
+    settings: autoRescheduleSettings,
   } = useAutoReschedule();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -82,7 +82,13 @@ export const usePomodoroTimer = () => {
         handlePomodoroComplete();
       }
     }
-  }, [timeLeft, isRunning, isBreak, handlePomodoroComplete, handleBreakComplete]);
+  }, [
+    timeLeft,
+    isRunning,
+    isBreak,
+    handlePomodoroComplete,
+    handleBreakComplete,
+  ]);
 
   // Handle timer completion
   useEffect(() => {
@@ -97,7 +103,16 @@ export const usePomodoroTimer = () => {
         awardPomodoroXp();
       }
     }
-  }, [timeLeft, isRunning, isBreak, completeBreak, completePomodoro, playBreakComplete, playPomodoroComplete, awardPomodoroXp]);
+  }, [
+    timeLeft,
+    isRunning,
+    isBreak,
+    completeBreak,
+    completePomodoro,
+    playBreakComplete,
+    playPomodoroComplete,
+    awardPomodoroXp,
+  ]);
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -107,7 +122,7 @@ export const usePomodoroTimer = () => {
 
   const getProgress = (): number => {
     if (!settings) return 0;
-    const totalTime = isBreak 
+    const totalTime = isBreak
       ? (settings.longBreakDuration || settings.shortBreakDuration || 5) * 60
       : (settings.pomodoroDuration || 25) * 60;
     return totalTime > 0 ? ((totalTime - timeLeft) / totalTime) * 100 : 0;
@@ -115,7 +130,7 @@ export const usePomodoroTimer = () => {
 
   const handleStart = async (taskId?: string) => {
     if (!settings) return;
-    
+
     if (isBreak) {
       startBreak();
       // Schedule break notification
@@ -123,7 +138,10 @@ export const usePomodoroTimer = () => {
     } else {
       startPomodoro(taskId);
       // Schedule pomodoro notification
-      await schedulePomodoroNotification(settings.pomodoroDuration || 25, currentSession?.taskId);
+      await schedulePomodoroNotification(
+        settings.pomodoroDuration || 25,
+        currentSession?.taskId
+      );
     }
     // Play start sound
     await playStart();
@@ -143,10 +161,12 @@ export const usePomodoroTimer = () => {
 
   const handleStartBreak = async (isLongBreak = false) => {
     if (!settings) return;
-    
+
     startBreak(isLongBreak);
     // Schedule break notification
-    const duration = isLongBreak ? (settings.longBreakDuration || 15) : (settings.shortBreakDuration || 5);
+    const duration = isLongBreak
+      ? settings.longBreakDuration || 15
+      : settings.shortBreakDuration || 5;
     await scheduleBreakNotification(duration, isLongBreak);
   };
 
@@ -174,13 +194,13 @@ export const usePomodoroTimer = () => {
     progress: getProgress(),
     statusText: getStatusText(),
     backgroundColor: getBackgroundColor(),
-    
+
     // Actions
     start: handleStart,
     pause: handlePause,
     stop: handleStop,
     startBreak: handleStartBreak,
-    
+
     // Utils
     formatTime,
     getProgress,

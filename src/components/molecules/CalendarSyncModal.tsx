@@ -91,7 +91,11 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
   };
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Takvim Senkronizasyonu</Text>
@@ -110,14 +114,16 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
           {/* Connection Status */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Bağlantı Durumu</Text>
-            
+
             <View style={styles.connectionItem}>
               <View style={styles.connectionInfo}>
                 <Text style={styles.connectionName}>Google Calendar</Text>
-                <Text style={[
-                  styles.connectionStatus,
-                  { color: isGoogleConnected ? '#4CAF50' : '#757575' }
-                ]}>
+                <Text
+                  style={[
+                    styles.connectionStatus,
+                    { color: isGoogleConnected ? '#4CAF50' : '#757575' },
+                  ]}
+                >
                   {isGoogleConnected ? 'Bağlı' : 'Bağlı Değil'}
                 </Text>
               </View>
@@ -126,7 +132,9 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
                 disabled={loading}
                 style={[
                   styles.toggleButton,
-                  { backgroundColor: isGoogleConnected ? '#4CAF50' : '#E0E0E0' }
+                  {
+                    backgroundColor: isGoogleConnected ? '#4CAF50' : '#E0E0E0',
+                  },
                 ]}
               >
                 {loading ? (
@@ -142,10 +150,12 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
             <View style={styles.connectionItem}>
               <View style={styles.connectionInfo}>
                 <Text style={styles.connectionName}>Outlook Calendar</Text>
-                <Text style={[
-                  styles.connectionStatus,
-                  { color: isOutlookConnected ? '#4CAF50' : '#757575' }
-                ]}>
+                <Text
+                  style={[
+                    styles.connectionStatus,
+                    { color: isOutlookConnected ? '#4CAF50' : '#757575' },
+                  ]}
+                >
                   {isOutlookConnected ? 'Bağlı' : 'Bağlı Değil'}
                 </Text>
               </View>
@@ -154,7 +164,9 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
                 disabled={loading}
                 style={[
                   styles.toggleButton,
-                  { backgroundColor: isOutlookConnected ? '#4CAF50' : '#E0E0E0' }
+                  {
+                    backgroundColor: isOutlookConnected ? '#4CAF50' : '#E0E0E0',
+                  },
                 ]}
               >
                 {loading ? (
@@ -171,25 +183,32 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
           {/* Sync Settings */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Senkronizasyon Ayarları</Text>
-            
+
             <View style={styles.settingItem}>
               <View style={styles.settingInfo}>
-                <Text style={styles.settingName}>Otomatik Etkinlik Oluştur</Text>
+                <Text style={styles.settingName}>
+                  Otomatik Etkinlik Oluştur
+                </Text>
                 <Text style={styles.settingDescription}>
-                  Pomodoro seansları ve görevler için otomatik takvim etkinliği oluştur
+                  Pomodoro seansları ve görevler için otomatik takvim etkinliği
+                  oluştur
                 </Text>
               </View>
               <Switch
                 value={localSettings.autoCreateEvents}
                 onValueChange={handleAutoCreateToggle}
                 trackColor={{ false: '#E0E0E0', true: '#4CAF50' }}
-                thumbColor={localSettings.autoCreateEvents ? '#FFFFFF' : '#FFFFFF'}
+                thumbColor={
+                  localSettings.autoCreateEvents ? '#FFFFFF' : '#FFFFFF'
+                }
               />
             </View>
 
             <View style={styles.settingItem}>
               <View style={styles.settingInfo}>
-                <Text style={styles.settingName}>Pomodoro Seanslarını Senkronize Et</Text>
+                <Text style={styles.settingName}>
+                  Pomodoro Seanslarını Senkronize Et
+                </Text>
                 <Text style={styles.settingDescription}>
                   Tamamlanan Pomodoro seanslarını takvimde görüntüle
                 </Text>
@@ -221,26 +240,30 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
           {/* Sync Interval */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Senkronizasyon Sıklığı</Text>
-            
+
             <View style={styles.intervalContainer}>
               <Text style={styles.intervalLabel}>
                 Her {localSettings.syncInterval} dakikada bir senkronize et
               </Text>
-              
+
               <View style={styles.intervalButtons}>
-                {[5, 15, 30, 60].map((interval) => (
+                {[5, 15, 30, 60].map(interval => (
                   <TouchableOpacity
                     key={interval}
                     onPress={() => handleSyncIntervalChange(interval)}
                     style={[
                       styles.intervalButton,
-                      localSettings.syncInterval === interval && styles.intervalButtonActive
+                      localSettings.syncInterval === interval &&
+                        styles.intervalButtonActive,
                     ]}
                   >
-                    <Text style={[
-                      styles.intervalButtonText,
-                      localSettings.syncInterval === interval && styles.intervalButtonTextActive
-                    ]}>
+                    <Text
+                      style={[
+                        styles.intervalButtonText,
+                        localSettings.syncInterval === interval &&
+                          styles.intervalButtonTextActive,
+                      ]}
+                    >
                       {interval}dk
                     </Text>
                   </TouchableOpacity>
@@ -254,15 +277,16 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
             <Text style={styles.sectionTitle}>Bilgi</Text>
             <View style={styles.infoContainer}>
               <Text style={styles.infoText}>
-                • Takvim senkronizasyonu, Pomodoro seanslarınızı ve görevlerinizi 
-                Google Calendar veya Outlook ile senkronize eder
+                • Takvim senkronizasyonu, Pomodoro seanslarınızı ve
+                görevlerinizi Google Calendar veya Outlook ile senkronize eder
               </Text>
               <Text style={styles.infoText}>
-                • Otomatik etkinlik oluşturma özelliği ile seanslarınız 
-                takvimde görünür olur
+                • Otomatik etkinlik oluşturma özelliği ile seanslarınız takvimde
+                görünür olur
               </Text>
               <Text style={styles.infoText}>
-                • Zaman çakışmalarını önlemek için mevcut etkinliklerinizi kontrol edin
+                • Zaman çakışmalarını önlemek için mevcut etkinliklerinizi
+                kontrol edin
               </Text>
             </View>
           </View>

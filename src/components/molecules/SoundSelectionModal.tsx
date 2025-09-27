@@ -6,8 +6,8 @@ import {
   Modal,
   TouchableOpacity,
   ScrollView,
-  Slider,
 } from 'react-native';
+import Slider from '@react-native-community/slider';
 import { useSoundStore, SoundOption } from '../../store/useSoundStore';
 import Card from '../atoms/Card';
 
@@ -16,7 +16,10 @@ interface SoundSelectionModalProps {
   onClose: () => void;
 }
 
-const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({ visible, onClose }) => {
+const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({
+  visible,
+  onClose,
+}) => {
   const {
     settings,
     availableSounds,
@@ -44,9 +47,12 @@ const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({ visible, onCl
     { id: 'white_noise', name: 'Gürültü', emoji: '📻' },
   ];
 
-  const filteredSounds = selectedCategory === 'all' 
-    ? safeAvailableSounds 
-    : safeAvailableSounds.filter(sound => sound && sound.category === selectedCategory);
+  const filteredSounds =
+    selectedCategory === 'all'
+      ? safeAvailableSounds
+      : safeAvailableSounds.filter(
+          sound => sound && sound.category === selectedCategory
+        );
 
   const handleSoundSelect = (sound: SoundOption) => {
     if (!sound) return;
@@ -63,7 +69,7 @@ const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({ visible, onCl
   const SoundItem = ({ sound }: { sound: SoundOption }) => {
     if (!sound) return null;
     const isSelected = safeSettings.backgroundSound?.id === sound.id;
-    
+
     return (
       <TouchableOpacity
         style={[styles.soundItem, isSelected && styles.soundItemSelected]}
@@ -72,10 +78,17 @@ const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({ visible, onCl
         <View style={styles.soundInfo}>
           <Text style={styles.soundEmoji}>{sound.emoji}</Text>
           <View style={styles.soundDetails}>
-            <Text style={[styles.soundName, isSelected && styles.soundNameSelected]}>
+            <Text
+              style={[styles.soundName, isSelected && styles.soundNameSelected]}
+            >
               {sound.name}
             </Text>
-            <Text style={[styles.soundDescription, isSelected && styles.soundDescriptionSelected]}>
+            <Text
+              style={[
+                styles.soundDescription,
+                isSelected && styles.soundDescriptionSelected,
+              ]}
+            >
               {sound.description}
             </Text>
           </View>
@@ -86,7 +99,11 @@ const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({ visible, onCl
   };
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={onClose}>
@@ -128,12 +145,13 @@ const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({ visible, onCl
             <Text style={styles.categoryTitle}>Kategoriler</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View style={styles.categoryContainer}>
-                {categories.map((category) => (
+                {categories.map(category => (
                   <TouchableOpacity
                     key={category.id}
                     style={[
                       styles.categoryButton,
-                      selectedCategory === category.id && styles.categoryButtonActive,
+                      selectedCategory === category.id &&
+                        styles.categoryButtonActive,
                     ]}
                     onPress={() => setSelectedCategory(category.id)}
                   >
@@ -141,7 +159,8 @@ const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({ visible, onCl
                     <Text
                       style={[
                         styles.categoryName,
-                        selectedCategory === category.id && styles.categoryNameActive,
+                        selectedCategory === category.id &&
+                          styles.categoryNameActive,
                       ]}
                     >
                       {category.name}
@@ -156,7 +175,7 @@ const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({ visible, onCl
           <Card style={styles.soundsCard}>
             <Text style={styles.soundsTitle}>Sesler</Text>
             <View style={styles.soundsList}>
-              {filteredSounds.map((sound) => (
+              {filteredSounds.map(sound => (
                 <SoundItem key={sound.id} sound={sound} />
               ))}
             </View>
@@ -166,8 +185,8 @@ const SoundSelectionModal: React.FC<SoundSelectionModalProps> = ({ visible, onCl
           <Card style={styles.infoCard}>
             <Text style={styles.infoTitle}>💡 İpucu</Text>
             <Text style={styles.infoText}>
-              Arka plan sesleri odaklanmanızı artırabilir. Alpha dalgaları ve beyaz gürültü 
-              özellikle konsantrasyon için önerilir.
+              Arka plan sesleri odaklanmanızı artırabilir. Alpha dalgaları ve
+              beyaz gürültü özellikle konsantrasyon için önerilir.
             </Text>
           </Card>
         </ScrollView>

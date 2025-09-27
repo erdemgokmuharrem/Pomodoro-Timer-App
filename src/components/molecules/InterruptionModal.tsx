@@ -18,9 +18,15 @@ interface InterruptionModalProps {
   sessionId: string;
 }
 
-const InterruptionModal: React.FC<InterruptionModalProps> = ({ visible, onClose, sessionId }) => {
+const InterruptionModal: React.FC<InterruptionModalProps> = ({
+  visible,
+  onClose,
+  sessionId,
+}) => {
   const { addInterruption } = usePomodoroStore();
-  const [selectedReason, setSelectedReason] = useState<Interruption['reason'] | null>(null);
+  const [selectedReason, setSelectedReason] = useState<
+    Interruption['reason'] | null
+  >(null);
   const [description, setDescription] = useState('');
 
   const interruptionReasons = [
@@ -52,7 +58,11 @@ const InterruptionModal: React.FC<InterruptionModalProps> = ({ visible, onClose,
     resetForm();
   };
 
-  const ReasonButton = ({ reason }: { reason: typeof interruptionReasons[0] }) => (
+  const ReasonButton = ({
+    reason,
+  }: {
+    reason: (typeof interruptionReasons)[0];
+  }) => (
     <TouchableOpacity
       style={[
         styles.reasonButton,
@@ -73,7 +83,11 @@ const InterruptionModal: React.FC<InterruptionModalProps> = ({ visible, onClose,
   );
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleClose}>
@@ -89,7 +103,7 @@ const InterruptionModal: React.FC<InterruptionModalProps> = ({ visible, onClose,
           <Card style={styles.section}>
             <Text style={styles.sectionTitle}>Kesinti Nedeni</Text>
             <View style={styles.reasonsGrid}>
-              {interruptionReasons.map((reason) => (
+              {interruptionReasons.map(reason => (
                 <ReasonButton key={reason.value} reason={reason} />
               ))}
             </View>
@@ -111,8 +125,8 @@ const InterruptionModal: React.FC<InterruptionModalProps> = ({ visible, onClose,
           <View style={styles.infoCard}>
             <Text style={styles.infoTitle}>💡 İpucu</Text>
             <Text style={styles.infoText}>
-              Kesintilerinizi kaydetmek, odaklanma alışkanlıklarınızı analiz etmenize ve 
-              gelecekte daha iyi planlama yapmanıza yardımcı olur.
+              Kesintilerinizi kaydetmek, odaklanma alışkanlıklarınızı analiz
+              etmenize ve gelecekte daha iyi planlama yapmanıza yardımcı olur.
             </Text>
           </View>
         </View>

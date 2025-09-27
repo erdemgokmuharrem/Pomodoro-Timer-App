@@ -1,6 +1,11 @@
 import { Audio } from 'expo-av';
 
-export type SoundType = 'pomodoro_complete' | 'break_complete' | 'tick' | 'start' | 'pause';
+export type SoundType =
+  | 'pomodoro_complete'
+  | 'break_complete'
+  | 'tick'
+  | 'start'
+  | 'pause';
 
 class SoundService {
   private sounds: Map<SoundType, Audio.Sound> = new Map();
@@ -36,7 +41,7 @@ class SoundService {
       // Load different sound types
       // Note: In a real app, you would have actual sound files
       // For now, we'll use system sounds or create simple beeps
-      
+
       const soundConfigs = [
         { type: 'pomodoro_complete' as SoundType, uri: 'default' },
         { type: 'break_complete' as SoundType, uri: 'default' },
@@ -86,9 +91,9 @@ class SoundService {
         { uri: 'default' },
         { shouldPlay: true, isLooping: false }
       );
-      
+
       // Clean up after playing
-      sound.setOnPlaybackStatusUpdate((status) => {
+      sound.setOnPlaybackStatusUpdate(status => {
         if (status.isLoaded && status.didJustFinish) {
           sound.unloadAsync();
         }
@@ -141,7 +146,7 @@ class SoundService {
   // Create custom sound patterns for different events
   async playPomodoroCompletePattern(): Promise<void> {
     if (!this.isEnabled) return;
-    
+
     // Play a sequence of sounds for pomodoro completion
     await this.playSound('pomodoro_complete');
     setTimeout(() => this.playSound('pomodoro_complete'), 500);
@@ -150,7 +155,7 @@ class SoundService {
 
   async playBreakCompletePattern(): Promise<void> {
     if (!this.isEnabled) return;
-    
+
     // Play a different pattern for break completion
     await this.playSound('break_complete');
     setTimeout(() => this.playSound('break_complete'), 300);

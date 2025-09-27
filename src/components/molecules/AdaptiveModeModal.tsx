@@ -10,7 +10,11 @@ import {
   ActivityIndicator,
   FlatList,
 } from 'react-native';
-import { useAdaptiveMode, UserBehaviorPattern, AdaptiveRecommendation } from '../../hooks/useAdaptiveMode';
+import {
+  useAdaptiveMode,
+  UserBehaviorPattern,
+  AdaptiveRecommendation,
+} from '../../hooks/useAdaptiveMode';
 
 interface AdaptiveModeModalProps {
   visible: boolean;
@@ -35,9 +39,13 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
     getAdaptiveInsights,
   } = useAdaptiveMode();
 
-  const [activeTab, setActiveTab] = useState<'patterns' | 'recommendations' | 'settings' | 'insights'>('patterns');
-  const [selectedPattern, setSelectedPattern] = useState<UserBehaviorPattern | null>(null);
-  const [selectedRecommendation, setSelectedRecommendation] = useState<AdaptiveRecommendation | null>(null);
+  const [activeTab, setActiveTab] = useState<
+    'patterns' | 'recommendations' | 'settings' | 'insights'
+  >('patterns');
+  const [selectedPattern, setSelectedPattern] =
+    useState<UserBehaviorPattern | null>(null);
+  const [selectedRecommendation, setSelectedRecommendation] =
+    useState<AdaptiveRecommendation | null>(null);
 
   useEffect(() => {
     if (visible) {
@@ -81,11 +89,11 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
         <View style={styles.confidenceContainer}>
           <Text style={styles.confidenceLabel}>Güven:</Text>
           <View style={styles.confidenceBar}>
-            <View 
+            <View
               style={[
-                styles.confidenceFill, 
-                { width: `${item.confidence * 100}%` }
-              ]} 
+                styles.confidenceFill,
+                { width: `${item.confidence * 100}%` },
+              ]}
             />
           </View>
           <Text style={styles.confidenceText}>
@@ -93,7 +101,7 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
           </Text>
         </View>
       </View>
-      
+
       <View style={styles.patternDetails}>
         <Text style={styles.patternFrequency}>
           Sıklık: {item.frequency} kez
@@ -159,7 +167,11 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
     </TouchableOpacity>
   );
 
-  const renderRecommendationItem = ({ item }: { item: AdaptiveRecommendation }) => (
+  const renderRecommendationItem = ({
+    item,
+  }: {
+    item: AdaptiveRecommendation;
+  }) => (
     <TouchableOpacity
       style={styles.recommendationItem}
       onPress={() => setSelectedRecommendation(item)}
@@ -173,30 +185,33 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
           {item.type === 'workflow_suggestion' && '🔄 İş Akışı Önerisi'}
         </Text>
         <View style={styles.priorityContainer}>
-          <Text style={[
-            styles.priorityText,
-            item.implementation.priority === 'high' && styles.priorityHigh,
-            item.implementation.priority === 'medium' && styles.priorityMedium,
-            item.implementation.priority === 'low' && styles.priorityLow,
-          ]}>
+          <Text
+            style={[
+              styles.priorityText,
+              item.implementation.priority === 'high' && styles.priorityHigh,
+              item.implementation.priority === 'medium' &&
+                styles.priorityMedium,
+              item.implementation.priority === 'low' && styles.priorityLow,
+            ]}
+          >
             {item.implementation.priority === 'high' && '🔴 Yüksek'}
             {item.implementation.priority === 'medium' && '🟡 Orta'}
             {item.implementation.priority === 'low' && '🟢 Düşük'}
           </Text>
         </View>
       </View>
-      
+
       <Text style={styles.recommendationTitle}>{item.title}</Text>
       <Text style={styles.recommendationDescription}>{item.description}</Text>
-      
+
       <View style={styles.confidenceContainer}>
         <Text style={styles.confidenceLabel}>Güven:</Text>
         <View style={styles.confidenceBar}>
-          <View 
+          <View
             style={[
-              styles.confidenceFill, 
-              { width: `${item.confidence * 100}%` }
-            ]} 
+              styles.confidenceFill,
+              { width: `${item.confidence * 100}%` },
+            ]}
           />
         </View>
         <Text style={styles.confidenceText}>
@@ -215,21 +230,24 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
     </TouchableOpacity>
   );
 
-  const renderSettingsItem = ({ item }: { item: { key: string; label: string; value: any; type: string } }) => (
+  const renderSettingsItem = ({
+    item,
+  }: {
+    item: { key: string; label: string; value: any; type: string };
+  }) => (
     <View style={styles.settingItem}>
       <Text style={styles.settingLabel}>{item.label}</Text>
       {item.type === 'boolean' ? (
         <TouchableOpacity
-          style={[
-            styles.toggleButton,
-            item.value && styles.toggleButtonActive
-          ]}
+          style={[styles.toggleButton, item.value && styles.toggleButtonActive]}
           onPress={() => handleUpdateSettings({ [item.key]: !item.value })}
         >
-          <Text style={[
-            styles.toggleButtonText,
-            item.value && styles.toggleButtonTextActive
-          ]}>
+          <Text
+            style={[
+              styles.toggleButtonText,
+              item.value && styles.toggleButtonTextActive,
+            ]}
+          >
             {item.value ? 'Açık' : 'Kapalı'}
           </Text>
         </TouchableOpacity>
@@ -237,7 +255,9 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
         <View style={styles.numberContainer}>
           <TouchableOpacity
             style={styles.numberButton}
-            onPress={() => handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })}
+            onPress={() =>
+              handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })
+            }
           >
             <Text style={styles.numberButtonText}>-</Text>
           </TouchableOpacity>
@@ -307,7 +327,11 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
   ];
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Adaptif Mod</Text>
@@ -322,15 +346,28 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
             style={[styles.tab, activeTab === 'patterns' && styles.activeTab]}
             onPress={() => setActiveTab('patterns')}
           >
-            <Text style={[styles.tabText, activeTab === 'patterns' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'patterns' && styles.activeTabText,
+              ]}
+            >
               Davranışlar
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'recommendations' && styles.activeTab]}
+            style={[
+              styles.tab,
+              activeTab === 'recommendations' && styles.activeTab,
+            ]}
             onPress={() => setActiveTab('recommendations')}
           >
-            <Text style={[styles.tabText, activeTab === 'recommendations' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'recommendations' && styles.activeTabText,
+              ]}
+            >
               Öneriler
             </Text>
           </TouchableOpacity>
@@ -338,7 +375,12 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
             style={[styles.tab, activeTab === 'settings' && styles.activeTab]}
             onPress={() => setActiveTab('settings')}
           >
-            <Text style={[styles.tabText, activeTab === 'settings' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'settings' && styles.activeTabText,
+              ]}
+            >
               Ayarlar
             </Text>
           </TouchableOpacity>
@@ -346,7 +388,12 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
             style={[styles.tab, activeTab === 'insights' && styles.activeTab]}
             onPress={() => setActiveTab('insights')}
           >
-            <Text style={[styles.tabText, activeTab === 'insights' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'insights' && styles.activeTabText,
+              ]}
+            >
               İstatistikler
             </Text>
           </TouchableOpacity>
@@ -365,13 +412,15 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
               {loading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="large" color="#9C27B0" />
-                  <Text style={styles.loadingText}>Davranış kalıpları analiz ediliyor...</Text>
+                  <Text style={styles.loadingText}>
+                    Davranış kalıpları analiz ediliyor...
+                  </Text>
                 </View>
               ) : (
                 <FlatList
                   data={behaviorPatterns}
                   renderItem={renderPatternItem}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={item => item.id}
                   style={styles.list}
                 />
               )}
@@ -384,13 +433,15 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
               {loading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="large" color="#9C27B0" />
-                  <Text style={styles.loadingText}>Öneriler oluşturuluyor...</Text>
+                  <Text style={styles.loadingText}>
+                    Öneriler oluşturuluyor...
+                  </Text>
                 </View>
               ) : (
                 <FlatList
                   data={recommendations}
                   renderItem={renderRecommendationItem}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={item => item.id}
                   style={styles.list}
                 />
               )}
@@ -403,7 +454,7 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
               <FlatList
                 data={settingsData}
                 renderItem={renderSettingsItem}
-                keyExtractor={(item) => item.key}
+                keyExtractor={item => item.key}
                 style={styles.list}
               />
             </View>
@@ -415,11 +466,15 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
               {insights ? (
                 <View style={styles.insightsContainer}>
                   <View style={styles.insightCard}>
-                    <Text style={styles.insightNumber}>{insights.totalPatterns}</Text>
+                    <Text style={styles.insightNumber}>
+                      {insights.totalPatterns}
+                    </Text>
                     <Text style={styles.insightLabel}>Toplam Kalıp</Text>
                   </View>
                   <View style={styles.insightCard}>
-                    <Text style={styles.insightNumber}>{insights.highConfidencePatterns}</Text>
+                    <Text style={styles.insightNumber}>
+                      {insights.highConfidencePatterns}
+                    </Text>
                     <Text style={styles.insightLabel}>Yüksek Güven</Text>
                   </View>
                   <View style={styles.insightCard}>
@@ -429,11 +484,15 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
                     <Text style={styles.insightLabel}>Ortalama Güven</Text>
                   </View>
                   <View style={styles.insightCard}>
-                    <Text style={styles.insightNumber}>{insights.totalRecommendations}</Text>
+                    <Text style={styles.insightNumber}>
+                      {insights.totalRecommendations}
+                    </Text>
                     <Text style={styles.insightLabel}>Toplam Öneri</Text>
                   </View>
                   <View style={styles.insightCard}>
-                    <Text style={styles.insightNumber}>{insights.highPriorityRecommendations}</Text>
+                    <Text style={styles.insightNumber}>
+                      {insights.highPriorityRecommendations}
+                    </Text>
                     <Text style={styles.insightLabel}>Yüksek Öncelik</Text>
                   </View>
                   <View style={styles.insightCard}>

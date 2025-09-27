@@ -71,29 +71,53 @@ interface PairFocusStore {
   error: string | null;
 
   // Actions
-  createSession: (sessionData: Omit<PairFocusSession, 'id' | 'hostId' | 'partner' | 'chat' | 'statistics'>) => Promise<string>;
-  joinSession: (sessionId: string, partnerData: Omit<PairFocusPartner, 'id' | 'joinTime' | 'focusStreak' | 'totalSessions'>) => Promise<boolean>;
+  createSession: (
+    sessionData: Omit<
+      PairFocusSession,
+      'id' | 'hostId' | 'partner' | 'chat' | 'statistics'
+    >
+  ) => Promise<string>;
+  joinSession: (
+    sessionId: string,
+    partnerData: Omit<
+      PairFocusPartner,
+      'id' | 'joinTime' | 'focusStreak' | 'totalSessions'
+    >
+  ) => Promise<boolean>;
   leaveSession: (sessionId: string) => Promise<boolean>;
   startSession: (sessionId: string) => Promise<boolean>;
   endSession: (sessionId: string) => Promise<boolean>;
-  updateSessionSettings: (sessionId: string, settings: Partial<PairFocusSession['settings']>) => Promise<boolean>;
-  
+  updateSessionSettings: (
+    sessionId: string,
+    settings: Partial<PairFocusSession['settings']>
+  ) => Promise<boolean>;
+
   // Chat & Encouragements
-  sendMessage: (sessionId: string, message: string, type?: 'text' | 'emoji' | 'encouragement') => Promise<boolean>;
-  sendEncouragement: (sessionId: string, encouragement: string) => Promise<boolean>;
-  
+  sendMessage: (
+    sessionId: string,
+    message: string,
+    type?: 'text' | 'emoji' | 'encouragement'
+  ) => Promise<boolean>;
+  sendEncouragement: (
+    sessionId: string,
+    encouragement: string
+  ) => Promise<boolean>;
+
   // Statistics
-  updateStatistics: (sessionId: string, focusCompleted: boolean) => Promise<void>;
-  
+  updateStatistics: (
+    sessionId: string,
+    focusCompleted: boolean
+  ) => Promise<void>;
+
   // Settings
   updateSettings: (newSettings: Partial<PairFocusSettings>) => Promise<void>;
-  
+
   // Partner management
   addPreferredPartner: (partnerId: string) => Promise<void>;
   removePreferredPartner: (partnerId: string) => Promise<void>;
   blockUser: (userId: string) => Promise<void>;
   unblockUser: (userId: string) => Promise<void>;
-  
+
   // Data management
   loadSessions: () => Promise<void>;
   saveSessions: () => Promise<void>;
@@ -118,10 +142,10 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   error: null,
 
   // Create session
-  createSession: async (sessionData) => {
+  createSession: async sessionData => {
     try {
       set({ loading: true, error: null });
-      
+
       const newSession: PairFocusSession = {
         ...sessionData,
         id: `pair-session-${Date.now()}`,
@@ -139,10 +163,10 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
 
       const { mySessions } = get();
       const updatedMySessions = [...mySessions, newSession];
-      
+
       set({ mySessions: updatedMySessions });
       await get().saveSessions();
-      
+
       return newSession.id;
     } catch (error) {
       set({ error: 'Failed to create pair focus session' });
@@ -157,11 +181,12 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   joinSession: async (sessionId, partnerData) => {
     try {
       set({ loading: true, error: null });
-      
+
       const { availableSessions, mySessions } = get();
-      const session = availableSessions.find(s => s.id === sessionId) || 
-                     mySessions.find(s => s.id === sessionId);
-      
+      const session =
+        availableSessions.find(s => s.id === sessionId) ||
+        mySessions.find(s => s.id === sessionId);
+
       if (!session) {
         set({ error: 'Session not found' });
         return false;
@@ -187,12 +212,12 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
 
       // Update in appropriate list
       if (availableSessions.find(s => s.id === sessionId)) {
-        const updatedAvailableSessions = availableSessions.map(s => 
+        const updatedAvailableSessions = availableSessions.map(s =>
           s.id === sessionId ? updatedSession : s
         );
         set({ availableSessions: updatedAvailableSessions });
       } else {
-        const updatedMySessions = mySessions.map(s => 
+        const updatedMySessions = mySessions.map(s =>
           s.id === sessionId ? updatedSession : s
         );
         set({ mySessions: updatedMySessions });
@@ -210,15 +235,13 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   },
 
   // Leave session
-  leaveSession: async (sessionId) => {
+  leaveSession: async sessionId => {
     try {
       const { availableSessions, mySessions } = get();
-      
-      const updateSession = (sessions: PairFocusSession[]) => 
-        sessions.map(session => 
-          session.id === sessionId 
-            ? { ...session, partner: null }
-            : session
+
+      const updateSession = (sessions: PairFocusSession[]) =>
+        sessions.map(session =>
+          session.id === sessionId ? { ...session, partner: null } : session
         );
 
       set({
@@ -236,18 +259,18 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   },
 
   // Start session
-  startSession: async (sessionId) => {
+  startSession: async sessionId => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const updateSession = (sessions: PairFocusSession[]) =>
         sessions.map(session =>
           session.id === sessionId
-            ? { 
-                ...session, 
-                isActive: true, 
+            ? {
+                ...session,
+                isActive: true,
                 startTime: new Date(),
-                currentPhase: 'pomodoro' as const
+                currentPhase: 'pomodoro' as const,
               }
             : session
         );
@@ -255,7 +278,10 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
       set({
         availableSessions: updateSession(availableSessions),
         mySessions: updateSession(mySessions),
-        currentSession: updateSession([...availableSessions, ...mySessions].find(s => s.id === sessionId) || null),
+        currentSession: updateSession(
+          [...availableSessions, ...mySessions].find(s => s.id === sessionId) ||
+            null
+        ),
       });
 
       await get().saveSessions();
@@ -268,18 +294,18 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   },
 
   // End session
-  endSession: async (sessionId) => {
+  endSession: async sessionId => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const updateSession = (sessions: PairFocusSession[]) =>
         sessions.map(session =>
           session.id === sessionId
-            ? { 
-                ...session, 
-                isActive: false, 
+            ? {
+                ...session,
+                isActive: false,
                 endTime: new Date(),
-                currentPhase: 'completed' as const
+                currentPhase: 'completed' as const,
               }
             : session
         );
@@ -303,7 +329,7 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   updateSessionSettings: async (sessionId, newSettings) => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const updateSession = (sessions: PairFocusSession[]) =>
         sessions.map(session =>
           session.id === sessionId
@@ -329,7 +355,7 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   sendMessage: async (sessionId, message, type = 'text') => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const newMessage = {
         id: `msg-${Date.now()}`,
         userId: 'current-user-id',
@@ -342,11 +368,11 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
       const updateSession = (sessions: PairFocusSession[]) =>
         sessions.map(session =>
           session.id === sessionId
-            ? { 
-                ...session, 
-                chat: { 
-                  messages: [...session.chat.messages, newMessage] 
-                } 
+            ? {
+                ...session,
+                chat: {
+                  messages: [...session.chat.messages, newMessage],
+                },
               }
             : session
         );
@@ -369,7 +395,7 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   sendEncouragement: async (sessionId, encouragement) => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const encouragementMessage = {
         id: `enc-${Date.now()}`,
         userId: 'current-user-id',
@@ -382,13 +408,17 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
       const updateSession = (sessions: PairFocusSession[]) =>
         sessions.map(session => {
           if (session.id === sessionId) {
-            const updatedMessages = [...session.chat.messages, encouragementMessage];
+            const updatedMessages = [
+              ...session.chat.messages,
+              encouragementMessage,
+            ];
             return {
               ...session,
               chat: { messages: updatedMessages },
               statistics: {
                 ...session.statistics,
-                mutualEncouragements: session.statistics.mutualEncouragements + 1,
+                mutualEncouragements:
+                  session.statistics.mutualEncouragements + 1,
               },
             };
           }
@@ -413,14 +443,18 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   updateStatistics: async (sessionId, focusCompleted) => {
     try {
       const { availableSessions, mySessions } = get();
-      
+
       const updateSession = (sessions: PairFocusSession[]) =>
         sessions.map(session => {
           if (session.id === sessionId) {
             const totalSessions = session.statistics.totalSessions + 1;
-            const totalFocusTime = session.statistics.totalFocusTime + (focusCompleted ? session.settings.pomodoroDuration : 0);
-            const averageFocusTime = totalSessions > 0 ? totalFocusTime / totalSessions : 0;
-            const completionRate = totalSessions > 0 ? (focusCompleted ? 100 : 0) : 0;
+            const totalFocusTime =
+              session.statistics.totalFocusTime +
+              (focusCompleted ? session.settings.pomodoroDuration : 0);
+            const averageFocusTime =
+              totalSessions > 0 ? totalFocusTime / totalSessions : 0;
+            const completionRate =
+              totalSessions > 0 ? (focusCompleted ? 100 : 0) : 0;
 
             return {
               ...session,
@@ -448,12 +482,15 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   },
 
   // Update settings
-  updateSettings: async (newSettings) => {
+  updateSettings: async newSettings => {
     try {
       const { settings } = get();
       const updatedSettings = { ...settings, ...newSettings };
       set({ settings: updatedSettings });
-      await AsyncStorage.setItem('pairFocusSettings', JSON.stringify(updatedSettings));
+      await AsyncStorage.setItem(
+        'pairFocusSettings',
+        JSON.stringify(updatedSettings)
+      );
     } catch (error) {
       set({ error: 'Failed to update pair focus settings' });
       console.error('Update pair focus settings error:', error);
@@ -461,7 +498,7 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   },
 
   // Add preferred partner
-  addPreferredPartner: async (partnerId) => {
+  addPreferredPartner: async partnerId => {
     try {
       const { settings } = get();
       const updatedSettings = {
@@ -469,7 +506,10 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
         preferredPartners: [...settings.preferredPartners, partnerId],
       };
       set({ settings: updatedSettings });
-      await AsyncStorage.setItem('pairFocusSettings', JSON.stringify(updatedSettings));
+      await AsyncStorage.setItem(
+        'pairFocusSettings',
+        JSON.stringify(updatedSettings)
+      );
     } catch (error) {
       set({ error: 'Failed to add preferred partner' });
       console.error('Add preferred partner error:', error);
@@ -477,15 +517,20 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   },
 
   // Remove preferred partner
-  removePreferredPartner: async (partnerId) => {
+  removePreferredPartner: async partnerId => {
     try {
       const { settings } = get();
       const updatedSettings = {
         ...settings,
-        preferredPartners: settings.preferredPartners.filter(id => id !== partnerId),
+        preferredPartners: settings.preferredPartners.filter(
+          id => id !== partnerId
+        ),
       };
       set({ settings: updatedSettings });
-      await AsyncStorage.setItem('pairFocusSettings', JSON.stringify(updatedSettings));
+      await AsyncStorage.setItem(
+        'pairFocusSettings',
+        JSON.stringify(updatedSettings)
+      );
     } catch (error) {
       set({ error: 'Failed to remove preferred partner' });
       console.error('Remove preferred partner error:', error);
@@ -493,7 +538,7 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   },
 
   // Block user
-  blockUser: async (userId) => {
+  blockUser: async userId => {
     try {
       const { settings } = get();
       const updatedSettings = {
@@ -501,7 +546,10 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
         blockedUsers: [...settings.blockedUsers, userId],
       };
       set({ settings: updatedSettings });
-      await AsyncStorage.setItem('pairFocusSettings', JSON.stringify(updatedSettings));
+      await AsyncStorage.setItem(
+        'pairFocusSettings',
+        JSON.stringify(updatedSettings)
+      );
     } catch (error) {
       set({ error: 'Failed to block user' });
       console.error('Block user error:', error);
@@ -509,7 +557,7 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   },
 
   // Unblock user
-  unblockUser: async (userId) => {
+  unblockUser: async userId => {
     try {
       const { settings } = get();
       const updatedSettings = {
@@ -517,7 +565,10 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
         blockedUsers: settings.blockedUsers.filter(id => id !== userId),
       };
       set({ settings: updatedSettings });
-      await AsyncStorage.setItem('pairFocusSettings', JSON.stringify(updatedSettings));
+      await AsyncStorage.setItem(
+        'pairFocusSettings',
+        JSON.stringify(updatedSettings)
+      );
     } catch (error) {
       set({ error: 'Failed to unblock user' });
       console.error('Unblock user error:', error);
@@ -528,7 +579,7 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   loadSessions: async () => {
     try {
       set({ loading: true });
-      
+
       const [savedSessions, savedSettings] = await Promise.all([
         AsyncStorage.getItem('pairFocusSessions'),
         AsyncStorage.getItem('pairFocusSettings'),
@@ -536,9 +587,13 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
 
       if (savedSessions) {
         const sessions = JSON.parse(savedSessions);
-        set({ 
-          availableSessions: sessions.filter((s: PairFocusSession) => !s.isActive && !s.partner),
-          mySessions: sessions.filter((s: PairFocusSession) => s.hostId === 'current-user-id'),
+        set({
+          availableSessions: sessions.filter(
+            (s: PairFocusSession) => !s.isActive && !s.partner
+          ),
+          mySessions: sessions.filter(
+            (s: PairFocusSession) => s.hostId === 'current-user-id'
+          ),
         });
       }
 
@@ -558,7 +613,10 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
     try {
       const { availableSessions, mySessions } = get();
       const allSessions = [...availableSessions, ...mySessions];
-      await AsyncStorage.setItem('pairFocusSessions', JSON.stringify(allSessions));
+      await AsyncStorage.setItem(
+        'pairFocusSessions',
+        JSON.stringify(allSessions)
+      );
     } catch (error) {
       set({ error: 'Failed to save pair focus sessions' });
       console.error('Save pair focus sessions error:', error);
@@ -568,7 +626,10 @@ export const usePairFocusStore = create<PairFocusStore>((set, get) => ({
   // Clear data
   clearData: async () => {
     try {
-      await AsyncStorage.multiRemove(['pairFocusSessions', 'pairFocusSettings']);
+      await AsyncStorage.multiRemove([
+        'pairFocusSessions',
+        'pairFocusSettings',
+      ]);
       set({
         currentSession: null,
         availableSessions: [],

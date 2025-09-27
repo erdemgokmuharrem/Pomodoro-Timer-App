@@ -6,7 +6,15 @@ import NetInfo from '@react-native-community/netinfo';
 
 export interface SyncAction {
   id: string;
-  type: 'CREATE_SESSION' | 'UPDATE_SESSION' | 'CREATE_TASK' | 'UPDATE_TASK' | 'DELETE_TASK' | 'UPDATE_SETTINGS' | 'UNLOCK_BADGE' | 'UNLOCK_ACHIEVEMENT';
+  type:
+    | 'CREATE_SESSION'
+    | 'UPDATE_SESSION'
+    | 'CREATE_TASK'
+    | 'UPDATE_TASK'
+    | 'DELETE_TASK'
+    | 'UPDATE_SETTINGS'
+    | 'UNLOCK_BADGE'
+    | 'UNLOCK_ACHIEVEMENT';
   payload: any;
   timestamp: Date;
   retryCount: number;
@@ -22,7 +30,9 @@ interface OfflineState {
 
 interface OfflineActions {
   setOnlineStatus: (isOnline: boolean) => void;
-  addToSyncQueue: (action: Omit<SyncAction, 'id' | 'timestamp' | 'retryCount'>) => void;
+  addToSyncQueue: (
+    action: Omit<SyncAction, 'id' | 'timestamp' | 'retryCount'>
+  ) => void;
   removeFromSyncQueue: (actionId: string) => void;
   processSyncQueue: () => Promise<void>;
   retryFailedAction: (actionId: string) => void;
@@ -38,16 +48,16 @@ export const useOfflineStore = create<OfflineState & OfflineActions>()(
       lastSyncTime: null,
       isSyncing: false,
 
-      setOnlineStatus: (isOnline) => {
+      setOnlineStatus: isOnline => {
         set({ isOnline });
-        
+
         // Automatically process sync queue when coming back online
         if (isOnline && get().syncQueue.length > 0) {
           get().processSyncQueue();
         }
       },
 
-      addToSyncQueue: (action) => {
+      addToSyncQueue: action => {
         const newAction: SyncAction = {
           ...action,
           id: `sync_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -56,7 +66,7 @@ export const useOfflineStore = create<OfflineState & OfflineActions>()(
           maxRetries: action.maxRetries || 3,
         };
 
-        set((state) => ({
+        set(state => ({
           syncQueue: [...state.syncQueue, newAction],
         }));
 
@@ -66,15 +76,19 @@ export const useOfflineStore = create<OfflineState & OfflineActions>()(
         }
       },
 
-      removeFromSyncQueue: (actionId) => {
-        set((state) => ({
+      removeFromSyncQueue: actionId => {
+        set(state => ({
           syncQueue: state.syncQueue.filter(action => action.id !== actionId),
         }));
       },
 
       processSyncQueue: async () => {
         const state = get();
-        if (state.isSyncing || !state.isOnline || state.syncQueue.length === 0) {
+        if (
+          state.isSyncing ||
+          !state.isOnline ||
+          state.syncQueue.length === 0
+        ) {
           return;
         }
 
@@ -88,19 +102,21 @@ export const useOfflineStore = create<OfflineState & OfflineActions>()(
               get().removeFromSyncQueue(action.id);
             } catch (error) {
               console.error(`Failed to sync action ${action.id}:`, error);
-              
+
               // Retry logic
               if (action.retryCount < action.maxRetries) {
-                set((state) => ({
-                  syncQueue: state.syncQueue.map(a => 
-                    a.id === action.id 
+                set(state => ({
+                  syncQueue: state.syncQueue.map(a =>
+                    a.id === action.id
                       ? { ...a, retryCount: a.retryCount + 1 }
                       : a
                   ),
                 }));
               } else {
                 // Max retries reached, you might want to handle this differently
-                console.error(`Max retries reached for action ${action.id}, removing from queue`);
+                console.error(
+                  `Max retries reached for action ${action.id}, removing from queue`
+                );
                 get().removeFromSyncQueue(action.id);
               }
             }
@@ -112,12 +128,10 @@ export const useOfflineStore = create<OfflineState & OfflineActions>()(
         }
       },
 
-      retryFailedAction: (actionId) => {
-        set((state) => ({
-          syncQueue: state.syncQueue.map(action => 
-            action.id === actionId 
-              ? { ...action, retryCount: 0 }
-              : action
+      retryFailedAction: actionId => {
+        set(state => ({
+          syncQueue: state.syncQueue.map(action =>
+            action.id === actionId ? { ...action, retryCount: 0 } : action
           ),
         }));
 
@@ -141,7 +155,7 @@ export const useOfflineStore = create<OfflineState & OfflineActions>()(
     {
       name: 'offline-storage',
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({
+      partialize: state => ({
         syncQueue: state.syncQueue,
         lastSyncTime: state.lastSyncTime,
       }),
@@ -153,14 +167,14 @@ export const useOfflineStore = create<OfflineState & OfflineActions>()(
 const syncActionToServer = async (action: SyncAction): Promise<void> => {
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   console.log(`Syncing action ${action.type} with payload:`, action.payload);
-  
+
   // Simulate occasional failures for testing
   if (Math.random() < 0.1) {
     throw new Error('Network error');
   }
-  
+
   // In real implementation, you would:
   // - Make HTTP request to your backend
   // - Handle different action types appropriately
@@ -169,8 +183,8 @@ const syncActionToServer = async (action: SyncAction): Promise<void> => {
 
 // Network monitoring hook
 export const useNetworkStatus = () => {
-  const setOnlineStatus = useOfflineStore((state) => state.setOnlineStatus);
-  
+  const setOnlineStatus = useOfflineStore(state => state.setOnlineStatus);
+
   React.useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setOnlineStatus(state.isConnected ?? false);
@@ -179,5 +193,5 @@ export const useNetworkStatus = () => {
     return unsubscribe;
   }, [setOnlineStatus]);
 
-  return useOfflineStore((state) => state.isOnline);
+  return useOfflineStore(state => state.isOnline);
 };

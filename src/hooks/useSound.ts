@@ -1,65 +1,77 @@
 import { useRef, useEffect } from 'react';
-import { AudioPlayer, useAudioPlayer } from 'expo-audio';
+import { useAudioPlayer } from 'expo-audio';
 import { useSoundStore } from '../store/useSoundStore';
 
 export const useSound = () => {
-  const soundRef = useRef<AudioPlayer | null>(null);
+  const player = useAudioPlayer();
   const { settings } = useSoundStore();
 
   const playSound = async (soundFile: string) => {
-    try { 
-      if (soundRef.current) {
-        soundRef.current.remove();
-      }
-
-      const player = new AudioPlayer(soundFile);
-      soundRef.current = player;
-      
+    try {
+      await player.loadAsync(soundFile);
       await player.play();
-      
-      player.addListener('playbackStatusUpdate', (status) => {
-        if (status.didJustFinish) {
-          player.remove();
-        }
-      });
     } catch (error) {
       console.error('Error playing sound:', error);
     }
   };
 
-  const playPomodoroComplete = async () => {
-    if (settings.soundEffectsEnabled) {
-      console.log('🔔 Pomodoro complete sound');
+  const playPomodoroComplete = () => {
+    if (settings.enabled) {
+      playSound('pomodoro-complete.mp3');
     }
   };
 
-  const playBreakComplete = async () => {
-    console.log('🔔 Break complete sound');
+  const playBreakComplete = () => {
+    if (settings.enabled) {
+      playSound('break-complete.mp3');
+    }
   };
 
-  const playTick = async () => {
-    console.log('⏰ Tick sound');
+  const playTick = () => {
+    if (settings.enabled) {
+      playSound('tick.mp3');
+    }
   };
 
-  const playStart = async () => {
-    console.log('▶️ Start sound');
+  const playStart = () => {
+    if (settings.enabled) {
+      playSound('start.mp3');
+    }
   };
 
-  const playPause = async () => {
-    console.log('⏸️ Pause sound');
+  const playPause = () => {
+    if (settings.enabled) {
+      playSound('pause.mp3');
+    }
   };
 
-  const playStop = async () => {
-    console.log('⏹️ Stop sound');
+  const playBackgroundSound = async (soundFile: string) => {
+    try {
+      if (settings.backgroundSoundEnabled) {
+        await player.loadAsync(soundFile);
+        await player.setIsLoopingAsync(true);
+        await player.play();
+      }
+    } catch (error) {
+      console.error('Error playing background sound:', error);
+    }
+  };
+
+  const stopBackgroundSound = async () => {
+    try {
+      await player.pauseAsync();
+    } catch (error) {
+      console.error('Error stopping background sound:', error);
+    }
   };
 
   return {
-    playSound,
     playPomodoroComplete,
     playBreakComplete,
     playTick,
     playStart,
     playPause,
-    playStop,
+    playBackgroundSound,
+    stopBackgroundSound,
   };
 };

@@ -53,7 +53,7 @@ export const useGamification = () => {
     checkAchievements,
     unlockBadge,
     unlockAchievement,
-    
+
     // Getters
     getLevelProgress,
     getAvailableBadges,

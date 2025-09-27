@@ -5,8 +5,9 @@ import Card from '../atoms/Card';
 
 const BadgeShowcase: React.FC = () => {
   const { badges, recentBadges } = useGamificationStore();
-  
-  const displayBadges = recentBadges.length > 0 ? recentBadges : badges.slice(0, 3);
+
+  const displayBadges =
+    recentBadges.length > 0 ? recentBadges : badges.slice(0, 3);
 
   if (displayBadges.length === 0) {
     return null;
@@ -15,13 +16,13 @@ const BadgeShowcase: React.FC = () => {
   return (
     <Card style={styles.container}>
       <Text style={styles.title}>Son Rozetler</Text>
-      
-      <ScrollView 
-        horizontal 
+
+      <ScrollView
+        horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.badgesContainer}
       >
-        {displayBadges.map((badge) => (
+        {displayBadges.map(badge => (
           <View key={badge.id} style={styles.badge}>
             <View style={[styles.badgeIcon, { backgroundColor: badge.color }]}>
               <Text style={styles.badgeEmoji}>{badge.emoji}</Text>

@@ -18,7 +18,10 @@ export const getDaysBetween = (date1: Date, date2: Date): number => {
 /**
  * Pomodoro progress yüzdesini hesaplar
  */
-export const calculateProgress = (timeLeft: number, totalDuration: number): number => {
+export const calculateProgress = (
+  timeLeft: number,
+  totalDuration: number
+): number => {
   if (totalDuration <= 0) return 0;
   const elapsed = totalDuration - timeLeft;
   return Math.round((elapsed / totalDuration) * 100);

@@ -36,9 +36,15 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
     getCoachInsights,
   } = useAICoach();
 
-  const [activeTab, setActiveTab] = useState<'messages' | 'insights' | 'settings'>('messages');
-  const [selectedMessage, setSelectedMessage] = useState<CoachMessage | null>(null);
-  const [selectedInsight, setSelectedInsight] = useState<CoachInsight | null>(null);
+  const [activeTab, setActiveTab] = useState<
+    'messages' | 'insights' | 'settings'
+  >('messages');
+  const [selectedMessage, setSelectedMessage] = useState<CoachMessage | null>(
+    null
+  );
+  const [selectedInsight, setSelectedInsight] = useState<CoachInsight | null>(
+    null
+  );
 
   useEffect(() => {
     if (visible) {
@@ -104,12 +110,12 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
           {!item.read && <View style={styles.unreadDot} />}
         </View>
       </View>
-      
+
       <Text style={styles.messageTitle}>{item.title}</Text>
       <Text style={styles.messageContent} numberOfLines={3}>
         {item.content}
       </Text>
-      
+
       <View style={styles.messageFooter}>
         <Text style={styles.messageCategory}>
           {item.category === 'productivity' && '📈 Verimlilik'}
@@ -119,9 +125,9 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
           {item.category === 'time_management' && '⏰ Zaman'}
         </Text>
         <Text style={styles.messageTime}>
-          {item.createdAt.toLocaleTimeString('tr-TR', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
+          {item.createdAt.toLocaleTimeString('tr-TR', {
+            hour: '2-digit',
+            minute: '2-digit',
           })}
         </Text>
       </View>
@@ -173,10 +179,10 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
           </Text>
         </View>
       </View>
-      
+
       <Text style={styles.insightTitle}>{item.title}</Text>
       <Text style={styles.insightDescription}>{item.description}</Text>
-      
+
       <View style={styles.insightFooter}>
         <Text style={styles.insightDate}>
           {item.createdAt.toLocaleDateString('tr-TR')}
@@ -188,39 +194,50 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
     </TouchableOpacity>
   );
 
-  const renderSettingsItem = ({ item }: { item: { key: string; label: string; value: any; type: string; options?: any[] } }) => (
+  const renderSettingsItem = ({
+    item,
+  }: {
+    item: {
+      key: string;
+      label: string;
+      value: any;
+      type: string;
+      options?: any[];
+    };
+  }) => (
     <View style={styles.settingItem}>
       <Text style={styles.settingLabel}>{item.label}</Text>
       {item.type === 'boolean' ? (
         <TouchableOpacity
-          style={[
-            styles.toggleButton,
-            item.value && styles.toggleButtonActive
-          ]}
+          style={[styles.toggleButton, item.value && styles.toggleButtonActive]}
           onPress={() => handleUpdateSettings({ [item.key]: !item.value })}
         >
-          <Text style={[
-            styles.toggleButtonText,
-            item.value && styles.toggleButtonTextActive
-          ]}>
+          <Text
+            style={[
+              styles.toggleButtonText,
+              item.value && styles.toggleButtonTextActive,
+            ]}
+          >
             {item.value ? 'Açık' : 'Kapalı'}
           </Text>
         </TouchableOpacity>
       ) : item.type === 'select' ? (
         <View style={styles.selectContainer}>
-          {item.options?.map((option) => (
+          {item.options?.map(option => (
             <TouchableOpacity
               key={option.value}
               style={[
                 styles.selectOption,
-                item.value === option.value && styles.selectOptionActive
+                item.value === option.value && styles.selectOptionActive,
               ]}
               onPress={() => handleUpdateSettings({ [item.key]: option.value })}
             >
-              <Text style={[
-                styles.selectOptionText,
-                item.value === option.value && styles.selectOptionTextActive
-              ]}>
+              <Text
+                style={[
+                  styles.selectOptionText,
+                  item.value === option.value && styles.selectOptionTextActive,
+                ]}
+              >
                 {option.label}
               </Text>
             </TouchableOpacity>
@@ -230,7 +247,9 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
         <View style={styles.numberContainer}>
           <TouchableOpacity
             style={styles.numberButton}
-            onPress={() => handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })}
+            onPress={() =>
+              handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })
+            }
           >
             <Text style={styles.numberButtonText}>-</Text>
           </TouchableOpacity>
@@ -312,7 +331,11 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
   ];
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>AI Koç</Text>
@@ -327,7 +350,12 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
             style={[styles.tab, activeTab === 'messages' && styles.activeTab]}
             onPress={() => setActiveTab('messages')}
           >
-            <Text style={[styles.tabText, activeTab === 'messages' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'messages' && styles.activeTabText,
+              ]}
+            >
               Mesajlar ({coachInsights.unreadMessages})
             </Text>
           </TouchableOpacity>
@@ -335,7 +363,12 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
             style={[styles.tab, activeTab === 'insights' && styles.activeTab]}
             onPress={() => setActiveTab('insights')}
           >
-            <Text style={[styles.tabText, activeTab === 'insights' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'insights' && styles.activeTabText,
+              ]}
+            >
               İçgörüler
             </Text>
           </TouchableOpacity>
@@ -343,7 +376,12 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
             style={[styles.tab, activeTab === 'settings' && styles.activeTab]}
             onPress={() => setActiveTab('settings')}
           >
-            <Text style={[styles.tabText, activeTab === 'settings' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'settings' && styles.activeTabText,
+              ]}
+            >
               Ayarlar
             </Text>
           </TouchableOpacity>
@@ -360,15 +398,21 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
             <View>
               <View style={styles.statsContainer}>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{coachInsights.totalMessages}</Text>
+                  <Text style={styles.statNumber}>
+                    {coachInsights.totalMessages}
+                  </Text>
                   <Text style={styles.statLabel}>Toplam Mesaj</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{coachInsights.unreadMessages}</Text>
+                  <Text style={styles.statNumber}>
+                    {coachInsights.unreadMessages}
+                  </Text>
                   <Text style={styles.statLabel}>Okunmamış</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{coachInsights.todayMessages}</Text>
+                  <Text style={styles.statNumber}>
+                    {coachInsights.todayMessages}
+                  </Text>
                   <Text style={styles.statLabel}>Bugün</Text>
                 </View>
               </View>
@@ -383,7 +427,7 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
                 <FlatList
                   data={messages}
                   renderItem={renderMessageItem}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={item => item.id}
                   style={styles.list}
                 />
               )}
@@ -396,13 +440,15 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
               {loading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="large" color="#FF5722" />
-                  <Text style={styles.loadingText}>İçgörüler analiz ediliyor...</Text>
+                  <Text style={styles.loadingText}>
+                    İçgörüler analiz ediliyor...
+                  </Text>
                 </View>
               ) : (
                 <FlatList
                   data={insights}
                   renderItem={renderInsightItem}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={item => item.id}
                   style={styles.list}
                 />
               )}
@@ -415,7 +461,7 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
               <FlatList
                 data={settingsData}
                 renderItem={renderSettingsItem}
-                keyExtractor={(item) => item.key}
+                keyExtractor={item => item.key}
                 style={styles.list}
               />
             </View>

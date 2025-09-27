@@ -4,7 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStatistics } from '../hooks/useStatistics';
 
 const StatisticsScreen = () => {
-  const { dailyStats, weeklyStats, taskStats, focusScore, productivityTrend } = useStatistics();
+  const { dailyStats, weeklyStats, taskStats, focusScore, productivityTrend } =
+    useStatistics();
 
   const getBarHeight = (value: number, max: number) => {
     return max > 0 ? (value / max) * 100 : 0;
@@ -26,19 +27,27 @@ const StatisticsScreen = () => {
           <Text style={styles.cardTitle}>Haftalık Özet</Text>
           <View style={styles.overviewGrid}>
             <View style={styles.overviewItem}>
-              <Text style={styles.overviewValue}>{weeklyStats.totalPomodoros}</Text>
+              <Text style={styles.overviewValue}>
+                {weeklyStats.totalPomodoros}
+              </Text>
               <Text style={styles.overviewLabel}>Toplam Pomodoro</Text>
             </View>
             <View style={styles.overviewItem}>
-              <Text style={styles.overviewValue}>{weeklyStats.totalHours.toFixed(1)}h</Text>
+              <Text style={styles.overviewValue}>
+                {weeklyStats.totalHours.toFixed(1)}h
+              </Text>
               <Text style={styles.overviewLabel}>Toplam Süre</Text>
             </View>
             <View style={styles.overviewItem}>
-              <Text style={styles.overviewValue}>{weeklyStats.averagePerDay.toFixed(1)}</Text>
+              <Text style={styles.overviewValue}>
+                {weeklyStats.averagePerDay.toFixed(1)}
+              </Text>
               <Text style={styles.overviewLabel}>Günlük Ortalama</Text>
             </View>
             <View style={styles.overviewItem}>
-              <Text style={styles.overviewValue}>{weeklyStats.currentStreak}</Text>
+              <Text style={styles.overviewValue}>
+                {weeklyStats.currentStreak}
+              </Text>
               <Text style={styles.overviewLabel}>Mevcut Seri</Text>
             </View>
           </View>
@@ -50,14 +59,15 @@ const StatisticsScreen = () => {
           <View style={styles.chartContainer}>
             {dailyStats.map((stat, index) => (
               <View key={index} style={styles.chartBar}>
-                <View 
+                <View
                   style={[
-                    styles.bar, 
-                    { 
+                    styles.bar,
+                    {
                       height: getBarHeight(stat.pomodoros, maxPomodoros),
-                      backgroundColor: stat.pomodoros > 0 ? '#3B82F6' : '#E2E8F0'
-                    }
-                  ]} 
+                      backgroundColor:
+                        stat.pomodoros > 0 ? '#3B82F6' : '#E2E8F0',
+                    },
+                  ]}
                 />
                 <Text style={styles.barLabel}>{stat.date}</Text>
                 <Text style={styles.barValue}>{stat.pomodoros}</Text>
@@ -75,18 +85,22 @@ const StatisticsScreen = () => {
                 <View key={index} style={styles.taskItem}>
                   <View style={styles.taskInfo}>
                     <Text style={styles.taskName}>{task.taskName}</Text>
-                    <Text style={styles.taskPomodoros}>{task.pomodoros} pomodoro</Text>
+                    <Text style={styles.taskPomodoros}>
+                      {task.pomodoros} pomodoro
+                    </Text>
                   </View>
                   <View style={styles.taskProgress}>
                     <View style={styles.taskProgressBar}>
-                      <View 
+                      <View
                         style={[
-                          styles.taskProgressFill, 
-                          { width: `${task.percentage}%` }
-                        ]} 
+                          styles.taskProgressFill,
+                          { width: `${task.percentage}%` },
+                        ]}
                       />
                     </View>
-                    <Text style={styles.taskPercentage}>{task.percentage.toFixed(1)}%</Text>
+                    <Text style={styles.taskPercentage}>
+                      {task.percentage.toFixed(1)}%
+                    </Text>
                   </View>
                 </View>
               ))
@@ -105,10 +119,13 @@ const StatisticsScreen = () => {
               <Text style={styles.focusScoreLabel}>/ 100</Text>
             </View>
             <Text style={styles.focusDescription}>
-              {focusScore >= 80 ? 'Mükemmel odaklanma! 🎯' :
-               focusScore >= 60 ? 'İyi performans! 👍' :
-               focusScore >= 40 ? 'Gelişim alanı var 📈' :
-               'Daha fazla odaklanmaya ihtiyaç var 💪'}
+              {focusScore >= 80
+                ? 'Mükemmel odaklanma! 🎯'
+                : focusScore >= 60
+                  ? 'İyi performans! 👍'
+                  : focusScore >= 40
+                    ? 'Gelişim alanı var 📈'
+                    : 'Daha fazla odaklanmaya ihtiyaç var 💪'}
             </Text>
           </View>
         </View>
@@ -118,11 +135,15 @@ const StatisticsScreen = () => {
           <Text style={styles.cardTitle}>Seri Bilgileri</Text>
           <View style={styles.streakInfo}>
             <View style={styles.streakItem}>
-              <Text style={styles.streakValue}>{weeklyStats.currentStreak}</Text>
+              <Text style={styles.streakValue}>
+                {weeklyStats.currentStreak}
+              </Text>
               <Text style={styles.streakLabel}>Mevcut Seri</Text>
             </View>
             <View style={styles.streakItem}>
-              <Text style={styles.streakValue}>{weeklyStats.longestStreak}</Text>
+              <Text style={styles.streakValue}>
+                {weeklyStats.longestStreak}
+              </Text>
               <Text style={styles.streakLabel}>En Uzun Seri</Text>
             </View>
           </View>

@@ -39,8 +39,10 @@ export interface SmartDurationSettings {
 export const useSmartDuration = () => {
   const { tasks, completedPomodoros } = usePomodoroStore();
   const { userLevel, totalXP } = useGamificationStore();
-  
-  const [recommendations, setRecommendations] = useState<DurationRecommendation[]>([]);
+
+  const [recommendations, setRecommendations] = useState<
+    DurationRecommendation[]
+  >([]);
   const [settings, setSettings] = useState<SmartDurationSettings>({
     enableAI: true,
     learningEnabled: true,
@@ -87,16 +89,22 @@ export const useSmartDuration = () => {
   const analyzeUserEnergy = (): number => {
     const now = new Date();
     const hour = now.getHours();
-    
+
     // Time-based energy patterns
     let energy = 0.5;
-    
-    if (hour >= 9 && hour <= 11) energy = 0.9; // Morning peak
-    else if (hour >= 14 && hour <= 16) energy = 0.8; // Afternoon peak
-    else if (hour >= 20 && hour <= 22) energy = 0.7; // Evening
-    else if (hour >= 6 && hour <= 8) energy = 0.6; // Early morning
-    else if (hour >= 12 && hour <= 13) energy = 0.4; // Lunch time
-    else if (hour >= 18 && hour <= 19) energy = 0.5; // Evening transition
+
+    if (hour >= 9 && hour <= 11)
+      energy = 0.9; // Morning peak
+    else if (hour >= 14 && hour <= 16)
+      energy = 0.8; // Afternoon peak
+    else if (hour >= 20 && hour <= 22)
+      energy = 0.7; // Evening
+    else if (hour >= 6 && hour <= 8)
+      energy = 0.6; // Early morning
+    else if (hour >= 12 && hour <= 13)
+      energy = 0.4; // Lunch time
+    else if (hour >= 18 && hour <= 19)
+      energy = 0.5; // Evening transition
     else energy = 0.3; // Low energy times
 
     // Adjust based on user level (more experienced = better energy management)
@@ -109,18 +117,24 @@ export const useSmartDuration = () => {
   // Analyze historical performance
   const analyzeHistoricalPerformance = (taskId: string): number => {
     const taskSessions = completedPomodoros.filter(p => p.taskId === taskId);
-    
+
     if (taskSessions.length === 0) return 0.5; // Default for new tasks
 
-    const completionRate = taskSessions.filter(p => p.completed).length / taskSessions.length;
-    const averageDuration = taskSessions.reduce((sum, p) => sum + p.duration, 0) / taskSessions.length;
-    
+    const completionRate =
+      taskSessions.filter(p => p.completed).length / taskSessions.length;
+    const averageDuration =
+      taskSessions.reduce((sum, p) => sum + p.duration, 0) /
+      taskSessions.length;
+
     // Performance score based on completion rate and duration consistency
     let performance = completionRate;
-    
+
     // Bonus for consistent durations
-    const durationVariance = taskSessions.reduce((sum, p) => 
-      sum + Math.pow(p.duration - averageDuration, 2), 0) / taskSessions.length;
+    const durationVariance =
+      taskSessions.reduce(
+        (sum, p) => sum + Math.pow(p.duration - averageDuration, 2),
+        0
+      ) / taskSessions.length;
     const consistencyBonus = Math.max(0, 0.2 - durationVariance / 100);
     performance += consistencyBonus;
 
@@ -131,7 +145,7 @@ export const useSmartDuration = () => {
   const getTimeOfDayFactor = (): number => {
     const now = new Date();
     const hour = now.getHours();
-    
+
     // Focus-friendly hours get higher scores
     if (hour >= 9 && hour <= 11) return 1.0;
     if (hour >= 14 && hour <= 16) return 0.9;
@@ -146,7 +160,7 @@ export const useSmartDuration = () => {
   const getDayOfWeekFactor = (): number => {
     const now = new Date();
     const dayOfWeek = now.getDay();
-    
+
     // Weekdays are generally better for focus
     if (dayOfWeek >= 1 && dayOfWeek <= 5) return 1.0;
     if (dayOfWeek === 0) return 0.7; // Sunday
@@ -160,33 +174,38 @@ export const useSmartDuration = () => {
     const historicalPerformance = analyzeHistoricalPerformance(task.id);
     const timeOfDay = getTimeOfDayFactor();
     const dayOfWeek = getDayOfWeekFactor();
-    
+
     // Get recent session count for this task
-    const recentSessions = completedPomodoros.filter(p => 
-      p.taskId === task.id && 
-      (Date.now() - new Date(p.completedAt).getTime()) < 24 * 60 * 60 * 1000
+    const recentSessions = completedPomodoros.filter(
+      p =>
+        p.taskId === task.id &&
+        Date.now() - new Date(p.completedAt).getTime() < 24 * 60 * 60 * 1000
     ).length;
-    
+
     // Get current focus streak
-    const focusStreak = completedPomodoros.filter(p => 
-      p.completed && 
-      (Date.now() - new Date(p.completedAt).getTime()) < 2 * 60 * 60 * 1000
+    const focusStreak = completedPomodoros.filter(
+      p =>
+        p.completed &&
+        Date.now() - new Date(p.completedAt).getTime() < 2 * 60 * 60 * 1000
     ).length;
 
     // Base duration calculation
     let baseDuration = 25; // Default pomodoro duration
-    
+
     // Adjust based on complexity
-    if (complexity > 0.8) baseDuration = 45; // Complex tasks need longer sessions
+    if (complexity > 0.8)
+      baseDuration = 45; // Complex tasks need longer sessions
     else if (complexity > 0.6) baseDuration = 35;
     else if (complexity < 0.3) baseDuration = 15; // Simple tasks can be shorter
 
     // Adjust based on energy
-    if (energy > 0.8) baseDuration *= 1.2; // High energy = longer sessions
+    if (energy > 0.8)
+      baseDuration *= 1.2; // High energy = longer sessions
     else if (energy < 0.4) baseDuration *= 0.7; // Low energy = shorter sessions
 
     // Adjust based on historical performance
-    if (historicalPerformance > 0.8) baseDuration *= 1.1; // Good performance = slightly longer
+    if (historicalPerformance > 0.8)
+      baseDuration *= 1.1; // Good performance = slightly longer
     else if (historicalPerformance < 0.4) baseDuration *= 0.8; // Poor performance = shorter
 
     // Adjust based on time factors
@@ -202,19 +221,30 @@ export const useSmartDuration = () => {
     const finalDuration = Math.max(10, Math.min(60, recommendedDuration)); // Clamp between 10-60 minutes
 
     // Calculate confidence
-    const confidence = Math.min(1, 
-      (complexity * 0.3) + 
-      (energy * 0.2) + 
-      (historicalPerformance * 0.3) + 
-      (timeOfDay * 0.1) + 
-      (dayOfWeek * 0.1)
+    const confidence = Math.min(
+      1,
+      complexity * 0.3 +
+        energy * 0.2 +
+        historicalPerformance * 0.3 +
+        timeOfDay * 0.1 +
+        dayOfWeek * 0.1
     );
 
     // Generate reasoning
-    const reasoning = generateReasoning(complexity, energy, historicalPerformance, timeOfDay, dayOfWeek);
+    const reasoning = generateReasoning(
+      complexity,
+      energy,
+      historicalPerformance,
+      timeOfDay,
+      dayOfWeek
+    );
 
     // Generate alternatives
-    const alternatives = generateAlternatives(finalDuration, complexity, energy);
+    const alternatives = generateAlternatives(
+      finalDuration,
+      complexity,
+      energy
+    );
 
     return {
       id: `rec-${Date.now()}`,
@@ -239,53 +269,57 @@ export const useSmartDuration = () => {
 
   // Generate reasoning text
   const generateReasoning = (
-    complexity: number, 
-    energy: number, 
-    historicalPerformance: number, 
-    timeOfDay: number, 
+    complexity: number,
+    energy: number,
+    historicalPerformance: number,
+    timeOfDay: number,
     dayOfWeek: number
   ): string => {
     const reasons = [];
-    
+
     if (complexity > 0.7) {
       reasons.push('Bu görev karmaşık görünüyor');
     } else if (complexity < 0.3) {
       reasons.push('Bu görev basit görünüyor');
     }
-    
+
     if (energy > 0.8) {
       reasons.push('Şu anda yüksek enerji seviyesindesiniz');
     } else if (energy < 0.4) {
       reasons.push('Enerji seviyeniz düşük, kısa seanslar daha iyi olabilir');
     }
-    
+
     if (historicalPerformance > 0.8) {
       reasons.push('Bu görevde geçmişte başarılı oldunuz');
     } else if (historicalPerformance < 0.4) {
       reasons.push('Bu görevde geçmişte zorlandınız');
     }
-    
+
     if (timeOfDay > 0.8) {
       reasons.push('Odaklanma için ideal saatler');
     } else if (timeOfDay < 0.5) {
       reasons.push('Odaklanma için zor saatler');
     }
-    
+
     if (dayOfWeek < 0.8) {
       reasons.push('Hafta sonu, daha esnek süreler önerilir');
     }
-    
+
     return reasons.length > 0 ? reasons.join(', ') : 'Standart süre önerisi';
   };
 
   // Generate alternative durations
-  const generateAlternatives = (baseDuration: number, complexity: number, energy: number): Array<{
+  const generateAlternatives = (
+    baseDuration: number,
+    complexity: number,
+    energy: number
+  ): Array<{
     duration: number;
     confidence: number;
     reasoning: string;
   }> => {
     const alternatives = [];
-    
+
     // Shorter alternative
     const shorterDuration = Math.max(10, baseDuration - 10);
     if (shorterDuration !== baseDuration) {
@@ -295,7 +329,7 @@ export const useSmartDuration = () => {
         reasoning: 'Daha kısa süre, daha az yorucu',
       });
     }
-    
+
     // Longer alternative
     const longerDuration = Math.min(60, baseDuration + 15);
     if (longerDuration !== baseDuration && energy > 0.6) {
@@ -305,7 +339,7 @@ export const useSmartDuration = () => {
         reasoning: 'Yüksek enerji ile daha uzun seans',
       });
     }
-    
+
     return alternatives;
   };
 
@@ -314,10 +348,12 @@ export const useSmartDuration = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const newRecommendations = tasks.map(task => calculateRecommendedDuration(task));
+
+      const newRecommendations = tasks.map(task =>
+        calculateRecommendedDuration(task)
+      );
       setRecommendations(newRecommendations);
-      
+
       return newRecommendations;
     } catch (err) {
       setError('Failed to get duration recommendations');
@@ -329,11 +365,13 @@ export const useSmartDuration = () => {
   };
 
   // Get recommendation for specific task
-  const getTaskRecommendation = async (taskId: string): Promise<DurationRecommendation | null> => {
+  const getTaskRecommendation = async (
+    taskId: string
+  ): Promise<DurationRecommendation | null> => {
     try {
       const task = tasks.find(t => t.id === taskId);
       if (!task) return null;
-      
+
       const recommendation = calculateRecommendedDuration(task);
       return recommendation;
     } catch (err) {
@@ -343,13 +381,19 @@ export const useSmartDuration = () => {
   };
 
   // Apply recommendation
-  const applyRecommendation = async (recommendationId: string): Promise<boolean> => {
+  const applyRecommendation = async (
+    recommendationId: string
+  ): Promise<boolean> => {
     try {
-      const recommendation = recommendations.find(r => r.id === recommendationId);
+      const recommendation = recommendations.find(
+        r => r.id === recommendationId
+      );
       if (!recommendation) return false;
-      
+
       // In a real app, this would update the task's estimated duration
-      console.log(`Applied recommendation: ${recommendation.recommendedDuration} minutes`);
+      console.log(
+        `Applied recommendation: ${recommendation.recommendedDuration} minutes`
+      );
       return true;
     } catch (err) {
       console.error('Apply recommendation error:', err);
@@ -363,12 +407,18 @@ export const useSmartDuration = () => {
   };
 
   // Learn from session results
-  const learnFromSession = async (taskId: string, actualDuration: number, completed: boolean) => {
+  const learnFromSession = async (
+    taskId: string,
+    actualDuration: number,
+    completed: boolean
+  ) => {
     try {
       if (!settings.learningEnabled) return;
-      
+
       // In a real app, this would update the AI model with feedback
-      console.log(`Learning from session: Task ${taskId}, Duration ${actualDuration}, Completed ${completed}`);
+      console.log(
+        `Learning from session: Task ${taskId}, Duration ${actualDuration}, Completed ${completed}`
+      );
     } catch (err) {
       console.error('Learn from session error:', err);
     }
@@ -377,15 +427,20 @@ export const useSmartDuration = () => {
   // Get insights
   const getInsights = () => {
     if (recommendations.length === 0) return null;
-    
-    const avgConfidence = recommendations.reduce((sum, r) => sum + r.confidence, 0) / recommendations.length;
-    const avgDuration = recommendations.reduce((sum, r) => sum + r.recommendedDuration, 0) / recommendations.length;
-    
+
+    const avgConfidence =
+      recommendations.reduce((sum, r) => sum + r.confidence, 0) /
+      recommendations.length;
+    const avgDuration =
+      recommendations.reduce((sum, r) => sum + r.recommendedDuration, 0) /
+      recommendations.length;
+
     return {
       averageConfidence: avgConfidence,
       averageRecommendedDuration: avgDuration,
       totalRecommendations: recommendations.length,
-      highConfidenceCount: recommendations.filter(r => r.confidence > 0.8).length,
+      highConfidenceCount: recommendations.filter(r => r.confidence > 0.8)
+        .length,
     };
   };
 

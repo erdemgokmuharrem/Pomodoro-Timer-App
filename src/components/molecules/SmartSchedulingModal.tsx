@@ -10,7 +10,12 @@ import {
   ActivityIndicator,
   FlatList,
 } from 'react-native';
-import { useSmartScheduling, SmartSchedule, ScheduleOptimization, ScheduleConflict } from '../../hooks/useSmartScheduling';
+import {
+  useSmartScheduling,
+  SmartSchedule,
+  ScheduleOptimization,
+  ScheduleConflict,
+} from '../../hooks/useSmartScheduling';
 
 interface SmartSchedulingModalProps {
   visible: boolean;
@@ -37,10 +42,15 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
     getSchedulingInsights,
   } = useSmartScheduling();
 
-  const [activeTab, setActiveTab] = useState<'schedules' | 'optimizations' | 'conflicts' | 'settings'>('schedules');
-  const [selectedSchedule, setSelectedSchedule] = useState<SmartSchedule | null>(null);
-  const [selectedOptimization, setSelectedOptimization] = useState<ScheduleOptimization | null>(null);
-  const [selectedConflict, setSelectedConflict] = useState<ScheduleConflict | null>(null);
+  const [activeTab, setActiveTab] = useState<
+    'schedules' | 'optimizations' | 'conflicts' | 'settings'
+  >('schedules');
+  const [selectedSchedule, setSelectedSchedule] =
+    useState<SmartSchedule | null>(null);
+  const [selectedOptimization, setSelectedOptimization] =
+    useState<ScheduleOptimization | null>(null);
+  const [selectedConflict, setSelectedConflict] =
+    useState<ScheduleConflict | null>(null);
 
   useEffect(() => {
     if (visible) {
@@ -48,7 +58,12 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
       generateOptimizations();
       detectScheduleConflicts();
     }
-  }, [visible, autoScheduleTasks, generateOptimizations, detectScheduleConflicts]);
+  }, [
+    visible,
+    autoScheduleTasks,
+    generateOptimizations,
+    detectScheduleConflicts,
+  ]);
 
   const handleApplyOptimization = async (optimizationId: string) => {
     try {
@@ -63,7 +78,10 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
     }
   };
 
-  const handleResolveConflict = async (conflictId: string, resolution: string) => {
+  const handleResolveConflict = async (
+    conflictId: string,
+    resolution: string
+  ) => {
     try {
       const success = await resolveConflict(conflictId, resolution);
       if (success) {
@@ -127,28 +145,28 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
           </Text>
         </View>
       </View>
-      
+
       <Text style={styles.scheduleTitle}>{item.title}</Text>
       <Text style={styles.scheduleDescription} numberOfLines={2}>
         {item.description}
       </Text>
-      
+
       <View style={styles.scheduleDetails}>
         <View style={styles.scheduleTime}>
           <Text style={styles.scheduleTimeLabel}>Başlangıç:</Text>
           <Text style={styles.scheduleTimeValue}>
-            {item.optimalStartTime.toLocaleTimeString('tr-TR', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
+            {item.optimalStartTime.toLocaleTimeString('tr-TR', {
+              hour: '2-digit',
+              minute: '2-digit',
             })}
           </Text>
         </View>
         <View style={styles.scheduleTime}>
           <Text style={styles.scheduleTimeLabel}>Bitiş:</Text>
           <Text style={styles.scheduleTimeValue}>
-            {item.optimalEndTime.toLocaleTimeString('tr-TR', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
+            {item.optimalEndTime.toLocaleTimeString('tr-TR', {
+              hour: '2-digit',
+              minute: '2-digit',
             })}
           </Text>
         </View>
@@ -162,10 +180,20 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
       <View style={styles.scheduleFooter}>
         <View style={styles.scheduleLevels}>
           <Text style={styles.scheduleLevel}>
-            ⚡ {item.energyLevel === 'high' ? 'Yüksek' : item.energyLevel === 'medium' ? 'Orta' : 'Düşük'}
+            ⚡{' '}
+            {item.energyLevel === 'high'
+              ? 'Yüksek'
+              : item.energyLevel === 'medium'
+                ? 'Orta'
+                : 'Düşük'}
           </Text>
           <Text style={styles.scheduleLevel}>
-            🎯 {item.focusLevel === 'high' ? 'Yüksek' : item.focusLevel === 'medium' ? 'Orta' : 'Düşük'}
+            🎯{' '}
+            {item.focusLevel === 'high'
+              ? 'Yüksek'
+              : item.focusLevel === 'medium'
+                ? 'Orta'
+                : 'Düşük'}
           </Text>
         </View>
         <Text style={styles.scheduleConfidence}>
@@ -206,7 +234,8 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
             {item.type === 'time_optimization' && 'Zaman Optimizasyonu'}
             {item.type === 'energy_optimization' && 'Enerji Optimizasyonu'}
             {item.type === 'context_optimization' && 'Bağlam Optimizasyonu'}
-            {item.type === 'dependency_optimization' && 'Bağımlılık Optimizasyonu'}
+            {item.type === 'dependency_optimization' &&
+              'Bağımlılık Optimizasyonu'}
           </Text>
           <Text style={styles.optimizationImpact}>
             {item.impact === 'high' && '🔴 Yüksek Etki'}
@@ -215,12 +244,14 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
           </Text>
         </View>
       </View>
-      
+
       <Text style={styles.optimizationTitle}>{item.title}</Text>
       <Text style={styles.optimizationDescription}>{item.description}</Text>
-      
+
       <View style={styles.optimizationImprovements}>
-        <Text style={styles.optimizationImprovementsLabel}>İyileştirmeler:</Text>
+        <Text style={styles.optimizationImprovementsLabel}>
+          İyileştirmeler:
+        </Text>
         {item.improvements.map((improvement, index) => (
           <Text key={index} style={styles.optimizationImprovement}>
             • {improvement}
@@ -277,10 +308,10 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
           </Text>
         </View>
       </View>
-      
+
       <Text style={styles.conflictTitle}>{item.title}</Text>
       <Text style={styles.conflictDescription}>{item.description}</Text>
-      
+
       <View style={styles.conflictSuggestions}>
         <Text style={styles.conflictSuggestionsLabel}>Öneriler:</Text>
         {item.suggestions.map((suggestion, index) => (
@@ -289,36 +320,45 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
             style={styles.conflictSuggestion}
             onPress={() => handleResolveConflict(item.id, suggestion)}
           >
-            <Text style={styles.conflictSuggestionText}>
-              {suggestion}
-            </Text>
+            <Text style={styles.conflictSuggestionText}>{suggestion}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
       <View style={styles.conflictFooter}>
         <Text style={styles.conflictAutoResolvable}>
-          {item.autoResolvable ? '🤖 Otomatik Çözülebilir' : '👤 Manuel Çözüm Gerekli'}
+          {item.autoResolvable
+            ? '🤖 Otomatik Çözülebilir'
+            : '👤 Manuel Çözüm Gerekli'}
         </Text>
       </View>
     </TouchableOpacity>
   );
 
-  const renderSettingsItem = ({ item }: { item: { key: string; label: string; value: any; type: string; options?: any[] } }) => (
+  const renderSettingsItem = ({
+    item,
+  }: {
+    item: {
+      key: string;
+      label: string;
+      value: any;
+      type: string;
+      options?: any[];
+    };
+  }) => (
     <View style={styles.settingItem}>
       <Text style={styles.settingLabel}>{item.label}</Text>
       {item.type === 'boolean' ? (
         <TouchableOpacity
-          style={[
-            styles.toggleButton,
-            item.value && styles.toggleButtonActive
-          ]}
+          style={[styles.toggleButton, item.value && styles.toggleButtonActive]}
           onPress={() => handleUpdateSettings({ [item.key]: !item.value })}
         >
-          <Text style={[
-            styles.toggleButtonText,
-            item.value && styles.toggleButtonTextActive
-          ]}>
+          <Text
+            style={[
+              styles.toggleButtonText,
+              item.value && styles.toggleButtonTextActive,
+            ]}
+          >
             {item.value ? 'Açık' : 'Kapalı'}
           </Text>
         </TouchableOpacity>
@@ -326,7 +366,9 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
         <View style={styles.numberContainer}>
           <TouchableOpacity
             style={styles.numberButton}
-            onPress={() => handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })}
+            onPress={() =>
+              handleUpdateSettings({ [item.key]: Math.max(0, item.value - 1) })
+            }
           >
             <Text style={styles.numberButtonText}>-</Text>
           </TouchableOpacity>
@@ -408,7 +450,11 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
   ];
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Akıllı Zamanlama</Text>
@@ -423,15 +469,28 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
             style={[styles.tab, activeTab === 'schedules' && styles.activeTab]}
             onPress={() => setActiveTab('schedules')}
           >
-            <Text style={[styles.tabText, activeTab === 'schedules' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'schedules' && styles.activeTabText,
+              ]}
+            >
               Zamanlamalar
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'optimizations' && styles.activeTab]}
+            style={[
+              styles.tab,
+              activeTab === 'optimizations' && styles.activeTab,
+            ]}
             onPress={() => setActiveTab('optimizations')}
           >
-            <Text style={[styles.tabText, activeTab === 'optimizations' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'optimizations' && styles.activeTabText,
+              ]}
+            >
               Optimizasyonlar
             </Text>
           </TouchableOpacity>
@@ -439,7 +498,12 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
             style={[styles.tab, activeTab === 'conflicts' && styles.activeTab]}
             onPress={() => setActiveTab('conflicts')}
           >
-            <Text style={[styles.tabText, activeTab === 'conflicts' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'conflicts' && styles.activeTabText,
+              ]}
+            >
               Çakışmalar ({conflicts.length})
             </Text>
           </TouchableOpacity>
@@ -447,7 +511,12 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
             style={[styles.tab, activeTab === 'settings' && styles.activeTab]}
             onPress={() => setActiveTab('settings')}
           >
-            <Text style={[styles.tabText, activeTab === 'settings' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === 'settings' && styles.activeTabText,
+              ]}
+            >
               Ayarlar
             </Text>
           </TouchableOpacity>
@@ -464,11 +533,15 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
             <View>
               <View style={styles.statsContainer}>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{insights.totalSchedules}</Text>
+                  <Text style={styles.statNumber}>
+                    {insights.totalSchedules}
+                  </Text>
                   <Text style={styles.statLabel}>Toplam Zamanlama</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{insights.completedSchedules}</Text>
+                  <Text style={styles.statNumber}>
+                    {insights.completedSchedules}
+                  </Text>
                   <Text style={styles.statLabel}>Tamamlanan</Text>
                 </View>
                 <View style={styles.statItem}>
@@ -489,13 +562,15 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
               {loading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="large" color="#4CAF50" />
-                  <Text style={styles.loadingText}>Zamanlamalar oluşturuluyor...</Text>
+                  <Text style={styles.loadingText}>
+                    Zamanlamalar oluşturuluyor...
+                  </Text>
                 </View>
               ) : (
                 <FlatList
                   data={schedules}
                   renderItem={renderScheduleItem}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={item => item.id}
                   style={styles.list}
                 />
               )}
@@ -504,17 +579,21 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
 
           {activeTab === 'optimizations' && (
             <View>
-              <Text style={styles.sectionTitle}>Zamanlama Optimizasyonları</Text>
+              <Text style={styles.sectionTitle}>
+                Zamanlama Optimizasyonları
+              </Text>
               {loading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="large" color="#4CAF50" />
-                  <Text style={styles.loadingText}>Optimizasyonlar analiz ediliyor...</Text>
+                  <Text style={styles.loadingText}>
+                    Optimizasyonlar analiz ediliyor...
+                  </Text>
                 </View>
               ) : (
                 <FlatList
                   data={optimizations}
                   renderItem={renderOptimizationItem}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={item => item.id}
                   style={styles.list}
                 />
               )}
@@ -527,13 +606,15 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
               {loading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="large" color="#4CAF50" />
-                  <Text style={styles.loadingText}>Çakışmalar taranıyor...</Text>
+                  <Text style={styles.loadingText}>
+                    Çakışmalar taranıyor...
+                  </Text>
                 </View>
               ) : (
                 <FlatList
                   data={conflicts}
                   renderItem={renderConflictItem}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={item => item.id}
                   style={styles.list}
                 />
               )}
@@ -546,7 +627,7 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
               <FlatList
                 data={settingsData}
                 renderItem={renderSettingsItem}
-                keyExtractor={(item) => item.key}
+                keyExtractor={item => item.key}
                 style={styles.list}
               />
             </View>
