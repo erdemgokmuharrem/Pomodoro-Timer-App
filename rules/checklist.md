@@ -21,22 +21,22 @@
 
 ## ✅ Görev Yönetimi
 - [x] Alt görevler & checkpoint sistemi
-- [ ] Takvim senkronizasyonu (Google/Outlook)
+- [x] Takvim senkronizasyonu (Google/Outlook)
 - [x] Görev şablonları
 - [x] Görev öncelik matrisi
 - [x] Auto-split (uzun görevleri bölme)
 - [x] Kanban / Liste / Gantt görünümleri
 
 ## 👥 Sosyal & Ekip
-- [ ] Grup pomodoroları
-- [ ] Pair focus
-- [ ] Focus rooms
-- [ ] Haftalık lig sistemi
-- [ ] Sosyal challenge'lar
+- [x] Grup pomodoroları
+- [x] Pair focus
+- [x] Focus rooms
+- [x] Haftalık lig sistemi
+- [x] Sosyal challenge'lar
 
 ## 🛡️ Dikkat Engelleme
 - [x] Bildirim bloklama (OS DND)
-- [ ] Uygulama/URL bloklama
+- [x] Uygulama/URL bloklama
 - [x] White noise & odak sesleri
 - [x] Mola rehberi (stretching, nefes)
 
@@ -49,7 +49,7 @@
 - [x] Export: CSV/Excel/JSON
 
 ## 🤖 AI & Akıllı Özellikler
-- [ ] Akıllı süre önerisi
+- [x] Akıllı süre önerisi
 - [ ] Görev zamanlama önerisi
 - [ ] Adaptif mod (alışkanlıklara göre UI)
 - [ ] AI koç
@@ -64,7 +64,7 @@
 
 ### Katman 2 (Haftalık/Aylık)
 - [ ] Quests
-- [ ] Lig sistemi
+- [x] Lig sistemi
 - [ ] Sanatsal koleksiyonlar
 
 ### Katman 3 (Uzun Vadeli & Premium)
@@ -100,7 +100,7 @@
 - [ ] CI/CD: GitHub Actions
 
 ## 🔌 Entegrasyonlar
-- [ ] Google/Outlook Calendar API
+- [x] Google/Outlook Calendar API
 - [ ] Zapier / Make API
 - [ ] Slack / Email import
 - [ ] Browser extension (React web companion app ile)

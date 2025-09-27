@@ -18,6 +18,10 @@ import { FocusRoomsModal } from '../components/molecules/FocusRoomsModal';
 import { LeagueSystemModal } from '../components/molecules/LeagueSystemModal';
 import { SocialChallengesModal } from '../components/molecules/SocialChallengesModal';
 import { SmartDurationModal } from '../components/molecules/SmartDurationModal';
+import { TaskSchedulingModal } from '../components/molecules/TaskSchedulingModal';
+import { AdaptiveModeModal } from '../components/molecules/AdaptiveModeModal';
+import { AICoachModal } from '../components/molecules/AICoachModal';
+import { SmartSchedulingModal } from '../components/molecules/SmartSchedulingModal';
 
 type DashboardScreenNavigationProp = StackNavigationProp<RootStackParamList, 'MainTabs'>;
 
@@ -34,6 +38,10 @@ const DashboardScreen = () => {
   const [leagueSystemModalVisible, setLeagueSystemModalVisible] = useState(false);
   const [socialChallengesModalVisible, setSocialChallengesModalVisible] = useState(false);
   const [smartDurationModalVisible, setSmartDurationModalVisible] = useState(false);
+  const [taskSchedulingModalVisible, setTaskSchedulingModalVisible] = useState(false);
+  const [adaptiveModeModalVisible, setAdaptiveModeModalVisible] = useState(false);
+  const [aiCoachModalVisible, setAICoachModalVisible] = useState(false);
+  const [smartSchedulingModalVisible, setSmartSchedulingModalVisible] = useState(false);
 
   const handleStartPomodoro = () => {
     navigation.navigate('Timer');
@@ -229,6 +237,70 @@ const DashboardScreen = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Task Scheduling */}
+        <View style={styles.taskSchedulingCard}>
+          <Text style={styles.cardTitle}>Görev Zamanlama</Text>
+          <Text style={styles.taskSchedulingSubtitle}>
+            AI destekli optimal zamanlama önerileri
+          </Text>
+          <TouchableOpacity 
+            style={styles.taskSchedulingButton}
+            onPress={() => setTaskSchedulingModalVisible(true)}
+          >
+            <Text style={styles.taskSchedulingButtonText}>
+              📅 Görev Zamanlama
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Adaptive Mode */}
+        <View style={styles.adaptiveModeCard}>
+          <Text style={styles.cardTitle}>Adaptif Mod</Text>
+          <Text style={styles.adaptiveModeSubtitle}>
+            Alışkanlıklarınıza göre uyarlanan deneyim
+          </Text>
+          <TouchableOpacity 
+            style={styles.adaptiveModeButton}
+            onPress={() => setAdaptiveModeModalVisible(true)}
+          >
+            <Text style={styles.adaptiveModeButtonText}>
+              🧠 Adaptif Mod
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* AI Coach */}
+        <View style={styles.aiCoachCard}>
+          <Text style={styles.cardTitle}>AI Koç</Text>
+          <Text style={styles.aiCoachSubtitle}>
+            Kişiselleştirilmiş koçluk ve motivasyon
+          </Text>
+          <TouchableOpacity 
+            style={styles.aiCoachButton}
+            onPress={() => setAICoachModalVisible(true)}
+          >
+            <Text style={styles.aiCoachButtonText}>
+              🤖 AI Koç
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Smart Scheduling */}
+        <View style={styles.smartSchedulingCard}>
+          <Text style={styles.cardTitle}>Akıllı Zamanlama</Text>
+          <Text style={styles.smartSchedulingSubtitle}>
+            AI destekli otomatik zamanlama ve optimizasyon
+          </Text>
+          <TouchableOpacity 
+            style={styles.smartSchedulingButton}
+            onPress={() => setSmartSchedulingModalVisible(true)}
+          >
+            <Text style={styles.smartSchedulingButtonText}>
+              📅 Akıllı Zamanlama
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Today's Tasks */}
         <View style={styles.tasksCard}>
           <View style={styles.tasksHeader}>
@@ -300,6 +372,26 @@ const DashboardScreen = () => {
       <SmartDurationModal
         visible={smartDurationModalVisible}
         onClose={() => setSmartDurationModalVisible(false)}
+      />
+
+      <TaskSchedulingModal
+        visible={taskSchedulingModalVisible}
+        onClose={() => setTaskSchedulingModalVisible(false)}
+      />
+
+      <AdaptiveModeModal
+        visible={adaptiveModeModalVisible}
+        onClose={() => setAdaptiveModeModalVisible(false)}
+      />
+
+      <AICoachModal
+        visible={aiCoachModalVisible}
+        onClose={() => setAICoachModalVisible(false)}
+      />
+
+      <SmartSchedulingModal
+        visible={smartSchedulingModalVisible}
+        onClose={() => setSmartSchedulingModalVisible(false)}
       />
     </SafeAreaView>
   );
@@ -695,6 +787,126 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   smartDurationButtonText: {
+    fontSize: 16,
+    color: '#4CAF50',
+    fontWeight: '600',
+  },
+  taskSchedulingCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  taskSchedulingSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  taskSchedulingButton: {
+    backgroundColor: '#E3F2FD',
+    borderWidth: 1,
+    borderColor: '#2196F3',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  taskSchedulingButtonText: {
+    fontSize: 16,
+    color: '#2196F3',
+    fontWeight: '600',
+  },
+  adaptiveModeCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  adaptiveModeSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  adaptiveModeButton: {
+    backgroundColor: '#F3E5F5',
+    borderWidth: 1,
+    borderColor: '#9C27B0',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  adaptiveModeButtonText: {
+    fontSize: 16,
+    color: '#9C27B0',
+    fontWeight: '600',
+  },
+  aiCoachCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  aiCoachSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  aiCoachButton: {
+    backgroundColor: '#FFF3E0',
+    borderWidth: 1,
+    borderColor: '#FF5722',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  aiCoachButtonText: {
+    fontSize: 16,
+    color: '#FF5722',
+    fontWeight: '600',
+  },
+  smartSchedulingCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  smartSchedulingSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 15,
+  },
+  smartSchedulingButton: {
+    backgroundColor: '#E8F5E8',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  smartSchedulingButtonText: {
     fontSize: 16,
     color: '#4CAF50',
     fontWeight: '600',
