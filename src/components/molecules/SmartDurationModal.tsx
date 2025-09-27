@@ -44,6 +44,8 @@ export const SmartDurationModal: React.FC<SmartDurationModalProps> = ({
     'recommendations' | 'settings' | 'insights'
   >('recommendations');
 
+  const insights = getInsights();
+
   useEffect(() => {
     if (visible) {
       getRecommendations();

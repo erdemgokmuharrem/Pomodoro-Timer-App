@@ -51,6 +51,8 @@ export const AvatarCustomizationModal: React.FC<
   const [selectedOutfit, setSelectedOutfit] = useState<AvatarOutfit | null>(
     null
   );
+
+  const insights = getAvatarInsights();
   const [customizationMode, setCustomizationMode] = useState<
     'appearance' | 'clothing' | 'expressions' | 'animations'
   >('appearance');

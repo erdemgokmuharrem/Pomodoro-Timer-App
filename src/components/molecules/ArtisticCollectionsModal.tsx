@@ -63,6 +63,8 @@ export const ArtisticCollectionsModal: React.FC<
     null
   );
 
+  const insights = getArtisticInsights();
+
   useEffect(() => {
     if (visible) {
       generateNewContent();

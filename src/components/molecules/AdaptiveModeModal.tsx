@@ -47,6 +47,8 @@ export const AdaptiveModeModal: React.FC<AdaptiveModeModalProps> = ({
   const [selectedRecommendation, setSelectedRecommendation] =
     useState<AdaptiveRecommendation | null>(null);
 
+  const insights = getAdaptiveInsights();
+
   useEffect(() => {
     if (visible) {
       analyzeBehaviorPatterns();

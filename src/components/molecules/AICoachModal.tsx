@@ -46,6 +46,8 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
     null
   );
 
+  const coachInsights = getCoachInsights();
+
   useEffect(() => {
     if (visible) {
       generateDailyMessages();
@@ -446,7 +448,7 @@ export const AICoachModal: React.FC<AICoachModalProps> = ({
                 </View>
               ) : (
                 <FlatList
-                  data={insights}
+                  data={coachInsights}
                   renderItem={renderInsightItem}
                   keyExtractor={item => item.id}
                   style={styles.list}

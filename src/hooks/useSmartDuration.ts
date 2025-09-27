@@ -349,7 +349,7 @@ export const useSmartDuration = () => {
       setLoading(true);
       setError(null);
 
-      const newRecommendations = tasks.map(task =>
+      const newRecommendations = (tasks || []).map(task =>
         calculateRecommendedDuration(task)
       );
       setRecommendations(newRecommendations);
@@ -369,7 +369,7 @@ export const useSmartDuration = () => {
     taskId: string
   ): Promise<DurationRecommendation | null> => {
     try {
-      const task = tasks.find(t => t.id === taskId);
+      const task = (tasks || []).find(t => t.id === taskId);
       if (!task) return null;
 
       const recommendation = calculateRecommendedDuration(task);
@@ -446,7 +446,7 @@ export const useSmartDuration = () => {
 
   // Auto-update recommendations
   useEffect(() => {
-    if (settings.enableAI && tasks.length > 0) {
+    if (settings.enableAI && (tasks || []).length > 0) {
       getRecommendations();
     }
   }, [tasks, settings.enableAI]);

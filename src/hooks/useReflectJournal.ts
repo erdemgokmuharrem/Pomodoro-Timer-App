@@ -68,6 +68,8 @@ export const useReflectJournal = () => {
   const { userLevel, totalXP, badges } = useGamificationStore();
 
   const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>('month');
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [prompts, setPrompts] = useState<JournalPrompt[]>([]);
   const [settings, setSettings] = useState<JournalSettings>({
     enableReflectJournal: true,
@@ -249,6 +251,57 @@ export const useReflectJournal = () => {
   const getJournalEntryByDate = (date: Date): JournalEntry | null => {
     const dateStr = date.toDateString();
     return entries.find(entry => entry.date.toDateString() === dateStr) || null;
+  };
+
+  // Calendar functions
+  const getEntriesForDate = (date: Date): JournalEntry[] => {
+    const dateStr = date.toDateString();
+    return (entries || []).filter(entry => 
+      entry.date.toDateString() === dateStr
+    );
+  };
+
+  const getEntriesForMonth = (year: number, month: number): JournalEntry[] => {
+    return (entries || []).filter(entry => {
+      const entryDate = new Date(entry.date);
+      return entryDate.getFullYear() === year && entryDate.getMonth() === month;
+    });
+  };
+
+  const getEntriesForWeek = (date: Date): JournalEntry[] => {
+    const startOfWeek = new Date(date);
+    startOfWeek.setDate(date.getDate() - date.getDay());
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    
+    return (entries || []).filter(entry => {
+      const entryDate = new Date(entry.date);
+      return entryDate >= startOfWeek && entryDate <= endOfWeek;
+    });
+  };
+
+  const hasEntryForDate = (date: Date): boolean => {
+    return getEntriesForDate(date).length > 0;
+  };
+
+  const getMoodForDate = (date: Date): string | null => {
+    const entry = getEntriesForDate(date)[0];
+    return entry ? entry.mood : null;
+  };
+
+  const getCalendarData = (year: number, month: number) => {
+    const entries = getEntriesForMonth(year, month);
+    const calendarData: { [key: number]: { mood: string; hasEntry: boolean } } = {};
+    
+    entries.forEach(entry => {
+      const day = entry.date.getDate();
+      calendarData[day] = {
+        mood: entry.mood,
+        hasEntry: true
+      };
+    });
+    
+    return calendarData;
   };
 
   // Get journal insights
@@ -444,10 +497,20 @@ export const useReflectJournal = () => {
     settings,
     loading,
     error,
+    calendarView,
+    selectedDate,
     createJournalEntry,
     updateJournalEntry,
     deleteJournalEntry,
     getJournalEntryByDate,
+    getEntriesForDate,
+    getEntriesForMonth,
+    getEntriesForWeek,
+    hasEntryForDate,
+    getMoodForDate,
+    getCalendarData,
+    setCalendarView,
+    setSelectedDate,
     getJournalInsights,
     exportJournalData,
     importJournalData,
