@@ -55,12 +55,12 @@ export interface SchedulingSettings {
 
 export const useTaskScheduling = () => {
   const { tasks, completedPomodoros } = usePomodoroStore();
-  const { userLevel, totalXP } = useGamificationStore();
+  const { } = useGamificationStore();
 
   const [recommendations, setRecommendations] = useState<
     SchedulingRecommendation[]
   >([]);
-  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [timeSlots] = useState<TimeSlot[]>([]);
   const [settings, setSettings] = useState<SchedulingSettings>({
     enableAI: true,
     workingHours: { start: 9, end: 18 },
@@ -81,6 +81,7 @@ export const useTaskScheduling = () => {
 
     // Default energy patterns based on circadian rhythms
     for (let hour = 0; hour < 24; hour++) {
+      // hour variable is used in the loop
       if (hour >= 9 && hour <= 11)
         energyPatterns[hour] = 0.9; // Morning peak
       else if (hour >= 14 && hour <= 16)
@@ -98,12 +99,12 @@ export const useTaskScheduling = () => {
 
     // Adjust based on user's historical performance
     const historicalData = (completedPomodoros || []).filter(
-      p =>
+      (p: { completedAt: string; completed: boolean }) =>
         Date.now() - new Date(p.completedAt).getTime() <
         30 * 24 * 60 * 60 * 1000 // Last 30 days
     );
 
-    historicalData.forEach(pomodoro => {
+    historicalData.forEach((pomodoro: { completedAt: string }) => {
       const hour = new Date(pomodoro.completedAt).getHours();
       const performance = pomodoro.completed ? 1 : 0;
 
@@ -169,7 +170,7 @@ export const useTaskScheduling = () => {
   };
 
   // Analyze task complexity
-  const analyzeTaskComplexity = (task: any): number => {
+  const analyzeTaskComplexity = (task: { title: string; description?: string; priority?: string; tags?: string[]; estimatedTime?: number }): number => {
     let complexity = 0.5; // Base complexity
 
     // Title and description length
@@ -205,7 +206,7 @@ export const useTaskScheduling = () => {
 
   // Calculate optimal time slots for a task
   const calculateOptimalTimeSlots = (
-    task: any,
+    task: { id: string; title: string; estimatedTime: number; priority: string; complexity: number },
     availableSlots: TimeSlot[]
   ): TimeSlot[] => {
     const complexity = analyzeTaskComplexity(task);
@@ -228,7 +229,7 @@ export const useTaskScheduling = () => {
 
     // Score and sort slots
     const scoredSlots = suitableSlots.map(slot => {
-      let score = slot.energyLevel * 0.4 + slot.focusScore * 0.3;
+      const score = slot.energyLevel * 0.4 + slot.focusScore * 0.3;
 
       // Bonus for high energy slots with complex tasks
       if (complexity > 0.7 && slot.energyLevel > 0.8) score += 0.2;
@@ -252,7 +253,7 @@ export const useTaskScheduling = () => {
 
   // Generate scheduling recommendation for a task
   const generateSchedulingRecommendation = (
-    task: any
+    task: { id: string; title: string; estimatedTime: number; priority: string; complexity: number }
   ): SchedulingRecommendation => {
     const today = new Date();
     const availableSlots = generateTimeSlots(today);
@@ -385,7 +386,7 @@ export const useTaskScheduling = () => {
       return newRecommendations;
     } catch (err) {
       setError('Failed to get scheduling recommendations');
-      console.error('Get scheduling recommendations error:', err);
+      // console.error('Get scheduling recommendations error:', err);
       return [];
     } finally {
       setLoading(false);
@@ -403,7 +404,7 @@ export const useTaskScheduling = () => {
       const recommendation = generateSchedulingRecommendation(task);
       return recommendation;
     } catch (err) {
-      console.error('Get task scheduling recommendation error:', err);
+      // console.error('Get task scheduling recommendation error:', err);
       return null;
     }
   };
@@ -425,12 +426,10 @@ export const useTaskScheduling = () => {
       if (!timeSlot) return false;
 
       // In a real app, this would update the task's scheduled time
-      console.log(
-        `Applied scheduling: Task ${recommendation.taskId} scheduled for ${timeSlot.startTime}`
-      );
+      // console.log(`Applied scheduling: Task ${recommendation.taskId} scheduled for ${timeSlot.startTime}`);
       return true;
     } catch (err) {
-      console.error('Apply scheduling recommendation error:', err);
+      // console.error('Apply scheduling recommendation error:', err);
       return false;
     }
   };
@@ -453,10 +452,10 @@ export const useTaskScheduling = () => {
         }
       }
 
-      console.log(`Auto-scheduled ${scheduledCount} tasks`);
+      // console.log(`Auto-scheduled ${scheduledCount} tasks`);
       return scheduledCount > 0;
     } catch (err) {
-      console.error('Auto-schedule tasks error:', err);
+      // console.error('Auto-schedule tasks error:', err);
       return false;
     }
   };
@@ -477,11 +476,11 @@ export const useTaskScheduling = () => {
       if (!settings.learningEnabled) return;
 
       // In a real app, this would update the AI model with feedback
-      console.log(
+      // console.log(
         `Learning from scheduling: Task ${taskId}, Time ${scheduledTime}, Completed ${completed}, Duration ${actualDuration}`
       );
     } catch (err) {
-      console.error('Learn from scheduling error:', err);
+      // console.error('Learn from scheduling error:', err);
     }
   };
 
@@ -512,7 +511,7 @@ export const useTaskScheduling = () => {
 
   // Auto-update recommendations
   useEffect(() => {
-    if (settings.enableAI && tasks.length > 0) {
+    if (settings.enableAI && (tasks || []).length > 0) {
       getSchedulingRecommendations();
     }
   }, [tasks, settings.enableAI]);

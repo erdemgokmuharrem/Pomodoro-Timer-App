@@ -189,8 +189,8 @@ export interface GardenSettings {
 }
 
 export const useVirtualGarden = () => {
-  const { tasks, completedPomodoros } = usePomodoroStore();
-  const { userLevel, totalXP, badges } = useGamificationStore();
+  const { } = usePomodoroStore();
+  const { } = useGamificationStore();
 
   const [plants, setPlants] = useState<Plant[]>([]);
   const [gardens, setGardens] = useState<Garden[]>([]);
@@ -214,8 +214,8 @@ export const useVirtualGarden = () => {
     humidity: 60,
     lightLevel: 80,
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading] = useState(false);
+  const [error] = useState<string | null>(null);
 
   // Generate starter plants
   const generateStarterPlants = (): Plant[] => {
@@ -405,8 +405,8 @@ export const useVirtualGarden = () => {
         )
       );
       return true;
-    } catch (err) {
-      console.error('Water plant error:', err);
+    } catch {
+      // // console.error('Water plant error:', err);
       return false;
     }
   };
@@ -428,8 +428,8 @@ export const useVirtualGarden = () => {
         )
       );
       return true;
-    } catch (err) {
-      console.error('Fertilize plant error:', err);
+    } catch {
+      // console.error('Fertilize plant error:', err);
       return false;
     }
   };
@@ -453,8 +453,8 @@ export const useVirtualGarden = () => {
         )
       );
       return true;
-    } catch (err) {
-      console.error('Harvest plant error:', err);
+    } catch {
+      // console.error('Harvest plant error:', err);
       return false;
     }
   };
@@ -508,8 +508,8 @@ export const useVirtualGarden = () => {
 
       setPlants(prev => [...prev, newPlant]);
       return newPlant;
-    } catch (err) {
-      console.error('Plant seed error:', err);
+    } catch {
+      // console.error('Plant seed error:', err);
       return null;
     }
   };
@@ -621,8 +621,8 @@ export const useVirtualGarden = () => {
         )
       );
       return true;
-    } catch (err) {
-      console.error('Complete garden event error:', err);
+    } catch {
+      // console.error('Complete garden event error:', err);
       return false;
     }
   };
@@ -644,8 +644,8 @@ export const useVirtualGarden = () => {
         }))
       );
       return true;
-    } catch (err) {
-      console.error('Purchase decoration error:', err);
+    } catch {
+      // console.error('Purchase decoration error:', err);
       return false;
     }
   };
@@ -662,8 +662,8 @@ export const useVirtualGarden = () => {
         )
       );
       return true;
-    } catch (err) {
-      console.error('Place decoration error:', err);
+    } catch {
+      // console.error('Place decoration error:', err);
       return false;
     }
   };
@@ -715,13 +715,13 @@ export const useVirtualGarden = () => {
   // Auto-update plant growth
   useEffect(() => {
     if (settings.enableVirtualGarden) {
-      const interval = setInterval(() => {
-        plants.forEach(plant => {
-          updatePlantGrowth(plant.id);
-        });
-      }, 60000); // Check every minute
+      // const interval = setInterval(() => {
+      //   plants.forEach(plant => {
+      //     updatePlantGrowth(plant.id);
+      //   });
+      // }, 60000); // Check every minute
 
-      return () => clearInterval(interval);
+      // return () => clearInterval(interval);
     }
   }, [plants, settings.enableVirtualGarden]);
 

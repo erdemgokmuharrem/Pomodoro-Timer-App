@@ -370,7 +370,7 @@ export const useSmartScheduling = () => {
   // Detect schedule conflicts
   const detectConflicts = (): ScheduleConflict[] => {
     const conflicts: ScheduleConflict[] = [];
-    const sortedSchedules = schedules.sort(
+    const sortedSchedules = (schedules || []).sort(
       (a, b) => a.optimalStartTime.getTime() - b.optimalStartTime.getTime()
     );
 
@@ -433,7 +433,7 @@ export const useSmartScheduling = () => {
       setError(null);
 
       const unscheduledTasks = (tasks || []).filter(
-        task => !schedules.some(schedule => schedule.title === task.title)
+        task => !(schedules || []).some(schedule => schedule.title === task.title)
       );
 
       const newSchedules: SmartSchedule[] = [];
@@ -446,7 +446,7 @@ export const useSmartScheduling = () => {
 
         // Adjust time to avoid conflicts
         while (
-          schedules.some(
+          (schedules || []).some(
             s =>
               s.optimalStartTime <= schedule.optimalStartTime &&
               s.optimalEndTime > schedule.optimalStartTime
@@ -504,7 +504,7 @@ export const useSmartScheduling = () => {
       return newConflicts;
     } catch (err) {
       setError('Failed to detect conflicts');
-      console.error('Detect conflicts error:', err);
+      // console.error('Detect conflicts error:', err);
       return [];
     }
   };
@@ -591,7 +591,7 @@ export const useSmartScheduling = () => {
 
   // Auto-generate schedules and optimizations
   useEffect(() => {
-    if (settings.enableSmartScheduling && tasks.length > 0) {
+    if (settings.enableSmartScheduling && (tasks || []).length > 0) {
       autoScheduleTasks();
       generateOptimizations();
       detectScheduleConflicts();
