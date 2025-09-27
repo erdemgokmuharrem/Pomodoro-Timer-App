@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { usePomodoroStore } from '../store/usePomodoroStore';
-import { useGamificationStore } from '../store/useGamificationStore';
+// import { useGamificationStore } from '../store/useGamificationStore';
 
 export interface TimeSlot {
   id: string;
@@ -427,7 +427,7 @@ export const useTaskScheduling = () => {
       // In a real app, this would update the task's scheduled time
       // console.log(`Applied scheduling: Task ${recommendation.taskId} scheduled for ${timeSlot.startTime}`);
       return true;
-    } catch (err) {
+    } catch {
       // console.error('Apply scheduling recommendation error:', err);
       return false;
     }
@@ -453,7 +453,7 @@ export const useTaskScheduling = () => {
 
       // console.log(`Auto-scheduled ${scheduledCount} tasks`);
       return scheduledCount > 0;
-    } catch (err) {
+    } catch {
       // console.error('Auto-schedule tasks error:', err);
       return false;
     }
@@ -465,18 +465,13 @@ export const useTaskScheduling = () => {
   };
 
   // Learn from scheduling results
-  const learnFromScheduling = async (
-    taskId: string,
-    scheduledTime: Date,
-    completed: boolean,
-    actualDuration: number
-  ) => {
+  const learnFromScheduling = async () => {
     try {
       if (!settings.learningEnabled) return;
 
       // In a real app, this would update the AI model with feedback
       // console.log(`Learning from scheduling: Task ${taskId}, Time ${scheduledTime}, Completed ${completed}, Duration ${actualDuration}`);
-    } catch (err) {
+    } catch {
       // console.error('Learn from scheduling error:', err);
     }
   };
