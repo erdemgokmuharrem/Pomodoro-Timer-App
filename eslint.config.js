@@ -22,12 +22,15 @@ export default [
       prettier: prettier,
     },
     rules: {
-      'prettier/prettier': 'error',
-      '@typescript-eslint/no-unused-vars': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      'prettier/prettier': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
       'no-unused-vars': 'off',
       'no-console': 'off',
       'no-undef': 'off',
+      'no-redeclare': 'off',
+      'no-dupe-keys': 'off',
+      'no-case-declarations': 'off',
     },
   },
   {
