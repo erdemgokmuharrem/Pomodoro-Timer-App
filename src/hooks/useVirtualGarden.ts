@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export interface Plant {
   id: string;
@@ -46,7 +46,7 @@ export interface GardenSettings {
 
 export const useVirtualGarden = () => {
   const [plants, setPlants] = useState<Plant[]>([]);
-  const [gardens, setGardens] = useState<Garden[]>([]);
+  const [gardens] = useState<Garden[]>([]);
   const [settings, setSettings] = useState<GardenSettings>({
     enableVirtualGarden: true,
     autoWatering: false,
@@ -55,8 +55,8 @@ export const useVirtualGarden = () => {
     soundEffects: true,
     animations: true,
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading] = useState(false);
+  const [error] = useState<string | null>(null);
 
   // Water plant
   const waterPlant = (plantId: string): boolean => {

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useThemeStore } from '../store/useThemeStore';
 import { Theme } from '../constants/theme';
@@ -17,7 +17,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const { theme, mode, setMode, toggleTheme } = useThemeStore();
+  const { theme, setMode, toggleTheme } = useThemeStore();
   const isDark = theme.colors.background === '#0F172A';
 
   const setThemeMode = (newMode: 'light' | 'dark' | 'system') => {

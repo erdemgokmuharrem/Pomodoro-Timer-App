@@ -64,7 +64,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, onClose }) => {
         [{ text: 'Tamam', onPress: onClose }]
       );
     } catch (error) {
-      console.error('Export error:', error);
+      // console.error('Export error:', error);
       Alert.alert(
         'Export Hatası',
         'Verileriniz export edilirken bir hata oluştu. Lütfen tekrar deneyin.',

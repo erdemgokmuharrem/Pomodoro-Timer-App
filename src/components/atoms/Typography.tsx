@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, TextStyle } from 'react-native';
+import { Text, TextStyle } from 'react-native';
 
 interface TypographyProps {
   children: React.ReactNode;

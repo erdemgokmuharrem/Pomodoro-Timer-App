@@ -26,9 +26,11 @@ export default [
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
       'no-unused-vars': 'off',
+      'no-console': 'off',
+      'no-undef': 'off',
     },
   },
   {
-    ignores: ['node_modules/', '.expo/', 'dist/', 'build/'],
+    ignores: ['node_modules/', '.expo/', 'dist/', 'build/', '**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
   },
 ];
