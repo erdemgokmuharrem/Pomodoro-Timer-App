@@ -14,9 +14,5 @@
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "exclude": [
-    "**/__tests__/**",
-    "**/*.test.*",
-    "**/e2e/**"
-  ]
+  "exclude": ["**/__tests__/**", "**/*.test.*", "**/e2e/**"]
 }

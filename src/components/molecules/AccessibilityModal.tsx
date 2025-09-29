@@ -168,9 +168,11 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
           <Card
             style={[
               styles.section,
-              highContrastColors ? {
-                backgroundColor: highContrastColors.surface,
-              } : null,
+              highContrastColors
+                ? {
+                    backgroundColor: highContrastColors.surface,
+                  }
+                : null,
             ].filter(Boolean)}
           >
             <Text
@@ -203,9 +205,11 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
           <Card
             style={[
               styles.section,
-              highContrastColors ? {
-                backgroundColor: highContrastColors.surface,
-              } : null,
+              highContrastColors
+                ? {
+                    backgroundColor: highContrastColors.surface,
+                  }
+                : null,
             ].filter(Boolean)}
           >
             <Text
@@ -248,9 +252,11 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
           <Card
             style={[
               styles.infoCard,
-              highContrastColors ? {
-                backgroundColor: highContrastColors.surface,
-              } : null,
+              highContrastColors
+                ? {
+                    backgroundColor: highContrastColors.surface,
+                  }
+                : null,
             ].filter(Boolean)}
           >
             <Text

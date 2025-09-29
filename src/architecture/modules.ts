@@ -106,7 +106,7 @@ export class ModuleLoader {
 
   private async loadModuleBundle(module: ModuleConfig): Promise<void> {
     // Simulate module loading
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         console.log(`Module ${module.name} loaded successfully`);
         resolve();
@@ -131,15 +131,19 @@ export interface ModuleMessage {
 }
 
 export class ModuleCommunication {
-  private listeners: Map<string, Set<(message: ModuleMessage) => void>> = new Map();
+  private listeners: Map<string, Set<(message: ModuleMessage) => void>> =
+    new Map();
 
-  subscribe(moduleName: string, callback: (message: ModuleMessage) => void): () => void {
+  subscribe(
+    moduleName: string,
+    callback: (message: ModuleMessage) => void
+  ): () => void {
     if (!this.listeners.has(moduleName)) {
       this.listeners.set(moduleName, new Set());
     }
-    
+
     this.listeners.get(moduleName)!.add(callback);
-    
+
     return () => {
       this.listeners.get(moduleName)?.delete(callback);
     };
@@ -160,7 +164,7 @@ export class ModuleCommunication {
       target: to,
       timestamp: Date.now(),
     };
-    
+
     this.publish(message);
   }
 }
@@ -185,9 +189,7 @@ export const MODULE_CONFIGS: ModuleConfig[] = [
     entry: './src/modules/tasks/index.ts',
     dependencies: ['storage'],
     shared: ['react', 'react-native'],
-    routes: [
-      { path: '/tasks', component: 'TasksScreen' },
-    ],
+    routes: [{ path: '/tasks', component: 'TasksScreen' }],
     permissions: ['tasks:read', 'tasks:write'],
   },
   {
@@ -196,9 +198,7 @@ export const MODULE_CONFIGS: ModuleConfig[] = [
     entry: './src/modules/statistics/index.ts',
     dependencies: ['storage'],
     shared: ['react', 'react-native'],
-    routes: [
-      { path: '/statistics', component: 'StatisticsScreen' },
-    ],
+    routes: [{ path: '/statistics', component: 'StatisticsScreen' }],
     permissions: ['statistics:read'],
   },
   {
@@ -213,7 +213,11 @@ export const MODULE_CONFIGS: ModuleConfig[] = [
 ];
 
 // Initialize module system
-export const initializeModules = (): { registry: ModuleRegistry; loader: ModuleLoader; communication: ModuleCommunication } => {
+export const initializeModules = (): {
+  registry: ModuleRegistry;
+  loader: ModuleLoader;
+  communication: ModuleCommunication;
+} => {
   const registry = new ModuleRegistry();
   const loader = new ModuleLoader(registry);
   const communication = new ModuleCommunication();

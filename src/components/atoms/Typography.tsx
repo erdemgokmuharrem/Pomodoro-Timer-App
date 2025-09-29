@@ -1,7 +1,12 @@
 import React from 'react';
 import { Text, TextStyle } from 'react-native';
 import { useTheme } from '../ThemeProvider';
-import { TypographyVariant, TypographyColor, TypographyWeight, TypographyAlign } from '../../types';
+import {
+  TypographyVariant,
+  TypographyColor,
+  TypographyWeight,
+  TypographyAlign,
+} from '../../types';
 
 interface TypographyProps {
   children: React.ReactNode;
@@ -26,40 +31,40 @@ const Typography: React.FC<TypographyProps> = ({
 
   const getVariantStyle = (): TextStyle => {
     const variantStyles = {
-      h1: { 
-        fontSize: theme.typography.fontSizes.xxxl, 
-        lineHeight: theme.typography.fontSizes.xxxl * 1.25, 
-        fontWeight: theme.typography.fontWeights.bold 
+      h1: {
+        fontSize: theme.typography.fontSizes.xxxl,
+        lineHeight: theme.typography.fontSizes.xxxl * 1.25,
+        fontWeight: theme.typography.fontWeights.bold,
       },
-      h2: { 
-        fontSize: theme.typography.fontSizes.xxl, 
-        lineHeight: theme.typography.fontSizes.xxl * 1.33, 
-        fontWeight: theme.typography.fontWeights.bold 
+      h2: {
+        fontSize: theme.typography.fontSizes.xxl,
+        lineHeight: theme.typography.fontSizes.xxl * 1.33,
+        fontWeight: theme.typography.fontWeights.bold,
       },
-      h3: { 
-        fontSize: theme.typography.fontSizes.xl, 
-        lineHeight: theme.typography.fontSizes.xl * 1.4, 
-        fontWeight: theme.typography.fontWeights.semibold 
+      h3: {
+        fontSize: theme.typography.fontSizes.xl,
+        lineHeight: theme.typography.fontSizes.xl * 1.4,
+        fontWeight: theme.typography.fontWeights.semibold,
       },
-      h4: { 
-        fontSize: theme.typography.fontSizes.lg, 
-        lineHeight: theme.typography.fontSizes.lg * 1.33, 
-        fontWeight: theme.typography.fontWeights.semibold 
+      h4: {
+        fontSize: theme.typography.fontSizes.lg,
+        lineHeight: theme.typography.fontSizes.lg * 1.33,
+        fontWeight: theme.typography.fontWeights.semibold,
       },
-      body: { 
-        fontSize: theme.typography.fontSizes.md, 
-        lineHeight: theme.typography.fontSizes.md * 1.5, 
-        fontWeight: theme.typography.fontWeights.normal 
+      body: {
+        fontSize: theme.typography.fontSizes.md,
+        lineHeight: theme.typography.fontSizes.md * 1.5,
+        fontWeight: theme.typography.fontWeights.normal,
       },
-      caption: { 
-        fontSize: theme.typography.fontSizes.sm, 
-        lineHeight: theme.typography.fontSizes.sm * 1.43, 
-        fontWeight: theme.typography.fontWeights.normal 
+      caption: {
+        fontSize: theme.typography.fontSizes.sm,
+        lineHeight: theme.typography.fontSizes.sm * 1.43,
+        fontWeight: theme.typography.fontWeights.normal,
       },
-      label: { 
-        fontSize: theme.typography.fontSizes.xs, 
-        lineHeight: theme.typography.fontSizes.xs * 1.33, 
-        fontWeight: theme.typography.fontWeights.medium 
+      label: {
+        fontSize: theme.typography.fontSizes.xs,
+        lineHeight: theme.typography.fontSizes.xs * 1.33,
+        fontWeight: theme.typography.fontWeights.medium,
       },
     };
     return variantStyles[variant];

@@ -74,7 +74,9 @@ class NotificationService {
       return notificationId;
     } catch (error) {
       console.error('Error scheduling pomodoro notification:', error);
-      throw new Error(`Failed to schedule pomodoro notification: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to schedule pomodoro notification: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -101,7 +103,9 @@ class NotificationService {
       return notificationId;
     } catch (error) {
       console.error('Error scheduling break notification:', error);
-      throw new Error(`Failed to schedule break notification: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to schedule break notification: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 

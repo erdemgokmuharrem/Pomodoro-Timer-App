@@ -20,7 +20,7 @@ export const ResponsiveComponent: React.FC<ResponsiveComponentProps> = ({
   showOnBreakpoint,
 }) => {
   const responsive = useResponsive();
-  
+
   // Check visibility based on breakpoint
   const shouldShow = () => {
     if (hideOnBreakpoint && responsive.isBreakpoint(hideOnBreakpoint)) {
@@ -38,11 +38,13 @@ export const ResponsiveComponent: React.FC<ResponsiveComponentProps> = ({
 
   // Get responsive styles
   const responsiveStyle = responsive.getPlatformStyles(style || {});
-  const responsiveTextStyle = textStyle ? responsive.getPlatformStyles(textStyle) : {};
+  const responsiveTextStyle = textStyle
+    ? responsive.getPlatformStyles(textStyle)
+    : {};
 
   return (
     <View style={[styles.container, responsiveStyle]}>
-      {React.Children.map(children, (child) => {
+      {React.Children.map(children, child => {
         if (React.isValidElement(child) && child.type === 'Text') {
           return React.cloneElement(child, {
             style: [child.props.style, responsiveTextStyle],
@@ -81,7 +83,7 @@ export const ResponsiveText: React.FC<ResponsiveTextProps> = ({
   numberOfLines,
 }) => {
   const responsive = useResponsive();
-  
+
   const getFontSize = () => {
     const sizeMap = {
       xs: 12,
@@ -92,7 +94,7 @@ export const ResponsiveText: React.FC<ResponsiveTextProps> = ({
       xxl: 24,
       xxxl: 32,
     };
-    
+
     return responsive.getResponsiveFontSize(sizeMap[size]);
   };
 
@@ -103,7 +105,7 @@ export const ResponsiveText: React.FC<ResponsiveTextProps> = ({
       semibold: '600',
       bold: '700',
     };
-    
+
     return weightMap[weight];
   };
 
@@ -147,7 +149,7 @@ export const ResponsiveButton: React.FC<ResponsiveButtonProps> = ({
   textStyle,
 }) => {
   const responsive = useResponsive();
-  
+
   const getButtonStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
       borderRadius: responsive.getResponsiveSpacing('sm'),

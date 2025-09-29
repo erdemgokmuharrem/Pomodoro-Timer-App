@@ -5,26 +5,25 @@ import { ThemeProvider } from '../components/ThemeProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Test theme provider
-const TestThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <ThemeProvider>
-      {children}
-    </ThemeProvider>
-  );
+const TestThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  return <ThemeProvider>{children}</ThemeProvider>;
 };
 
 // Test query client
-const createTestQueryClient = () => new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      cacheTime: 0,
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        cacheTime: 0,
+      },
+      mutations: {
+        retry: false,
+      },
     },
-    mutations: {
-      retry: false,
-    },
-  },
-});
+  });
 
 // Custom render function with providers
 const customRender = (
@@ -32,13 +31,11 @@ const customRender = (
   options?: Omit<RenderOptions, 'wrapper'>
 ) => {
   const queryClient = createTestQueryClient();
-  
+
   const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <TestThemeProvider>
-          {children}
-        </TestThemeProvider>
+        <TestThemeProvider>{children}</TestThemeProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>
   );
@@ -90,7 +87,8 @@ export const mockUserStats = (overrides = {}) => ({
 });
 
 // Test helpers
-export const waitForAsync = () => new Promise(resolve => setTimeout(resolve, 0));
+export const waitForAsync = () =>
+  new Promise(resolve => setTimeout(resolve, 0));
 
 export const mockNavigation = () => ({
   navigate: jest.fn(),
@@ -124,7 +122,7 @@ export const measureRenderTime = async (component: React.ReactElement) => {
   const { unmount } = customRender(component);
   const end = performance.now();
   unmount();
-  
+
   return end - start;
 };
 
@@ -139,7 +137,7 @@ export const getMemoryUsage = () => {
 // Accessibility testing utilities
 export const getAccessibilityTree = (container: any) => {
   const tree: any[] = [];
-  
+
   const traverse = (node: any) => {
     if (node.props && node.props.accessibilityLabel) {
       tree.push({
@@ -149,12 +147,12 @@ export const getAccessibilityTree = (container: any) => {
         state: node.props.accessibilityState,
       });
     }
-    
+
     if (node.children) {
       node.children.forEach(traverse);
     }
   };
-  
+
   traverse(container);
   return tree;
 };

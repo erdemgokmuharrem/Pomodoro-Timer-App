@@ -1,4 +1,9 @@
-import { Priority, InterruptionReason, PomodoroStatus, BreakType } from './common';
+import {
+  Priority,
+  InterruptionReason,
+  PomodoroStatus,
+  BreakType,
+} from './common';
 
 // Task interface
 export interface Task {

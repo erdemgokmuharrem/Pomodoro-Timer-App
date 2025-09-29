@@ -68,7 +68,9 @@ export const useReflectJournal = () => {
   const { userLevel, totalXP, badges } = useGamificationStore();
 
   const [entries, setEntries] = useState<JournalEntry[]>([]);
-  const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>('month');
+  const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>(
+    'month'
+  );
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [prompts, setPrompts] = useState<JournalPrompt[]>([]);
   const [settings, setSettings] = useState<JournalSettings>({
@@ -196,8 +198,9 @@ export const useReflectJournal = () => {
         tags: [],
         activities: [],
         pomodorosCompleted: completedPomodoros.length,
-        tasksCompleted: (tasks || []).filter(task => task.status === 'completed')
-          .length,
+        tasksCompleted: (tasks || []).filter(
+          task => task.status === 'completed'
+        ).length,
         interruptions: 0,
         breaks: 0,
         focusTime: 0,
@@ -256,8 +259,8 @@ export const useReflectJournal = () => {
   // Calendar functions
   const getEntriesForDate = (date: Date): JournalEntry[] => {
     const dateStr = date.toDateString();
-    return (entries || []).filter(entry => 
-      entry.date.toDateString() === dateStr
+    return (entries || []).filter(
+      entry => entry.date.toDateString() === dateStr
     );
   };
 
@@ -273,7 +276,7 @@ export const useReflectJournal = () => {
     startOfWeek.setDate(date.getDate() - date.getDay());
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
-    
+
     return (entries || []).filter(entry => {
       const entryDate = new Date(entry.date);
       return entryDate >= startOfWeek && entryDate <= endOfWeek;
@@ -291,16 +294,17 @@ export const useReflectJournal = () => {
 
   const getCalendarData = (year: number, month: number) => {
     const entries = getEntriesForMonth(year, month);
-    const calendarData: { [key: number]: { mood: string; hasEntry: boolean } } = {};
-    
+    const calendarData: { [key: number]: { mood: string; hasEntry: boolean } } =
+      {};
+
     entries.forEach(entry => {
       const day = entry.date.getDate();
       calendarData[day] = {
         mood: entry.mood,
-        hasEntry: true
+        hasEntry: true,
       };
     });
-    
+
     return calendarData;
   };
 

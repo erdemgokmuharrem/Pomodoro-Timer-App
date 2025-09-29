@@ -147,7 +147,7 @@ const TimerScreen = () => {
 
         {/* Timer */}
         <View style={styles.timerContainer}>
-          <Text 
+          <Text
             style={styles.timerText}
             accessibilityRole="timer"
             accessibilityLabel={`${isBreak ? 'Mola' : 'Pomodoro'} süresi: ${formattedTime}`}
@@ -170,8 +170,12 @@ const TimerScreen = () => {
             style={[styles.controlButton, styles.primaryButton]}
             onPress={handleStartPause}
             accessibilityRole="button"
-            accessibilityLabel={isRunning ? 'Pomodoro\'yu duraklat' : 'Pomodoro\'yu başlat'}
-            accessibilityHint={isRunning ? 'Duraklatmak için dokunun' : 'Başlatmak için dokunun'}
+            accessibilityLabel={
+              isRunning ? "Pomodoro'yu duraklat" : "Pomodoro'yu başlat"
+            }
+            accessibilityHint={
+              isRunning ? 'Duraklatmak için dokunun' : 'Başlatmak için dokunun'
+            }
           >
             <Text style={styles.primaryButtonText}>
               {isRunning ? 'Duraklat' : 'Başlat'}

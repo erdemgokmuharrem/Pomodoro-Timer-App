@@ -34,6 +34,14 @@ export default [
     },
   },
   {
-    ignores: ['node_modules/', '.expo/', 'dist/', 'build/', '**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
+    ignores: [
+      'node_modules/',
+      '.expo/',
+      'dist/',
+      'build/',
+      '**/*.test.ts',
+      '**/*.test.tsx',
+      '**/__tests__/**',
+    ],
   },
 ];

@@ -517,42 +517,52 @@ export const ReflectJournalModal: React.FC<ReflectJournalModalProps> = ({
               <Text style={styles.sectionTitle}>Günlük Takvimi</Text>
               <View style={styles.calendarContainer}>
                 <Text style={styles.calendarTitle}>
-                  {new Date().toLocaleDateString('tr-TR', { 
-                    month: 'long', 
-                    year: 'numeric' 
+                  {new Date().toLocaleDateString('tr-TR', {
+                    month: 'long',
+                    year: 'numeric',
                   })}
                 </Text>
-                
+
                 <View style={styles.calendarHeader}>
-                  {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(day => (
-                    <Text key={day} style={styles.calendarHeaderText}>{day}</Text>
-                  ))}
+                  {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(
+                    day => (
+                      <Text key={day} style={styles.calendarHeaderText}>
+                        {day}
+                      </Text>
+                    )
+                  )}
                 </View>
-                
+
                 <View style={styles.calendarGrid}>
                   {Array.from({ length: 35 }, (_, i) => {
                     const day = i - 6; // Adjust for first day of month
                     const hasEntry = hasEntryForDate(new Date(2024, 0, day));
                     const mood = getMoodForDate(new Date(2024, 0, day));
-                    
+
                     const getMoodColor = (mood: string | null) => {
                       switch (mood) {
-                        case 'excellent': return '#4CAF50';
-                        case 'good': return '#8BC34A';
-                        case 'neutral': return '#FFC107';
-                        case 'poor': return '#FF9800';
-                        case 'terrible': return '#F44336';
-                        default: return '#E0E0E0';
+                        case 'excellent':
+                          return '#4CAF50';
+                        case 'good':
+                          return '#8BC34A';
+                        case 'neutral':
+                          return '#FFC107';
+                        case 'poor':
+                          return '#FF9800';
+                        case 'terrible':
+                          return '#F44336';
+                        default:
+                          return '#E0E0E0';
                       }
                     };
-                    
+
                     return (
                       <TouchableOpacity
                         key={i}
                         style={[
                           styles.calendarDay,
                           hasEntry && styles.calendarDayWithEntry,
-                          { backgroundColor: getMoodColor(mood) }
+                          { backgroundColor: getMoodColor(mood) },
                         ]}
                         onPress={() => {
                           if (day > 0) {
@@ -570,28 +580,53 @@ export const ReflectJournalModal: React.FC<ReflectJournalModalProps> = ({
                     );
                   })}
                 </View>
-                
+
                 <View style={styles.calendarLegend}>
                   <Text style={styles.calendarLegendTitle}>Ruh Hali:</Text>
                   <View style={styles.calendarLegendItems}>
                     <View style={styles.calendarLegendItem}>
-                      <View style={[styles.calendarLegendColor, { backgroundColor: '#4CAF50' }]} />
+                      <View
+                        style={[
+                          styles.calendarLegendColor,
+                          { backgroundColor: '#4CAF50' },
+                        ]}
+                      />
                       <Text style={styles.calendarLegendText}>Mükemmel</Text>
                     </View>
                     <View style={styles.calendarLegendItem}>
-                      <View style={[styles.calendarLegendColor, { backgroundColor: '#8BC34A' }]} />
+                      <View
+                        style={[
+                          styles.calendarLegendColor,
+                          { backgroundColor: '#8BC34A' },
+                        ]}
+                      />
                       <Text style={styles.calendarLegendText}>İyi</Text>
                     </View>
                     <View style={styles.calendarLegendItem}>
-                      <View style={[styles.calendarLegendColor, { backgroundColor: '#FFC107' }]} />
+                      <View
+                        style={[
+                          styles.calendarLegendColor,
+                          { backgroundColor: '#FFC107' },
+                        ]}
+                      />
                       <Text style={styles.calendarLegendText}>Normal</Text>
                     </View>
                     <View style={styles.calendarLegendItem}>
-                      <View style={[styles.calendarLegendColor, { backgroundColor: '#FF9800' }]} />
+                      <View
+                        style={[
+                          styles.calendarLegendColor,
+                          { backgroundColor: '#FF9800' },
+                        ]}
+                      />
                       <Text style={styles.calendarLegendText}>Kötü</Text>
                     </View>
                     <View style={styles.calendarLegendItem}>
-                      <View style={[styles.calendarLegendColor, { backgroundColor: '#F44336' }]} />
+                      <View
+                        style={[
+                          styles.calendarLegendColor,
+                          { backgroundColor: '#F44336' },
+                        ]}
+                      />
                       <Text style={styles.calendarLegendText}>Berbat</Text>
                     </View>
                   </View>

@@ -141,7 +141,9 @@ export class OfflineService {
   }
 
   // Background sync simulation
-  async syncInBackground(actions: SyncAction[]): Promise<{ success: SyncAction[]; failed: SyncAction[] }> {
+  async syncInBackground(
+    actions: SyncAction[]
+  ): Promise<{ success: SyncAction[]; failed: SyncAction[] }> {
     const successActions: SyncAction[] = [];
     const failedActions: SyncAction[] = [];
 
@@ -154,7 +156,7 @@ export class OfflineService {
         console.error(`Failed to sync action ${action.id}:`, error);
         failedActions.push({
           ...action,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }

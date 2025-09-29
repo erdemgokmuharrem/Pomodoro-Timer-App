@@ -16,8 +16,10 @@ export type MainTabParamList = {
 };
 
 // Navigation prop tipleri
-export type RootStackNavigationProp = import('@react-navigation/stack').StackNavigationProp<RootStackParamList>;
-export type MainTabNavigationProp = import('@react-navigation/bottom-tabs').BottomTabNavigationProp<MainTabParamList>;
+export type RootStackNavigationProp =
+  import('@react-navigation/stack').StackNavigationProp<RootStackParamList>;
+export type MainTabNavigationProp =
+  import('@react-navigation/bottom-tabs').BottomTabNavigationProp<MainTabParamList>;
 
 // Screen props
 export interface ScreenProps<T extends keyof RootStackParamList> {

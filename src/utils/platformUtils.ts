@@ -43,7 +43,7 @@ export class PlatformUtils {
 
   private constructor() {
     const { width, height } = Dimensions.get('window');
-    
+
     this.config = {
       isIOS: Platform.OS === 'ios',
       isAndroid: Platform.OS === 'android',
@@ -100,9 +100,9 @@ export class PlatformUtils {
   private isTabletDevice(width: number, height: number): boolean {
     const aspectRatio = height / width;
     const pixelDensity = PixelRatio.get();
-    
+
     return (
-      (Math.min(width, height) >= 600) ||
+      Math.min(width, height) >= 600 ||
       (pixelDensity < 2 && Math.min(width, height) >= 500) ||
       (aspectRatio <= 1.6 && Math.min(width, height) >= 500)
     );
@@ -111,13 +111,13 @@ export class PlatformUtils {
   // Get responsive spacing based on screen size
   private getResponsiveSpacing(baseSpacing: number): number {
     const { screenWidth } = this.config;
-    
+
     if (screenWidth < 375) {
       return baseSpacing * 0.8; // Small screens
     } else if (screenWidth > 768) {
       return baseSpacing * 1.2; // Large screens
     }
-    
+
     return baseSpacing;
   }
 
@@ -128,7 +128,7 @@ export class PlatformUtils {
     } else if (this.config.isAndroid) {
       return this.config.isTablet ? 1.05 : 0.95;
     }
-    
+
     return 1.0; // Web
   }
 
@@ -139,7 +139,7 @@ export class PlatformUtils {
     } else if (this.config.isAndroid) {
       return 1.3;
     }
-    
+
     return 1.25; // Web
   }
 
@@ -147,16 +147,16 @@ export class PlatformUtils {
   getResponsiveFontSize(baseSize: number): number {
     const scale = this.responsiveConfig.typography.scale;
     const { screenWidth } = this.config;
-    
+
     let responsiveSize = baseSize * scale;
-    
+
     // Adjust for screen size
     if (screenWidth < 375) {
       responsiveSize *= 0.9;
     } else if (screenWidth > 768) {
       responsiveSize *= 1.1;
     }
-    
+
     return Math.round(responsiveSize);
   }
 
@@ -169,7 +169,7 @@ export class PlatformUtils {
   getBreakpoint(): 'small' | 'medium' | 'large' | 'xlarge' {
     const { screenWidth } = this.config;
     const { breakpoints } = this.responsiveConfig;
-    
+
     if (screenWidth >= breakpoints.xlarge) return 'xlarge';
     if (screenWidth >= breakpoints.large) return 'large';
     if (screenWidth >= breakpoints.medium) return 'medium';
@@ -180,17 +180,17 @@ export class PlatformUtils {
   isBreakpoint(breakpoint: keyof ResponsiveConfig['breakpoints']): boolean {
     const currentBreakpoint = this.getBreakpoint();
     const breakpointOrder = ['small', 'medium', 'large', 'xlarge'];
-    
+
     const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
     const targetIndex = breakpointOrder.indexOf(breakpoint);
-    
+
     return currentIndex >= targetIndex;
   }
 
   // Get platform-specific styles
   getPlatformStyles(baseStyles: any): any {
     const platformStyles = { ...baseStyles };
-    
+
     if (this.config.isIOS) {
       // iOS-specific adjustments
       if (platformStyles.shadowColor) {
@@ -207,12 +207,17 @@ export class PlatformUtils {
         delete platformStyles.shadowRadius;
       }
     }
-    
+
     return platformStyles;
   }
 
   // Get safe area insets
-  getSafeAreaInsets(): { top: number; bottom: number; left: number; right: number } {
+  getSafeAreaInsets(): {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  } {
     // This would typically use react-native-safe-area-context
     // For now, return default values
     return {
@@ -230,14 +235,19 @@ export class PlatformUtils {
     } else if (this.config.isAndroid) {
       return 'height';
     }
-    
+
     return 'padding'; // Web
   }
 
   // Get haptic feedback settings
-  getHapticSettings(): { enabled: boolean; intensity: 'light' | 'medium' | 'heavy' } {
+  getHapticSettings(): {
+    enabled: boolean;
+    intensity: 'light' | 'medium' | 'heavy';
+  } {
     return {
-      enabled: this.config.isIOS || (this.config.isAndroid && this.config.platformVersion >= '10'),
+      enabled:
+        this.config.isIOS ||
+        (this.config.isAndroid && this.config.platformVersion >= '10'),
       intensity: this.config.isIOS ? 'medium' : 'light',
     };
   }
@@ -249,7 +259,7 @@ export class PlatformUtils {
     } else if (this.config.isAndroid) {
       return 'light';
     }
-    
+
     return 'auto'; // Web
   }
 
@@ -350,13 +360,15 @@ export const platformUtils = PlatformUtils.getInstance();
 export const useResponsive = () => {
   const config = platformUtils.getConfig();
   const responsiveConfig = platformUtils.getResponsiveConfig();
-  
+
   return {
     ...config,
     ...responsiveConfig,
     isBreakpoint: platformUtils.isBreakpoint.bind(platformUtils),
-    getResponsiveFontSize: platformUtils.getResponsiveFontSize.bind(platformUtils),
-    getResponsiveSpacing: platformUtils.getResponsiveSpacingByKey.bind(platformUtils),
+    getResponsiveFontSize:
+      platformUtils.getResponsiveFontSize.bind(platformUtils),
+    getResponsiveSpacing:
+      platformUtils.getResponsiveSpacingByKey.bind(platformUtils),
     getPlatformStyles: platformUtils.getPlatformStyles.bind(platformUtils),
   };
 };

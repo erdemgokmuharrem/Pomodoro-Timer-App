@@ -44,27 +44,29 @@ const Button: React.FC<ButtonProps> = ({
 
     // Size styles
     const sizeStyles = {
-      small: { 
-        paddingHorizontal: theme.spacing.sm, 
-        paddingVertical: theme.spacing.xs, 
-        minHeight: 32 
+      small: {
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.xs,
+        minHeight: 32,
       },
-      medium: { 
-        paddingHorizontal: theme.spacing.md, 
-        paddingVertical: theme.spacing.sm, 
-        minHeight: 44 
+      medium: {
+        paddingHorizontal: theme.spacing.md,
+        paddingVertical: theme.spacing.sm,
+        minHeight: 44,
       },
-      large: { 
-        paddingHorizontal: theme.spacing.lg, 
-        paddingVertical: theme.spacing.md, 
-        minHeight: 56 
+      large: {
+        paddingHorizontal: theme.spacing.lg,
+        paddingVertical: theme.spacing.md,
+        minHeight: 56,
       },
     };
 
     // Variant styles
     const variantStyles = {
       primary: {
-        backgroundColor: disabled ? theme.colors.text.muted : theme.colors.primary,
+        backgroundColor: disabled
+          ? theme.colors.text.muted
+          : theme.colors.primary,
         borderWidth: 0,
       },
       secondary: {
@@ -73,7 +75,9 @@ const Button: React.FC<ButtonProps> = ({
         borderColor: disabled ? theme.colors.text.muted : theme.colors.primary,
       },
       danger: {
-        backgroundColor: disabled ? theme.colors.text.muted : theme.colors.error,
+        backgroundColor: disabled
+          ? theme.colors.text.muted
+          : theme.colors.error,
         borderWidth: 0,
       },
       ghost: {
@@ -105,9 +109,13 @@ const Button: React.FC<ButtonProps> = ({
 
     const variantStyles = {
       primary: { color: 'white' },
-      secondary: { color: disabled ? theme.colors.text.muted : theme.colors.primary },
+      secondary: {
+        color: disabled ? theme.colors.text.muted : theme.colors.primary,
+      },
       danger: { color: 'white' },
-      ghost: { color: disabled ? theme.colors.text.muted : theme.colors.primary },
+      ghost: {
+        color: disabled ? theme.colors.text.muted : theme.colors.primary,
+      },
     };
 
     return {
@@ -126,7 +134,13 @@ const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.7}
       accessibilityRole="button"
       accessibilityLabel={title}
-      accessibilityHint={disabled ? 'Bu buton şu anda devre dışı' : loading ? 'Yükleniyor' : 'Dokunarak etkinleştir'}
+      accessibilityHint={
+        disabled
+          ? 'Bu buton şu anda devre dışı'
+          : loading
+            ? 'Yükleniyor'
+            : 'Dokunarak etkinleştir'
+      }
       accessibilityState={{
         disabled: disabled || loading,
         busy: loading,
@@ -136,7 +150,9 @@ const Button: React.FC<ButtonProps> = ({
         <ActivityIndicator
           size="small"
           color={
-            variant === 'secondary' || variant === 'ghost' ? theme.colors.primary : 'white'
+            variant === 'secondary' || variant === 'ghost'
+              ? theme.colors.primary
+              : 'white'
           }
           accessibilityLabel="Yükleniyor"
         />

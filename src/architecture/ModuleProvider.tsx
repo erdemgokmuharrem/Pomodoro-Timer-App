@@ -17,9 +17,9 @@ interface ModuleProviderProps {
   modules?: string[];
 }
 
-export const ModuleProvider: React.FC<ModuleProviderProps> = ({ 
-  children, 
-  modules = ['pomodoro', 'tasks', 'statistics', 'gamification'] 
+export const ModuleProvider: React.FC<ModuleProviderProps> = ({
+  children,
+  modules = ['pomodoro', 'tasks', 'statistics', 'gamification'],
 }) => {
   const [loadedModules, setLoadedModules] = useState<Set<string>>(new Set());
   const [loadingModules, setLoadingModules] = useState<Set<string>>(new Set());
@@ -36,10 +36,10 @@ export const ModuleProvider: React.FC<ModuleProviderProps> = ({
     const loadModules = async () => {
       try {
         setError(null);
-        
+
         for (const moduleName of modules) {
           setLoadingModules(prev => new Set(prev).add(moduleName));
-          
+
           try {
             await loader.loadModule(moduleName);
             setLoadedModules(prev => new Set(prev).add(moduleName));
@@ -91,21 +91,19 @@ export const useModules = (): ModuleContextType => {
 export const useModuleCommunication = () => {
   const { communication } = useModules();
 
-  const sendMessage = React.useCallback((
-    from: string,
-    to: string,
-    type: string,
-    payload: any
-  ) => {
-    communication.sendMessage(from, to, type, payload);
-  }, [communication]);
+  const sendMessage = React.useCallback(
+    (from: string, to: string, type: string, payload: any) => {
+      communication.sendMessage(from, to, type, payload);
+    },
+    [communication]
+  );
 
-  const subscribe = React.useCallback((
-    moduleName: string,
-    callback: (message: any) => void
-  ) => {
-    return communication.subscribe(moduleName, callback);
-  }, [communication]);
+  const subscribe = React.useCallback(
+    (moduleName: string, callback: (message: any) => void) => {
+      return communication.subscribe(moduleName, callback);
+    },
+    [communication]
+  );
 
   return { sendMessage, subscribe };
 };
@@ -131,7 +129,7 @@ export const useLazyModule = (moduleName: string) => {
   const loadModule = React.useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       await loader.loadModule(moduleName);
     } catch (err) {

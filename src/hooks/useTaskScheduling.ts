@@ -173,7 +173,11 @@ export const useTaskScheduling = () => {
           reasoning: `Based on energy patterns and task complexity (${Math.round(
             complexity * 100
           )}%)`,
-          priority: (complexity > 0.7 ? 'high' : complexity > 0.4 ? 'medium' : 'low') as 'high' | 'medium' | 'low',
+          priority: (complexity > 0.7
+            ? 'high'
+            : complexity > 0.4
+              ? 'medium'
+              : 'low') as 'high' | 'medium' | 'low',
           estimatedDuration: 25,
           bestTimeSlot: bestSlot,
         };

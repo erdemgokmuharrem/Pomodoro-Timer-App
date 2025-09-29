@@ -137,7 +137,9 @@ export const useSmartScheduling = () => {
     const optimalHours = Object.keys(hourlyProductivity || {})
       .filter(hour => (hourlyProductivity || {})[parseInt(hour)] > 0.7)
       .map(Number)
-      .sort((a, b) => (hourlyProductivity || {})[b] - (hourlyProductivity || {})[a]);
+      .sort(
+        (a, b) => (hourlyProductivity || {})[b] - (hourlyProductivity || {})[a]
+      );
 
     // Find optimal days
     const optimalDays = Object.keys(dailyProductivity || {})
@@ -433,7 +435,8 @@ export const useSmartScheduling = () => {
       setError(null);
 
       const unscheduledTasks = (tasks || []).filter(
-        task => !(schedules || []).some(schedule => schedule.title === task.title)
+        task =>
+          !(schedules || []).some(schedule => schedule.title === task.title)
       );
 
       const newSchedules: SmartSchedule[] = [];
@@ -526,7 +529,9 @@ export const useSmartScheduling = () => {
       );
 
       // Remove the optimization
-      setOptimizations(prev => (prev || []).filter(o => o.id !== optimizationId));
+      setOptimizations(prev =>
+        (prev || []).filter(o => o.id !== optimizationId)
+      );
       return true;
     } catch (err) {
       console.error('Apply optimization error:', err);

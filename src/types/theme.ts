@@ -76,9 +76,22 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 export type ButtonSize = 'small' | 'medium' | 'large';
 
 // Typography variants
-export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'caption' | 'label';
+export type TypographyVariant =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'body'
+  | 'caption'
+  | 'label';
 
-export type TypographyColor = 'primary' | 'secondary' | 'muted' | 'success' | 'warning' | 'error';
+export type TypographyColor =
+  | 'primary'
+  | 'secondary'
+  | 'muted'
+  | 'success'
+  | 'warning'
+  | 'error';
 
 export type TypographyWeight = 'normal' | 'medium' | 'semibold' | 'bold';
 

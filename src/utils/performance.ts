@@ -54,7 +54,7 @@ export class PerformanceMonitor {
   endTiming(label: string): number {
     const startTime = this.metrics.get(`${label}_start`);
     if (!startTime) return 0;
-    
+
     const duration = Date.now() - startTime;
     this.metrics.set(`${label}_duration`, duration);
     return duration;
@@ -81,7 +81,7 @@ export const getMemoryUsage = (): Promise<{
   total: number;
   percentage: number;
 }> => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (global.performance && global.performance.memory) {
       const memory = global.performance.memory;
       resolve({
@@ -101,14 +101,18 @@ export const runAfterInteractions = (callback: () => void): void => {
 };
 
 // Image optimization
-export const optimizeImage = (uri: string, width?: number, height?: number): string => {
+export const optimizeImage = (
+  uri: string,
+  width?: number,
+  height?: number
+): string => {
   // In a real app, you would use a service like Cloudinary or similar
   const params = new URLSearchParams();
   if (width) params.append('w', width.toString());
   if (height) params.append('h', height.toString());
   params.append('q', '80'); // Quality
   params.append('f', 'auto'); // Format
-  
+
   return `${uri}?${params.toString()}`;
 };
 

@@ -390,7 +390,8 @@ export const useQuests = () => {
         type: 'special',
         category: 'productivity',
         difficulty: 'easy',
-        status: (completedPomodoros || []).length > 0 ? 'completed' : 'available',
+        status:
+          (completedPomodoros || []).length > 0 ? 'completed' : 'available',
         requirements: [
           {
             id: 'req-6',
@@ -508,7 +509,10 @@ export const useQuests = () => {
           completed = current >= req.target;
           break;
         case 'pomodoro_duration':
-          current = (completedPomodoros || []).reduce((sum, p) => sum + p.duration, 0);
+          current = (completedPomodoros || []).reduce(
+            (sum, p) => sum + p.duration,
+            0
+          );
           completed = current >= req.target;
           break;
         case 'task_completion':
@@ -533,7 +537,10 @@ export const useQuests = () => {
           completed = current >= req.target;
           break;
         case 'time_spent':
-          current = (completedPomodoros || []).reduce((sum, p) => sum + p.duration, 0);
+          current = (completedPomodoros || []).reduce(
+            (sum, p) => sum + p.duration,
+            0
+          );
           completed = current >= req.target;
           break;
         case 'focus_sessions':
@@ -636,7 +643,9 @@ export const useQuests = () => {
       if (!quest || quest.status !== 'available') return false;
 
       // Check if max active quests reached
-      const activeQuests = (quests || []).filter(q => q.status === 'active').length;
+      const activeQuests = (quests || []).filter(
+        q => q.status === 'active'
+      ).length;
       if (activeQuests >= settings.maxActiveQuests) {
         Alert.alert('Uyarı', 'Maksimum aktif görev sayısına ulaştınız');
         return false;
@@ -713,9 +722,15 @@ export const useQuests = () => {
   // Get quest insights
   const getQuestInsights = () => {
     const totalQuests = (quests || []).length;
-    const activeQuests = (quests || []).filter(q => q.status === 'active').length;
-    const completedQuests = (quests || []).filter(q => q.status === 'completed').length;
-    const availableQuests = (quests || []).filter(q => q.status === 'available').length;
+    const activeQuests = (quests || []).filter(
+      q => q.status === 'active'
+    ).length;
+    const completedQuests = (quests || []).filter(
+      q => q.status === 'completed'
+    ).length;
+    const availableQuests = (quests || []).filter(
+      q => q.status === 'available'
+    ).length;
     const completionRate = totalQuests > 0 ? completedQuests / totalQuests : 0;
 
     return {

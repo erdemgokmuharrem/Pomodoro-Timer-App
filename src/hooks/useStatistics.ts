@@ -121,7 +121,9 @@ export const useStatistics = () => {
       longestStreak = tempStreak;
     }
 
-    const completedTasks = (tasks || []).filter(task => task.isCompleted).length;
+    const completedTasks = (tasks || []).filter(
+      task => task.isCompleted
+    ).length;
 
     return {
       totalPomodoros,

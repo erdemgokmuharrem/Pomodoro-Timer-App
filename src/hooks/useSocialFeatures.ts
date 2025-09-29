@@ -352,8 +352,9 @@ export const useSocialFeatures = () => {
       sentFriendRequests: sentRequests.length,
       pendingSessionInvites: pendingInvites.length,
       socialFeaturesEnabled: settings.enableSocialFeatures,
-      onlineFriends: (friendsList || []).filter(friend => friend.status === 'online')
-        .length,
+      onlineFriends: (friendsList || []).filter(
+        friend => friend.status === 'online'
+      ).length,
       activeFriends: (friendsList || []).filter(
         friend => friend.status === 'online' || friend.status === 'busy'
       ).length,

@@ -9,9 +9,19 @@ export type PomodoroStatus = 'idle' | 'running' | 'paused' | 'completed';
 
 export type BreakType = 'short' | 'long';
 
-export type InterruptionReason = 'phone' | 'email' | 'social' | 'other' | 'urgent';
+export type InterruptionReason =
+  | 'phone'
+  | 'email'
+  | 'social'
+  | 'other'
+  | 'urgent';
 
-export type SoundType = 'pomodoro_complete' | 'break_complete' | 'tick' | 'start' | 'pause';
+export type SoundType =
+  | 'pomodoro_complete'
+  | 'break_complete'
+  | 'tick'
+  | 'start'
+  | 'pause';
 
 export type ExportFormat = 'json' | 'csv' | 'excel';
 
@@ -36,7 +46,11 @@ export interface BaseEvent {
 }
 
 export interface PomodoroEvent extends BaseEvent {
-  type: 'pomodoro_start' | 'pomodoro_complete' | 'pomodoro_pause' | 'pomodoro_stop';
+  type:
+    | 'pomodoro_start'
+    | 'pomodoro_complete'
+    | 'pomodoro_pause'
+    | 'pomodoro_stop';
   sessionId: string;
   taskId?: string;
 }
