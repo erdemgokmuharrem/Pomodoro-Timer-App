@@ -12,6 +12,13 @@
     "noFallthroughCasesInSwitch": false,
     "noUncheckedIndexedAccess": false,
     "noImplicitOverride": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noImplicitThis": false,
+    "alwaysStrict": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "noUncheckedIndexedAccess": false,
+    "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false
   },
   "exclude": ["**/__tests__/**", "**/*.test.*", "**/e2e/**"]
