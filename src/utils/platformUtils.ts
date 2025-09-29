@@ -160,8 +160,8 @@ export class PlatformUtils {
     return Math.round(responsiveSize);
   }
 
-  // Get responsive spacing
-  getResponsiveSpacing(size: keyof ResponsiveConfig['spacing']): number {
+  // Get responsive spacing by key
+  getResponsiveSpacingByKey(size: keyof ResponsiveConfig['spacing']): number {
     return this.responsiveConfig.spacing[size];
   }
 
@@ -356,7 +356,7 @@ export const useResponsive = () => {
     ...responsiveConfig,
     isBreakpoint: platformUtils.isBreakpoint.bind(platformUtils),
     getResponsiveFontSize: platformUtils.getResponsiveFontSize.bind(platformUtils),
-    getResponsiveSpacing: platformUtils.getResponsiveSpacing.bind(platformUtils),
+    getResponsiveSpacing: platformUtils.getResponsiveSpacingByKey.bind(platformUtils),
     getPlatformStyles: platformUtils.getPlatformStyles.bind(platformUtils),
   };
 };
