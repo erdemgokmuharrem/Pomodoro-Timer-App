@@ -55,44 +55,54 @@ class NotificationService {
     duration: number,
     taskName?: string
   ): Promise<string> {
-    const title = 'Pomodoro Tamamlandı! 🎉';
-    const body = taskName
-      ? `${taskName} için ${duration} dakikalık odaklanma süreniz bitti!`
-      : `${duration} dakikalık odaklanma süreniz bitti!`;
+    try {
+      const title = 'Pomodoro Tamamlandı! 🎉';
+      const body = taskName
+        ? `${taskName} için ${duration} dakikalık odaklanma süreniz bitti!`
+        : `${duration} dakikalık odaklanma süreniz bitti!`;
 
-    const notificationId = await Notifications.scheduleNotificationAsync({
-      content: {
-        title,
-        body,
-        data: { type: 'pomodoro_complete', duration, taskName },
-        sound: 'default',
-      },
-      trigger: { seconds: duration * 60 },
-    });
+      const notificationId = await Notifications.scheduleNotificationAsync({
+        content: {
+          title,
+          body,
+          data: { type: 'pomodoro_complete', duration, taskName },
+          sound: 'default',
+        },
+        trigger: { seconds: duration * 60 },
+      });
 
-    return notificationId;
+      return notificationId;
+    } catch (error) {
+      console.error('Error scheduling pomodoro notification:', error);
+      throw new Error(`Failed to schedule pomodoro notification: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   async scheduleBreakNotification(
     duration: number,
     isLongBreak: boolean = false
   ): Promise<string> {
-    const title = isLongBreak ? 'Uzun Mola Bitti!' : 'Mola Bitti!';
-    const body = isLongBreak
-      ? `${duration} dakikalık uzun mola süreniz tamamlandı. Yeni pomodoro başlatmaya hazır mısınız?`
-      : `${duration} dakikalık mola süreniz tamamlandı. Yeni pomodoro başlatmaya hazır mısınız?`;
+    try {
+      const title = isLongBreak ? 'Uzun Mola Bitti!' : 'Mola Bitti!';
+      const body = isLongBreak
+        ? `${duration} dakikalık uzun mola süreniz tamamlandı. Yeni pomodoro başlatmaya hazır mısınız?`
+        : `${duration} dakikalık mola süreniz tamamlandı. Yeni pomodoro başlatmaya hazır mısınız?`;
 
-    const notificationId = await Notifications.scheduleNotificationAsync({
-      content: {
-        title,
-        body,
-        data: { type: 'break_complete', duration, isLongBreak },
-        sound: 'default',
-      },
-      trigger: { seconds: duration * 60 },
-    });
+      const notificationId = await Notifications.scheduleNotificationAsync({
+        content: {
+          title,
+          body,
+          data: { type: 'break_complete', duration, isLongBreak },
+          sound: 'default',
+        },
+        trigger: { seconds: duration * 60 },
+      });
 
-    return notificationId;
+      return notificationId;
+    } catch (error) {
+      console.error('Error scheduling break notification:', error);
+      throw new Error(`Failed to schedule break notification: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   async scheduleReminderNotification(

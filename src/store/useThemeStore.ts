@@ -50,9 +50,22 @@ export const useThemeStore = create<ThemeState>()(
 );
 
 // Listen to system theme changes
-Appearance.addChangeListener(({ colorScheme }) => {
-  const store = useThemeStore.getState();
-  if (store.mode === 'system') {
-    store.setMode('system');
+let appearanceListener: any = null;
+
+// Initialize listener only once
+if (!appearanceListener) {
+  appearanceListener = Appearance.addChangeListener(({ colorScheme }) => {
+    const store = useThemeStore.getState();
+    if (store.mode === 'system') {
+      store.setMode('system');
+    }
+  });
+}
+
+// Cleanup function
+export const cleanupThemeStore = () => {
+  if (appearanceListener) {
+    appearanceListener.remove();
+    appearanceListener = null;
   }
-});
+};

@@ -74,13 +74,18 @@ export const usePomodoroTimer = () => {
   // Handle timer completion with auto-reschedule
   useEffect(() => {
     if (timeLeft === 0 && !isRunning) {
-      if (isBreak) {
-        // Break completed - trigger auto-reschedule
-        handleBreakComplete();
-      } else {
-        // Pomodoro completed - trigger auto-reschedule
-        handlePomodoroComplete();
-      }
+      // Use setTimeout to avoid race conditions
+      const timeoutId = setTimeout(() => {
+        if (isBreak) {
+          // Break completed - trigger auto-reschedule
+          handleBreakComplete();
+        } else {
+          // Pomodoro completed - trigger auto-reschedule
+          handlePomodoroComplete();
+        }
+      }, 100); // Small delay to ensure state is stable
+
+      return () => clearTimeout(timeoutId);
     }
   }, [
     timeLeft,
@@ -93,15 +98,20 @@ export const usePomodoroTimer = () => {
   // Handle timer completion
   useEffect(() => {
     if (timeLeft === 0 && isRunning) {
-      if (isBreak) {
-        completeBreak();
-        playBreakComplete();
-      } else {
-        completePomodoro();
-        playPomodoroComplete();
-        // Award XP for completing pomodoro
-        awardPomodoroXp();
-      }
+      // Use setTimeout to avoid race conditions
+      const timeoutId = setTimeout(async () => {
+        if (isBreak) {
+          completeBreak();
+          await playBreakComplete();
+        } else {
+          completePomodoro();
+          await playPomodoroComplete();
+          // Award XP for completing pomodoro
+          awardPomodoroXp();
+        }
+      }, 100); // Small delay to ensure state is stable
+
+      return () => clearTimeout(timeoutId);
     }
   }, [
     timeLeft,

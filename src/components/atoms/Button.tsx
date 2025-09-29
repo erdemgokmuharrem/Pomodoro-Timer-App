@@ -6,12 +6,14 @@ import {
   TextStyle,
   ActivityIndicator,
 } from 'react-native';
+import { useTheme } from '../ThemeProvider';
+import { ButtonVariant, ButtonSize } from '../../types';
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
-  size?: 'small' | 'medium' | 'large';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   disabled?: boolean;
   loading?: boolean;
   style?: ViewStyle;
@@ -30,9 +32,11 @@ const Button: React.FC<ButtonProps> = ({
   textStyle,
   fullWidth = false,
 }) => {
+  const { theme } = useTheme();
+
   const getButtonStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
-      borderRadius: 8,
+      borderRadius: theme.borderRadius.md,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
@@ -40,24 +44,36 @@ const Button: React.FC<ButtonProps> = ({
 
     // Size styles
     const sizeStyles = {
-      small: { paddingHorizontal: 12, paddingVertical: 8, minHeight: 32 },
-      medium: { paddingHorizontal: 16, paddingVertical: 12, minHeight: 44 },
-      large: { paddingHorizontal: 24, paddingVertical: 16, minHeight: 56 },
+      small: { 
+        paddingHorizontal: theme.spacing.sm, 
+        paddingVertical: theme.spacing.xs, 
+        minHeight: 32 
+      },
+      medium: { 
+        paddingHorizontal: theme.spacing.md, 
+        paddingVertical: theme.spacing.sm, 
+        minHeight: 44 
+      },
+      large: { 
+        paddingHorizontal: theme.spacing.lg, 
+        paddingVertical: theme.spacing.md, 
+        minHeight: 56 
+      },
     };
 
     // Variant styles
     const variantStyles = {
       primary: {
-        backgroundColor: disabled ? '#9CA3AF' : '#3B82F6',
+        backgroundColor: disabled ? theme.colors.text.muted : theme.colors.primary,
         borderWidth: 0,
       },
       secondary: {
         backgroundColor: 'transparent',
         borderWidth: 1,
-        borderColor: disabled ? '#9CA3AF' : '#3B82F6',
+        borderColor: disabled ? theme.colors.text.muted : theme.colors.primary,
       },
       danger: {
-        backgroundColor: disabled ? '#9CA3AF' : '#EF4444',
+        backgroundColor: disabled ? theme.colors.text.muted : theme.colors.error,
         borderWidth: 0,
       },
       ghost: {
@@ -77,21 +93,21 @@ const Button: React.FC<ButtonProps> = ({
 
   const getTextStyle = (): TextStyle => {
     const baseStyle: TextStyle = {
-      fontWeight: '600',
+      fontWeight: theme.typography.fontWeights.semibold,
       textAlign: 'center',
     };
 
     const sizeStyles = {
-      small: { fontSize: 14 },
-      medium: { fontSize: 16 },
-      large: { fontSize: 18 },
+      small: { fontSize: theme.typography.fontSizes.sm },
+      medium: { fontSize: theme.typography.fontSizes.md },
+      large: { fontSize: theme.typography.fontSizes.lg },
     };
 
     const variantStyles = {
       primary: { color: 'white' },
-      secondary: { color: disabled ? '#9CA3AF' : '#3B82F6' },
+      secondary: { color: disabled ? theme.colors.text.muted : theme.colors.primary },
       danger: { color: 'white' },
-      ghost: { color: disabled ? '#9CA3AF' : '#3B82F6' },
+      ghost: { color: disabled ? theme.colors.text.muted : theme.colors.primary },
     };
 
     return {
@@ -108,13 +124,21 @@ const Button: React.FC<ButtonProps> = ({
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+      accessibilityHint={disabled ? 'Bu buton şu anda devre dışı' : loading ? 'Yükleniyor' : 'Dokunarak etkinleştir'}
+      accessibilityState={{
+        disabled: disabled || loading,
+        busy: loading,
+      }}
     >
       {loading ? (
         <ActivityIndicator
           size="small"
           color={
-            variant === 'secondary' || variant === 'ghost' ? '#3B82F6' : 'white'
+            variant === 'secondary' || variant === 'ghost' ? theme.colors.primary : 'white'
           }
+          accessibilityLabel="Yükleniyor"
         />
       ) : (
         <Text style={getTextStyle()}>{title}</Text>

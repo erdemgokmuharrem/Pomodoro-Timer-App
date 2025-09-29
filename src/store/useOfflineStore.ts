@@ -19,6 +19,7 @@ export interface SyncAction {
   timestamp: Date;
   retryCount: number;
   maxRetries: number;
+  error?: string;
 }
 
 interface OfflineState {

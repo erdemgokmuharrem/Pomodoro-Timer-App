@@ -141,20 +141,25 @@ export class OfflineService {
   }
 
   // Background sync simulation
-  async syncInBackground(actions: SyncAction[]): Promise<SyncAction[]> {
+  async syncInBackground(actions: SyncAction[]): Promise<{ success: SyncAction[]; failed: SyncAction[] }> {
+    const successActions: SyncAction[] = [];
     const failedActions: SyncAction[] = [];
 
     for (const action of actions) {
       try {
         await this.simulateServerSync(action);
         console.log(`Successfully synced action: ${action.type}`);
+        successActions.push(action);
       } catch (error) {
         console.error(`Failed to sync action ${action.id}:`, error);
-        failedActions.push(action);
+        failedActions.push({
+          ...action,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        });
       }
     }
 
-    return failedActions;
+    return { success: successActions, failed: failedActions };
   }
 
   // Simulate server synchronization

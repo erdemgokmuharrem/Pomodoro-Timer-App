@@ -147,7 +147,14 @@ const TimerScreen = () => {
 
         {/* Timer */}
         <View style={styles.timerContainer}>
-          <Text style={styles.timerText}>{formattedTime}</Text>
+          <Text 
+            style={styles.timerText}
+            accessibilityRole="timer"
+            accessibilityLabel={`${isBreak ? 'Mola' : 'Pomodoro'} süresi: ${formattedTime}`}
+            accessibilityLiveRegion="assertive"
+          >
+            {formattedTime}
+          </Text>
         </View>
 
         {/* Controls */}
@@ -162,6 +169,9 @@ const TimerScreen = () => {
           <TouchableOpacity
             style={[styles.controlButton, styles.primaryButton]}
             onPress={handleStartPause}
+            accessibilityRole="button"
+            accessibilityLabel={isRunning ? 'Pomodoro\'yu duraklat' : 'Pomodoro\'yu başlat'}
+            accessibilityHint={isRunning ? 'Duraklatmak için dokunun' : 'Başlatmak için dokunun'}
           >
             <Text style={styles.primaryButtonText}>
               {isRunning ? 'Duraklat' : 'Başlat'}

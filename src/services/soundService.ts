@@ -81,6 +81,8 @@ class SoundService {
       }
     } catch (error) {
       console.error(`Error playing sound ${type}:`, error);
+      // Don't throw error for sound failures, just log them
+      // Sound failures shouldn't break the app
     }
   }
 
